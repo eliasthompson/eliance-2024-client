@@ -1,0 +1,21 @@
+{
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "paths": {
+      "@components": ["src/components"],
+      "@fonts": ["public/fonts"],
+      "@store": ["src/store"],
+      "@components/*": ["src/components/*"],
+      "@fonts/*": ["public/fonts/*"],
+      "@store/*": ["src/store/*"]
+    },
+    "target": "ES2022"
+  }
+}
