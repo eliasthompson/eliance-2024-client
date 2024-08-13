@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "src/index.tsx",
   "type": "module",
+  "engines": {
+   "node": ">=20.0.0"
+  },
   "scripts": {
     "eslint": "eslint --config config/eslint.js",
     "prebuild": "eslint --config config/eslint.js && tsc",
