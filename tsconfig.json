@@ -10,10 +10,10 @@
     "noEmit": true,
     "paths": {
       "@components": ["src/components"],
-      "@fonts": ["public/fonts"],
-      "@store": ["src/store"],
       "@components/*": ["src/components/*"],
+      "@fonts": ["public/fonts"],
       "@fonts/*": ["public/fonts/*"],
+      "@store": ["src/store"],
       "@store/*": ["src/store/*"]
     },
     "target": "ES2022"

@@ -4,22 +4,22 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export interface TwitchAuthState {
   accessToken: string | null,
-  authorized: boolean,
   broadcasterId: string,
   clientId: string,
   deviceCode: string | null,
   refreshToken: string | null,
+  sessionId: string | null,
   scopes: string[],
   verificationUri: string | null,
 };
 
 export const initialTwitchAuthState: TwitchAuthState = {
   accessToken: localStorage.getItem('accessToken'),
-  authorized: true,
-  broadcasterId: '141981764',
+  broadcasterId: '22214120',
   clientId: 'rauupizoywti00mgyshjkvewuvlepx',
   deviceCode: null,
   refreshToken: localStorage.getItem('refreshToken'),
+  sessionId: null,
   scopes: [
     'bits:read',
     'channel:bot',

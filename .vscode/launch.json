@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "cwd": "${workspaceFolder}",
+      "name": "Launch via npm",
+      "request": "launch",
+      "runtimeArgs": ["start"],
+      "runtimeExecutable": "npm",
+      "runtimeVersion": "20",
+      "skipFiles": [
+        "**/.nvm/**",
+        "<node_internals>/**",
+        "${workspaceFolder}/node_modules/**",
+      ],
+      "type": "node",
+    }
+  ]
+}

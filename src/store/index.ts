@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { twitch } from '@store/apis/twitch';
+import { twitchApi } from '@store/apis/twitch';
 import { twitchAuthSlice } from '@store/slices/twitchAuth';
 
 export const store = configureStore({
   middleware: (getDefaultMiddleware) => getDefaultMiddleware()
-    .concat(twitch.middleware),
+    .concat(twitchApi.middleware),
   reducer: {
-    [twitch.reducerPath]: twitch.reducer,
+    [twitchApi.reducerPath]: twitchApi.reducer,
     [twitchAuthSlice.reducerPath]: twitchAuthSlice.reducer,
   },
 });

@@ -48,6 +48,7 @@ export const GlobalStyle = createGlobalStyle<{ $whiteColor?: boolean; }>`
     #root {
       overflow-x: hidden;
       height: 100%;
+      background-color: #121212;
     }
 
     body,
