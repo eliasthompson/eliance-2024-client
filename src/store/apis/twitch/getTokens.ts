@@ -7,8 +7,8 @@ export interface TwitchApiGetTokensRequest {
 }
 
 export interface TwitchApiGetTokensErrorResponse {
-  message: string,
-  status: number,
+  status: 400,
+  message: 'authorization_pending' | 'invalid device code' | 'Invalid refresh token',
 };
 
 export interface TwitchApiGetTokensSuccessResponse {

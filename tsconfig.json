@@ -14,7 +14,9 @@
       "@fonts": ["public/fonts"],
       "@fonts/*": ["public/fonts/*"],
       "@store": ["src/store"],
-      "@store/*": ["src/store/*"]
+      "@store/*": ["src/store/*"],
+      "@types": ["types"],
+      "@types/*": ["types/*"]
     },
     "target": "ES2022"
   }

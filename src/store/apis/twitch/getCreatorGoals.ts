@@ -1,10 +1,10 @@
 import { twitchApi } from '.';
 
-export interface TwitchApiGetGoalsRequest {
+export interface TwitchApiGetCreatorGoalsRequest {
   broadcasterId: string,
 }
 
-export interface TwitchApiGetGoalsSuccessResponse {
+export interface TwitchApiGetCreatorGoalsSuccessResponse {
   data: {
     id: string,
     broadcaster_id: number,
@@ -22,9 +22,9 @@ const twitchApiWithTags = twitchApi.enhanceEndpoints({
   addTagTypes: ['GOAL_DATA'],
 });
 
-export const { useGetGoalsQuery } = twitchApiWithTags.injectEndpoints({
+export const { useLazyGetCreatorGoalsQuery } = twitchApiWithTags.injectEndpoints({
   endpoints: (build) => ({
-    getGoals: build.query<TwitchApiGetGoalsSuccessResponse, TwitchApiGetGoalsRequest>({
+    getCreatorGoals: build.query<TwitchApiGetCreatorGoalsSuccessResponse, TwitchApiGetCreatorGoalsRequest>({
       query: ({ broadcasterId }) => ({
         method: 'GET',
         url: `/goals?broadcaster_id=${broadcasterId}`,

@@ -13,7 +13,7 @@ export interface TwitchApiGetDeviceCodeSuccessResponse {
   verification_uri: string,
 };
 
-export const { useLazyGetDeviceCodeQuery } = twitchApi.injectEndpoints({
+export const { useGetDeviceCodeQuery } = twitchApi.injectEndpoints({
   endpoints: (build) => ({
     getDeviceCode: build.query<TwitchApiGetDeviceCodeSuccessResponse, TwitchApiGetDeviceCodeRequest>({
       query: ({ clientId, scopes }) => ({
