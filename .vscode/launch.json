@@ -7,7 +7,6 @@
       "type": "chrome",
       "url": "http://localhost:8080?logins=eliasthompson",
       "webRoot": "${workspaceFolder}",
-      ""
     }
   ]
 }
