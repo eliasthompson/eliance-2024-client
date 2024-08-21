@@ -48,7 +48,7 @@ export const Container = () => {
     <Fragment>
       <div>
         { (usersData) ? usersData.data.map((userData) => (
-          <TwitchProfileImage key={ userData.id } size="100px" src={ userData.profile_image_url } />
+          <TwitchProfileImage key={ userData.id } $size="100px" src={ userData.profile_image_url } />
         )) : null }
       </div>
 
