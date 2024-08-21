@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 
 interface TwitchButtonProps {
-  variant?: string,
+  $variant?: string,
 };
 
 export const TwitchButton = styled.button<TwitchButtonProps>`
@@ -20,14 +20,14 @@ export const TwitchButton = styled.button<TwitchButtonProps>`
   height: 3rem;
   border-radius: 0.4rem;
   color: #ffffff;
-  background-color: ${({ variant = 'primary' }) => (variant === 'primary') ? '#9147ff' : 'transparent'};
+  background-color: ${({ $variant = 'primary' }) => ($variant === 'primary') ? '#9147ff' : 'transparent'};
   
   &:active {
-    background-color: ${({ variant = 'primary' }) => (variant === 'primary') ? '##5c16c5' : 'rgb(83 83 95 / 55%)'};
+    background-color: ${({ $variant = 'primary' }) => ($variant === 'primary') ? '##5c16c5' : 'rgb(83 83 95 / 55%)'};
   }
   
   &:hover {
-    background-color: ${({ variant = 'primary' }) => (variant === 'primary') ? '#772ce8' : 'rgb(83 83 95 / 48%)'};
+    background-color: ${({ $variant = 'primary' }) => ($variant === 'primary') ? '#772ce8' : 'rgb(83 83 95 / 48%)'};
   }
 
   div {

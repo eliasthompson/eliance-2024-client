@@ -2,18 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "cwd": "${workspaceFolder}",
-      "name": "Launch via npm",
+      "name": "Launch via Chrome",
       "request": "launch",
-      "runtimeArgs": ["start"],
-      "runtimeExecutable": "npm",
-      "runtimeVersion": "20",
-      "skipFiles": [
-        "**/.nvm/**",
-        "<node_internals>/**",
-        "${workspaceFolder}/node_modules/**",
-      ],
-      "type": "node",
+      "type": "chrome",
+      "url": "http://localhost:8080?logins=eliasthompson",
+      "webRoot": "${workspaceFolder}",
+      ""
     }
   ]
 }
