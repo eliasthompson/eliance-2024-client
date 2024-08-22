@@ -4,7 +4,7 @@ export interface TwitchApiGetEmoteSetsRequest {
   emoteSetIds: string[],
 }
 
-export interface TwitchApiGetEmoteSetsSuccessResponse {
+export interface TwitchApiGetEmoteSetsResponse {
   data: {
     id: string,
     name: string,
@@ -26,7 +26,7 @@ export const { useLazyGetEmoteSetsQuery } = twitchApi.enhanceEndpoints({
   addTagTypes: ['EMOTE_SET_DATA'],
 }).injectEndpoints({
   endpoints: (build) => ({
-    getEmoteSets: build.query<TwitchApiGetEmoteSetsSuccessResponse, TwitchApiGetEmoteSetsRequest>({
+    getEmoteSets: build.query<TwitchApiGetEmoteSetsResponse, TwitchApiGetEmoteSetsRequest>({
       query: ({ emoteSetIds }) => ({
         method: 'GET',
         url: `/chat/emotes/set?${emoteSetIds.map((emoteSetId, i) => (i) ? `&emote_set_id=${emoteSetId}` : `emote_set_id=${emoteSetId}`)}`,

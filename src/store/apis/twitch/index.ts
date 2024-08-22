@@ -3,7 +3,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { fetchRefreshedBaseQuery } from '@store/apis/fetchRefreshedBaseQuery';
 
 export interface TwitchApiErrorResponse {
-  error: string,
+  error?: string,
   message: string,
   status: number,
 }

@@ -4,7 +4,7 @@ export interface TwitchApiGetChannelsRequest {
   broadcasterIds: string[],
 }
 
-export interface TwitchApiGetChannelsSuccessResponse {
+export interface TwitchApiGetChannelsResponse {
   data: {
     broadcaster_name: string,
   }[],
@@ -14,7 +14,7 @@ export const { useGetChannelsQuery } = twitchApi.enhanceEndpoints({
   addTagTypes: ['CHANNEL_DATA'],
 }).injectEndpoints({
   endpoints: (build) => ({
-    getChannels: build.query<TwitchApiGetChannelsSuccessResponse, TwitchApiGetChannelsRequest>({
+    getChannels: build.query<TwitchApiGetChannelsResponse, TwitchApiGetChannelsRequest>({
       query: ({ broadcasterIds }) => ({
         method: 'GET',
         url: `/channels?${broadcasterIds.map((broadcasterId, i) => (i) ? `&broadcaster_id=${broadcasterId}` : `broadcaster_id=${broadcasterId}`)}`,

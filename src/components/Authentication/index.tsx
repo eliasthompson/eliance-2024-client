@@ -15,7 +15,7 @@ export const Authentication = () => {
   const handleAuthenticateClick = useCallback(async () => {
     const { data: tokensData } = await getTokensQuery({ clientId, deviceCode: deviceCodeData.device_code, scopes });
 
-    if (tokensData && 'access_token' in tokensData) {
+    if (tokensData) {
       dispatch(setTwitchAuth({ accessToken: tokensData.access_token, refreshToken: tokensData.refresh_token }));
       dispatch(twitchApiUtil.invalidateTags(['UNAUTHORIZED']));
     }

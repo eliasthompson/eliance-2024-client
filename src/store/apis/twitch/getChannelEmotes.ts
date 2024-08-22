@@ -4,7 +4,7 @@ export interface TwitchApiGetChannelEmotesRequest {
   broadcasterId: string,
 }
 
-export interface TwitchApiGetChannelEmotesSuccessResponse {
+export interface TwitchApiGetChannelEmotesResponse {
   data: {
     id: string,
     name: string,
@@ -27,7 +27,7 @@ export const { useLazyGetChannelEmotesQuery } = twitchApi.enhanceEndpoints({
   addTagTypes: ['CHANNEL_EMOTE_DATA'],
 }).injectEndpoints({
   endpoints: (build) => ({
-    getChannelEmotes: build.query<TwitchApiGetChannelEmotesSuccessResponse, TwitchApiGetChannelEmotesRequest>({
+    getChannelEmotes: build.query<TwitchApiGetChannelEmotesResponse, TwitchApiGetChannelEmotesRequest>({
       query: ({ broadcasterId }) => ({
         method: 'GET',
         url: `/chat/emotes?broadcaster_id=${broadcasterId}`,

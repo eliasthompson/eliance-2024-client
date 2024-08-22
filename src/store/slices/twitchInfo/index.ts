@@ -1,22 +1,20 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-import type { TwitchApiGetUsersSuccessResponse } from '@store/apis/twitch/getUsers';
+import type { TwitchApiGetUsersResponse } from '@store/apis/twitch/getUsers';
 
 import { createSlice } from '@reduxjs/toolkit';
-import { TwitchApiGetCreatorGoalsSuccessResponse } from '@src/store/apis/twitch/getCreatorGoals';
+import { TwitchApiGetCreatorGoalsResponse } from '@src/store/apis/twitch/getCreatorGoals';
 
 export interface TwitchInfoState {
-  broadcasterId: string | null,
-  profileImageUrl: string | null,
-  goal: Pick<TwitchApiGetCreatorGoalsSuccessResponse['data'][number], 'type' | 'current_amount' | 'target_amount'> | null,
-  guests: TwitchApiGetUsersSuccessResponse['data'],
+  goal: TwitchApiGetCreatorGoalsResponse['data'][number] | null,
+  guests: TwitchApiGetUsersResponse['data'],
+  user: TwitchApiGetUsersResponse['data'][number] | null,
 };
 
 export const initialTwitchInfoState: TwitchInfoState = {
-  broadcasterId: null,
-  profileImageUrl: null,
   goal: null,
   guests: [],
+  user: null,
 };
 
 export const twitchInfoSlice = createSlice({

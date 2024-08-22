@@ -1,6 +1,6 @@
 import { twitchApi } from '.';
 
-export interface TwitchApiGetGlobalEmotesSuccessResponse {
+export interface TwitchApiGetGlobalEmotesResponse {
   data: {
     id: string,
     name: string,
@@ -20,7 +20,7 @@ export const { useLazyGetGlobalEmotesQuery } = twitchApi.enhanceEndpoints({
   addTagTypes: ['GLOBAL_EMOTE_DATA'],
 }).injectEndpoints({
   endpoints: (build) => ({
-    getGlobalEmotes: build.query<TwitchApiGetGlobalEmotesSuccessResponse, void>({
+    getGlobalEmotes: build.query<TwitchApiGetGlobalEmotesResponse, void>({
       query: () => ({
         method: 'GET',
         url: '/chat/emotes/global',

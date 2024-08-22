@@ -16,9 +16,9 @@ import { useLazyGetGlobalEmotesQuery } from '@store/apis/twitch/getGlobalEmotes'
 export const ChatBox = () => {
   const dispatch = useDispatch();
   const { lastJsonMessage: newMessage } = useWebSocket<TwitchEventSubChatBoxMessage>('wss://eventsub.wss.twitch.tv/ws', { share: true });
-  const { broadcasterId } = useSelector(({ twitchInfo }) => twitchInfo);
+  const { user } = useSelector(({ twitchInfo }) => twitchInfo);
   const { messageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
-  const { error: eventSubSubscriptionError, isLoading: isEventSubSubscriptionLoading } = useCreateEventSubSubscriptionQuery({ broadcasterId, sessionId, type: 'channel.chat.message', version: 1 });
+  const { error: eventSubSubscriptionError, isLoading: isEventSubSubscriptionLoading } = useCreateEventSubSubscriptionQuery({ broadcasterId: user.id, sessionId, type: 'channel.chat.message', version: 1 });
   const [getChannelEmotesQuery] = useLazyGetChannelEmotesQuery();
   const [getEmoteSetsQuery] = useLazyGetEmoteSetsQuery();
   const [getGloablEmotesQuery] = useLazyGetGlobalEmotesQuery();
@@ -44,7 +44,7 @@ export const ChatBox = () => {
               const emoteSetIds = emoteFragments.map(({ emote_set_id: emoteSetId }) => emoteSetId);
               const [{ data: globalEmotesData }, { data: channelEmotesData }, { data: emoteSetsData }] = await Promise.all([
                 getGloablEmotesQuery(),
-                getChannelEmotesQuery({ broadcasterId }),
+                getChannelEmotesQuery({ broadcasterId: user.id }),
                 getEmoteSetsQuery({ emoteSetIds }),
               ]);
               const emotesData = [...globalEmotesData.data, ...channelEmotesData.data, ...emoteSetsData.data];
@@ -78,7 +78,7 @@ export const ChatBox = () => {
         }
       }
     }
-  }, [broadcasterId, dispatch, setChats, messageIds, newMessage]);
+  }, [dispatch, setChats, messageIds, newMessage, user.id]);
 
   // Render nothing if data is loading
   if (isEventSubSubscriptionLoading) return null;
@@ -89,7 +89,7 @@ export const ChatBox = () => {
     let errorMessage = `[Channel Chat Message Error ${status}]`;
 
     if ('error' in data) errorMessage += ` ${data.error}`;
-    if ('message' in data) errorMessage += `: ${data.message}`;
+    errorMessage += `: ${data.message}`;
 
     return <p style={ { fontWeight: 'bold', color:'#ff0000' } }>{ errorMessage }</p>;
   };

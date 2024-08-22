@@ -4,7 +4,7 @@ export interface TwitchApiGetChannelFollowersRequest {
   broadcasterId: string,
 }
 
-export interface TwitchApiGetChannelFollowersSuccessResponse {
+export interface TwitchApiGetChannelFollowersResponse {
   total: number,
 }
 
@@ -12,7 +12,7 @@ export const twitchApiGetChannelFollowers = twitchApi.enhanceEndpoints({
   addTagTypes: ['CHANNEL_FOLLOWER_DATA'],
 }).injectEndpoints({
   endpoints: (build) => ({
-    getChannelFollowers: build.query<TwitchApiGetChannelFollowersSuccessResponse, TwitchApiGetChannelFollowersRequest>({
+    getChannelFollowers: build.query<TwitchApiGetChannelFollowersResponse, TwitchApiGetChannelFollowersRequest>({
       query: ({ broadcasterId }) => ({
         method: 'GET',
         url: `/channels/followers?broadcaster_id=${broadcasterId}`,

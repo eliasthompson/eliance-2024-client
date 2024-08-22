@@ -4,7 +4,7 @@ export interface TwitchApiGetUsersRequest {
   logins: string[],
 }
 
-export interface TwitchApiGetUsersSuccessResponse {
+export interface TwitchApiGetUsersResponse {
   data: {
     id: string,
     login: string,
@@ -19,11 +19,11 @@ export interface TwitchApiGetUsersSuccessResponse {
   }[],
 }
 
-export const { useGetUsersQuery } = twitchApi.enhanceEndpoints({
+export const { useLazyGetUsersQuery } = twitchApi.enhanceEndpoints({
   addTagTypes: ['USER_DATA'],
 }).injectEndpoints({
   endpoints: (build) => ({
-    getUsers: build.query<TwitchApiGetUsersSuccessResponse, TwitchApiGetUsersRequest>({
+    getUsers: build.query<TwitchApiGetUsersResponse, TwitchApiGetUsersRequest>({
       query: ({ logins }) => ({
         method: 'GET',
         url: `/users?${logins.map((login) => `login=${login}`).join('&')}`,

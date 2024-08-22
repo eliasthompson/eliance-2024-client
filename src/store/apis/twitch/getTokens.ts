@@ -1,17 +1,14 @@
+import type { TwitchAuthState } from '@store/slices/twitchAuth';
+
 import { twitchApi } from '.';
 
 export interface TwitchApiGetTokensRequest {
   clientId: string,
   deviceCode: string,
-  scopes: string[],
+  scopes: TwitchAuthState['scopes'],
 }
 
-export interface TwitchApiGetTokensErrorResponse {
-  status: 400,
-  message: 'authorization_pending' | 'invalid device code' | 'Invalid refresh token',
-};
-
-export interface TwitchApiGetTokensSuccessResponse {
+export interface TwitchApiGetTokensResponse {
   access_token: string,
   expires_in: number,
   refresh_token: string,
@@ -21,8 +18,8 @@ export interface TwitchApiGetTokensSuccessResponse {
 
 export const { useLazyGetTokensQuery } = twitchApi.injectEndpoints({
   endpoints: (build) => ({
-    getTokens: build.query<TwitchApiGetTokensSuccessResponse | TwitchApiGetTokensErrorResponse, TwitchApiGetTokensRequest>({
-      query: ({ clientId, deviceCode, scopes }, ) => ({
+    getTokens: build.query<TwitchApiGetTokensResponse, TwitchApiGetTokensRequest>({
+      query: ({ clientId, deviceCode, scopes }) => ({
         body: new URLSearchParams({
           client_id: clientId,
           device_code: deviceCode,

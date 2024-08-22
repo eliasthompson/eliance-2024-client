@@ -5,7 +5,7 @@ export interface TwitchApiGetDeviceCodeRequest {
   scopes: string[],
 }
 
-export interface TwitchApiGetDeviceCodeSuccessResponse {
+export interface TwitchApiGetDeviceCodeResponse {
   device_code: string,
   expires_in: number,
   interval: number,
@@ -15,7 +15,7 @@ export interface TwitchApiGetDeviceCodeSuccessResponse {
 
 export const { useGetDeviceCodeQuery } = twitchApi.injectEndpoints({
   endpoints: (build) => ({
-    getDeviceCode: build.query<TwitchApiGetDeviceCodeSuccessResponse, TwitchApiGetDeviceCodeRequest>({
+    getDeviceCode: build.query<TwitchApiGetDeviceCodeResponse, TwitchApiGetDeviceCodeRequest>({
       query: ({ clientId, scopes }) => ({
         body: new URLSearchParams({
           client_id: clientId,

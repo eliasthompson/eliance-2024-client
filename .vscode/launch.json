@@ -5,9 +5,10 @@
       "name": "Launch via Chrome",
       "request": "launch",
       "type": "chrome",
-      "url": "http://localhost:8080?logins=eliasthompson",
+      "url": "http://localhost:8080",
       "webRoot": "${workspaceFolder}",
-      "preLaunchTask": "npm: start",
+      "preLaunchTask": "npm start",
+      "postDebugTask": "npm stop",
       "runtimeArgs": ["--auto-open-devtools-for-tabs"]
     }
   ]

@@ -6,7 +6,7 @@ export interface TwitchApiGetUserEmotesRequest {
   userId: string,
 }
 
-export interface TwitchApiGetUserEmotesSuccessResponse {
+export interface TwitchApiGetUserEmotesResponse {
   data: {
     emote_set_id: string,
     emote_type: ('none' | 'bitstier' | 'follower' | 'subscriptions' | 'channelpoints' | 'rewards' | 'hypetrain' | 'prime' | 'turbo' | 'smilies' | 'globals' | 'owl2019' | 'twofactor' | 'limitedtime')[],
@@ -27,7 +27,7 @@ export const { useLazyGetUserEmotesQuery } = twitchApi.enhanceEndpoints({
   addTagTypes: ['USER_EMOTE_DATA'],
 }).injectEndpoints({
   endpoints: (build) => ({
-    getUserEmotes: build.query<TwitchApiGetUserEmotesSuccessResponse, TwitchApiGetUserEmotesRequest>({
+    getUserEmotes: build.query<TwitchApiGetUserEmotesResponse, TwitchApiGetUserEmotesRequest>({
       query: ({ after, broadcasterId, userId }) => ({
         method: 'GET',
         url: `/chat/emotes/user?user_id=${userId}${(broadcasterId) ? `&broadcaster_id=${broadcasterId}` : ''}${(after) ? `&after=${after}` : ''}`,

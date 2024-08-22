@@ -6,13 +6,7 @@ import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 
 import { setTwitchAuth } from '@store/slices/twitchAuth';
 
-export interface TwitchAuthTokenErrorResponse {
-  error: string,
-  status: number,
-  message: string,
-};
-
-export interface TwitchAuthTokenSuccessResponse {
+export interface TwitchApiRefreshTokenResponse {
   access_token: string,
   refresh_token: string,
   scope: string[],
@@ -27,7 +21,7 @@ export const baseQuery = fetchBaseQuery({
       const { twitchAuth: { accessToken, clientId } } = api.getState() as RootState;
 
       if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
-      if (clientId) headers.set('Client-Id', clientId);
+      if (clientId && api.endpoint !== 'validateToken') headers.set('Client-Id', clientId);
     }
 
     return headers;
@@ -56,9 +50,9 @@ export const fetchRefreshedBaseQuery: BaseQueryFn<string | FetchArgs, unknown, F
             },
             method: 'POST',
             url: 'https://id.twitch.tv/oauth2/token',
-          }, { ...api, endpoint: 'getRefreshedToken' }, extraOptions) as { data: TwitchAuthTokenSuccessResponse | TwitchAuthTokenErrorResponse };
+          }, { ...api, endpoint: 'getRefreshedToken' }, extraOptions) as { data: TwitchApiRefreshTokenResponse };
       
-          if (data && 'access_token' in data) {
+          if (data) {
             const { access_token: accessToken, refresh_token: refreshToken } = data
             api.dispatch(setTwitchAuth({ accessToken, refreshToken }));
             result = await baseQuery(args, api, extraOptions);

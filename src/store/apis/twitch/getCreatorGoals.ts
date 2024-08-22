@@ -4,7 +4,7 @@ export interface TwitchApiGetCreatorGoalsRequest {
   broadcasterId: string,
 }
 
-export interface TwitchApiGetCreatorGoalsSuccessResponse {
+export interface TwitchApiGetCreatorGoalsResponse {
   data: {
     id: string,
     broadcaster_id: number,
@@ -22,7 +22,7 @@ export const { useLazyGetCreatorGoalsQuery } = twitchApi.enhanceEndpoints({
   addTagTypes: ['GOAL_DATA'],
 }).injectEndpoints({
   endpoints: (build) => ({
-    getCreatorGoals: build.query<TwitchApiGetCreatorGoalsSuccessResponse, TwitchApiGetCreatorGoalsRequest>({
+    getCreatorGoals: build.query<TwitchApiGetCreatorGoalsResponse, TwitchApiGetCreatorGoalsRequest>({
       query: ({ broadcasterId }) => ({
         method: 'GET',
         url: `/goals?broadcaster_id=${broadcasterId}`,
