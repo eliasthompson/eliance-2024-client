@@ -16,9 +16,9 @@ export interface TwitchApiCreateEventSubSubscriptionSuccessResponse {
   }[],
 }
 
-export const { useCreateEventSubSubscriptionMutation } = twitchApi.injectEndpoints({
+export const { useCreateEventSubSubscriptionQuery } = twitchApi.injectEndpoints({
   endpoints: (build) => ({
-    createEventSubSubscription: build.mutation<TwitchApiCreateEventSubSubscriptionSuccessResponse, TwitchApiCreateEventSubSubscriptionRequest>({
+    createEventSubSubscription: build.query<TwitchApiCreateEventSubSubscriptionSuccessResponse, TwitchApiCreateEventSubSubscriptionRequest>({
       query: ({ broadcasterId, sessionId, type, version }) => ({
         body: {
           type,

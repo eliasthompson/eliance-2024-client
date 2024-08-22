@@ -23,11 +23,9 @@ export interface TwitchApiGetUserEmotesSuccessResponse {
   },
 }
 
-const twitchApiWithTags = twitchApi.enhanceEndpoints({
+export const { useLazyGetUserEmotesQuery } = twitchApi.enhanceEndpoints({
   addTagTypes: ['USER_EMOTE_DATA'],
-});
-
-export const { useLazyGetUserEmotesQuery } = twitchApiWithTags.injectEndpoints({
+}).injectEndpoints({
   endpoints: (build) => ({
     getUserEmotes: build.query<TwitchApiGetUserEmotesSuccessResponse, TwitchApiGetUserEmotesRequest>({
       query: ({ after, broadcasterId, userId }) => ({
@@ -38,13 +36,6 @@ export const { useLazyGetUserEmotesQuery } = twitchApiWithTags.injectEndpoints({
         if (result) return [{ type: 'USER_EMOTE_DATA', id: userId }];
         if (error?.status === 401) return ['UNAUTHORIZED'];
         return [];
-      },
-      // Refetch when the page arg changes
-      forceRefetch: ({ currentArg, previousArg }) => {
-        console.log('currentArg', currentArg);
-        console.log('previousArg', previousArg);
-        // return currentArg !== previousArg;
-        return false;
       },
     }),
   })

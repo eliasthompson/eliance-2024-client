@@ -9,11 +9,9 @@ export interface TwitchApiGetSubscriptionsSuccessResponse {
   total: number,
 }
 
-const twitchApiWithTags = twitchApi.enhanceEndpoints({
+export const { useGetSubscriptionsQuery } = twitchApi.enhanceEndpoints({
   addTagTypes: ['SUBSCRIPTION_DATA'],
-});
-
-export const { useGetSubscriptionsQuery } = twitchApiWithTags.injectEndpoints({
+}).injectEndpoints({
   endpoints: (build) => ({
     getSubscriptions: build.query<TwitchApiGetSubscriptionsSuccessResponse, TwitchApiGetSubscriptionsRequest>({
       query: ({ broadcasterId }) => ({

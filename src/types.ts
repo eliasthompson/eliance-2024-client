@@ -21,7 +21,7 @@ export interface TwitchEventSubKeepaliveMessage {
     message_type: 'session_keepalive',
     message_timestamp: string,
   },
-  payload: {},
+  payload: object,
 };
 
 export interface TwitchEventSubNotificationMessage {

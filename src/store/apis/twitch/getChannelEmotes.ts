@@ -23,11 +23,9 @@ export interface TwitchApiGetChannelEmotesSuccessResponse {
   template: string,
 }
 
-const twitchApiWithTags = twitchApi.enhanceEndpoints({
+export const { useLazyGetChannelEmotesQuery } = twitchApi.enhanceEndpoints({
   addTagTypes: ['CHANNEL_EMOTE_DATA'],
-});
-
-export const { useLazyGetChannelEmotesQuery } = twitchApiWithTags.injectEndpoints({
+}).injectEndpoints({
   endpoints: (build) => ({
     getChannelEmotes: build.query<TwitchApiGetChannelEmotesSuccessResponse, TwitchApiGetChannelEmotesRequest>({
       query: ({ broadcasterId }) => ({

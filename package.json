@@ -10,7 +10,7 @@
     "eslint": "eslint --config config/eslint.js",
     "prebuild": "eslint --config config/eslint.js && tsc",
     "build": "webpack --config config/webpack.js --mode production",
-    "start": "webpack serve --config config/webpack.js --open",
+    "start": "webpack serve --config config/webpack.js",
     "test": "test",
     "tscheck": "tsc"
   },

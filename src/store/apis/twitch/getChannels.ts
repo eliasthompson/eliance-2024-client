@@ -10,11 +10,9 @@ export interface TwitchApiGetChannelsSuccessResponse {
   }[],
 }
 
-const twitchApiWithTags = twitchApi.enhanceEndpoints({
+export const { useGetChannelsQuery } = twitchApi.enhanceEndpoints({
   addTagTypes: ['CHANNEL_DATA'],
-});
-
-export const { useGetChannelsQuery } = twitchApiWithTags.injectEndpoints({
+}).injectEndpoints({
   endpoints: (build) => ({
     getChannels: build.query<TwitchApiGetChannelsSuccessResponse, TwitchApiGetChannelsRequest>({
       query: ({ broadcasterIds }) => ({

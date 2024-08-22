@@ -4,7 +4,7 @@ import robotoLight from '@fonts/Roboto-Light.ttf';
 import robotoRegular from '@fonts/Roboto-Regular.ttf';
 import robotoMedium from '@fonts/Roboto-Medium.ttf';
 
-export const GlobalStyle = createGlobalStyle<{ $whiteColor?: boolean; }>`
+export const GlobalStyle = createGlobalStyle`
     @font-face {
       font-family: 'Roboto';
       font-style: normal;

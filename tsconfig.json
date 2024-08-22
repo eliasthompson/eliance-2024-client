@@ -1,5 +1,5 @@
 {
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "public/fonts"],
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
@@ -9,14 +9,12 @@
     "moduleResolution": "node",
     "noEmit": true,
     "paths": {
-      "@components": ["src/components"],
       "@components/*": ["src/components/*"],
-      "@fonts": ["public/fonts"],
       "@fonts/*": ["public/fonts/*"],
+      "@src": ["src"],
+      "@src/*": ["src/*"],
       "@store": ["src/store"],
-      "@store/*": ["src/store/*"],
-      "@types": ["types"],
-      "@types/*": ["types/*"]
+      "@store/*": ["src/store/*"]
     },
     "target": "ES2022"
   }

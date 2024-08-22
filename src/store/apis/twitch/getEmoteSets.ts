@@ -22,11 +22,9 @@ export interface TwitchApiGetEmoteSetsSuccessResponse {
   template: string,
 }
 
-const twitchApiWithTags = twitchApi.enhanceEndpoints({
+export const { useLazyGetEmoteSetsQuery } = twitchApi.enhanceEndpoints({
   addTagTypes: ['EMOTE_SET_DATA'],
-});
-
-export const { useLazyGetEmoteSetsQuery } = twitchApiWithTags.injectEndpoints({
+}).injectEndpoints({
   endpoints: (build) => ({
     getEmoteSets: build.query<TwitchApiGetEmoteSetsSuccessResponse, TwitchApiGetEmoteSetsRequest>({
       query: ({ emoteSetIds }) => ({
