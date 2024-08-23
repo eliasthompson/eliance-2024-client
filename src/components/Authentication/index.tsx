@@ -1,6 +1,9 @@
 import { useCallback } from 'react';
+import { MdContentCopy, MdOpenInNew } from 'react-icons/md';
 
+import { FlexContainer } from '@components/shared/FlexContainer';
 import { TwitchButton } from '@components/shared/TwitchButton';
+import { TwitchInput } from '@components/shared/TwitchInput';
 import { setTwitchAuth } from '@store/slices/twitchAuth';
 import { twitchApiUtil } from '@store/apis/twitch';
 import { useDispatch, useSelector } from '@store/hooks';
@@ -20,39 +23,46 @@ export const Authentication = () => {
       dispatch(twitchApiUtil.invalidateTags(['UNAUTHORIZED']));
     }
   }, [clientId, deviceCodeData, getTokensQuery, scopes]);
-  const handleCopyClick = useCallback(async () => {
-    navigator.clipboard.writeText(deviceCodeData.verification_uri);
-  }, [deviceCodeData]);
+  const handleCopyClick = useCallback(() => {
+    const inputElement = document.getElementById('verification-url-input');
+
+    if (inputElement) {
+      let range = document.createRange();
+      range.selectNode(inputElement);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      document.execCommand('copy');
+    }
+  }, []);
+  const isRenderable = (
+    !isDeviceCodeLoading
+    && !deviceCodeError
+    && deviceCodeData
+  );
 
   // Render nothing if data is loading or errors unexpectedly
-  if (isDeviceCodeLoading || deviceCodeError) return null;
+  if (!isRenderable) return null;
 
-  // Render auth buttons when device code data exists
+  // Prep render of grant button
+  let verifyActions = (
+    <TwitchButton as="a" href={ deviceCodeData.verification_uri } target="_blank" variant="secondary">Grant&nbsp;<MdOpenInNew /></TwitchButton>
+  );
+
+  // Prep render of input and copy button if we're in obs
+  if (window.obsstudio) {
+    verifyActions= (
+      <FlexContainer>
+        <TwitchInput id="verification-url-input" attach="right" readOnly value={ deviceCodeData.verification_uri } />
+        <TwitchButton onClick={ handleCopyClick } attach="left" variant="secondary"><MdContentCopy /></TwitchButton>
+      </FlexContainer>
+    );
+  }
+
+  // Render component
   return (
-    <div>
-      <TwitchButton onClick={ handleCopyClick } $variant="secondary">
-        <div>
-          <div>
-            Copy
-          </div>
-        </div>
-      </TwitchButton>
-
-      <TwitchButton as="a" href={ deviceCodeData.verification_uri } target="_blank" $variant="secondary">
-        <div>
-          <div>
-            Grant
-          </div>
-        </div>
-      </TwitchButton>
-
-      <TwitchButton onClick={ handleAuthenticateClick }>
-        <div>
-          <div>
-            Authenticate
-          </div>
-        </div>
-      </TwitchButton>
-    </div>
+    <FlexContainer gap="1rem">
+      { verifyActions }
+      <TwitchButton onClick={ handleAuthenticateClick }>Authenticate</TwitchButton>
+    </FlexContainer>
   );
 };

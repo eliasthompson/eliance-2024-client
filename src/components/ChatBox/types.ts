@@ -1,5 +1,8 @@
-import type { ReactNode } from 'react';
-
+import type { TwitchApiGetChannelChatBadgesResponse } from '@store/apis/twitch/getChannelChatBadges';
+import type { TwitchApiGetChannelEmotesResponse } from '@store/apis/twitch/getChannelEmotes';
+import type { TwitchApiGetEmoteSetsResponse } from '@store/apis/twitch/getEmoteSets';
+import type { TwitchApiGetGlobalChatBadgesResponse } from '@store/apis/twitch/getGlobalChatBadges';
+import type { TwitchApiGetGlobalEmotesResponse } from '@store/apis/twitch/getGlobalEmotes';
 import type { TwitchEventSubMessage, TwitchEventSubNotificationMessage } from '@src/types'
 
 export interface TwitchEventSubChannelChatMessageNotificationMessage extends TwitchEventSubNotificationMessage {
@@ -87,4 +90,9 @@ export interface TwitchEventSubChannelChatMessageRevocationMessage extends Twitc
 };
 
 export type TwitchEventSubChatBoxMessage = TwitchEventSubMessage | TwitchEventSubChannelChatMessageNotificationMessage | TwitchEventSubChannelChatMessageRevocationMessage;
-export type ChatBoxChat = TwitchEventSubChannelChatMessageNotificationMessage['payload']['event'] & { messageJsx: ReactNode | ReactNode[] };
+export type TwitchChatBoxBadge = (TwitchApiGetChannelChatBadgesResponse['data'][number]['versions'][number] | TwitchApiGetGlobalChatBadgesResponse['data'][number]['versions'][number]) & (
+  Pick<TwitchApiGetChannelChatBadgesResponse['data'][number], 'set_id'> | Pick<TwitchApiGetGlobalChatBadgesResponse['data'][number], 'set_id'>
+);
+export type TwitchChatBoxEmote = (TwitchApiGetGlobalEmotesResponse['data'][number] | TwitchApiGetChannelEmotesResponse['data'][number] | TwitchApiGetEmoteSetsResponse['data'][number]) & {
+  url?: string,
+};

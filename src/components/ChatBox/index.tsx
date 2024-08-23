@@ -1,17 +1,20 @@
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import type { ReactNode } from 'react';
 
 import useWebSocket from 'react-use-websocket';
 import { Fragment, useEffect, useState } from 'react';
 
-import type { ChatBoxChat, TwitchEventSubChatBoxMessage } from '@components/ChatBox/types';
+import type { TwitchChatBoxBadge, TwitchChatBoxEmote, TwitchEventSubChatBoxMessage } from '@components/ChatBox/types';
 import type { TwitchApiErrorResponse } from '@store/apis/twitch';
 
 import { addTwitchEventSubMessageId } from '@store/slices/twitchEventSub';
 import { useDispatch, useSelector } from '@store/hooks';
 import { useCreateEventSubSubscriptionQuery } from '@store/apis/twitch/createEventSubSubscription';
-import { useLazyGetChannelEmotesQuery } from '@store/apis/twitch/getChannelEmotes';
+import { useGetChannelChatBadgesQuery } from '@store/apis/twitch/getChannelChatBadges';
+import { useGetChannelEmotesQuery } from '@store/apis/twitch/getChannelEmotes';
+import { useGetGlobalChatBadgesQuery } from '@store/apis/twitch/getGlobalChatBadges';
+import { useGetGlobalEmotesQuery } from '@store/apis/twitch/getGlobalEmotes';
 import { useLazyGetEmoteSetsQuery } from '@store/apis/twitch/getEmoteSets';
-import { useLazyGetGlobalEmotesQuery } from '@store/apis/twitch/getGlobalEmotes';
 
 export const ChatBox = () => {
   const dispatch = useDispatch();
@@ -19,34 +22,60 @@ export const ChatBox = () => {
   const { user } = useSelector(({ twitchInfo }) => twitchInfo);
   const { messageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
   const { error: eventSubSubscriptionError, isLoading: isEventSubSubscriptionLoading } = useCreateEventSubSubscriptionQuery({ broadcasterId: user.id, sessionId, type: 'channel.chat.message', version: 1 });
-  const [getChannelEmotesQuery] = useLazyGetChannelEmotesQuery();
+  const { data: channelChatBadgesData, error: channelChatBadgesError, isLoading: isChannelChatBadgesLoading } = useGetChannelChatBadgesQuery({ broadcasterId: user.id });
+  const { data: channelEmotesData, error: channelEmotesError, isLoading: isChannelEmotesLoading } = useGetChannelEmotesQuery({ broadcasterId: user.id });
+  const { data: globalChatBadgesData, error: globalChatBadgesError, isLoading: isGlobalChatBadgesLoading } = useGetGlobalChatBadgesQuery();
+  const { data: globalEmotesData, error: globalEmotesError, isLoading: isGlobalEmotesLoading } = useGetGlobalEmotesQuery();
   const [getEmoteSetsQuery] = useLazyGetEmoteSetsQuery();
-  const [getGloablEmotesQuery] = useLazyGetGlobalEmotesQuery();
-  const [chats, setChats] = useState<ChatBoxChat[]>([]);
+  const [chatMessages, setChatMessages] = useState<ReactNode[]>([]);
+  const isError = (
+    eventSubSubscriptionError
+    || channelChatBadgesError
+    || channelEmotesError
+    || globalChatBadgesError
+    || globalEmotesError
+  );
+  const isLoading = (
+    isEventSubSubscriptionLoading
+    || isChannelChatBadgesLoading
+    || isChannelEmotesLoading
+    || isGlobalChatBadgesLoading
+    || isGlobalEmotesLoading
+  );
+  const isRenderable = (
+    !isLoading
+    && !isError
+    && channelChatBadgesData
+    && channelEmotesData
+    && globalChatBadgesData
+    && globalEmotesData
+  );
 
   // Update chats on new channel chat message notification 
   useEffect(() => {
-    if (newMessage) {
+    if (isRenderable && newMessage) {
       const { metadata, payload } = newMessage;
       const { message_id: messageId, message_type: messageType } = metadata;
 
-      if (!messageIds.includes(messageId) && messageType === 'notification' && 'subscription_type' in metadata && 'event' in payload) {
+      if (!messageIds.includes(messageId) && messageType === 'notification' && 'subscription_type' in metadata) {
         const { subscription_type: subscriptionType } = metadata;
-        const { event } = payload;
 
-        if (subscriptionType === 'channel.chat.message') {
+        if (subscriptionType === 'channel.chat.message' && 'event' in payload) {
           (async () => {
-            const emoteFragments = event.message.fragments.filter(({ type }) => type === 'emote').map(({ emote }) => emote);
-            let emotes = [];
+            const { event } = payload;
+            const { badges: messageBadges, message } = event;
+            const { fragments } = message;
+            const messageEmotes = fragments.filter(({ type }) => type === 'emote').map(({ emote }) => emote);
+            let badges: TwitchChatBoxBadge[] = [...globalChatBadgesData.data, ...channelChatBadgesData.data].reduce((acc: TwitchChatBoxBadge[], { set_id: setId, versions }) => [
+              ...acc,
+              ...versions.map((version) => ({ ...version, set_id: setId })),
+            ], []);
+            let emotes: TwitchChatBoxEmote[] = [];
 
-            if (emoteFragments.length) {
-              const emoteIds = emoteFragments.map(({ id }) => id);
-              const emoteSetIds = emoteFragments.map(({ emote_set_id: emoteSetId }) => emoteSetId);
-              const [{ data: globalEmotesData }, { data: channelEmotesData }, { data: emoteSetsData }] = await Promise.all([
-                getGloablEmotesQuery(),
-                getChannelEmotesQuery({ broadcasterId: user.id }),
-                getEmoteSetsQuery({ emoteSetIds }),
-              ]);
+            if (messageEmotes.length) {
+              const emoteIds = messageEmotes.map(({ id }) => id);
+              const emoteSetIds = messageEmotes.map(({ emote_set_id: emoteSetId }) => emoteSetId);
+              const { data: emoteSetsData } = await getEmoteSetsQuery({ emoteSetIds });
               const emotesData = [...globalEmotesData.data, ...channelEmotesData.data, ...emoteSetsData.data];
               const { template } = globalEmotesData;
 
@@ -58,30 +87,43 @@ export const ChatBox = () => {
               });
             }
 
-            const messageJsx = (
-              <Fragment>
+            const chatMessage = (
+              <p>
                 { 
-                  event.message.fragments.map((fragment, i) => {
-                    const style = (fragment.type === 'mention') ? { fontWeight: 'bold' } : {};
-                    const { url } = emotes.find((emote) => emote.id === fragment.emote?.id) || {};
+                  messageBadges.map((messageBadge, i) => {
+                    const { image_url_4x: imageUrl4x } = badges.find(({ id, set_id: setId }) => id === messageBadge.id && setId === messageBadge.set_id) || {};
 
-                    if (url) return <img key={ i } src={ url } />;
-                    return <span key={ i } style={ style }>{ fragment.text }</span>;
+                    if (imageUrl4x) return <img key={ i } src={ imageUrl4x } />;
+                    return null;
                   })
                 }
-              </Fragment>
+
+                <strong style={ { color: event.color || '#808080' } }>
+                  { event.chatter_user_name }
+                </strong>:&nbsp;
+
+                { 
+                  fragments.map((fragment, i) => {
+                    const { url } = emotes.find(({ id }) => id === fragment.emote?.id) || {};
+
+                    if (url) return <img key={ i } src={ url } />;
+                    if (fragment.type === 'mention') return <strong key={ i }>{ fragment.text }</strong>;
+                    return <span key={ i }>{ fragment.text }</span>;
+                  })
+                }
+              </p>
             )
 
-            setChats((prev) => [...prev, { ...event, messageJsx }]);
+            setChatMessages((prev) => [...prev, chatMessage]);
             dispatch(addTwitchEventSubMessageId(messageId));
           })();
         }
       }
     }
-  }, [dispatch, setChats, messageIds, newMessage, user.id]);
+  }, [channelChatBadgesData, channelEmotesData, dispatch, globalChatBadgesData, globalEmotesData, isRenderable, messageIds, newMessage, setChatMessages]);
 
-  // Render nothing if data is loading
-  if (isEventSubSubscriptionLoading) return null;
+  // Render nothing if data is incomplete
+  if (!isRenderable && !eventSubSubscriptionError) return null;
 
   // Render warning if data errors unexpectedly
   if (eventSubSubscriptionError && 'status' in eventSubSubscriptionError) {
@@ -91,15 +133,19 @@ export const ChatBox = () => {
     if ('error' in data) errorMessage += ` ${data.error}`;
     errorMessage += `: ${data.message}`;
 
-    return <p style={ { fontWeight: 'bold', color:'#ff0000' } }>{ errorMessage }</p>;
+    return (
+      <p style={ { fontWeight: 'bold', color:'#ff0000' } }>{ errorMessage }</p>
+    );
   };
 
   // Render component
   return (
-    <Fragment>
-      { chats.map((chat) => (
-        <p key={ chat.message_id }><span style={ { fontWeight: 'bold', color: chat.color || '#808080' } }>{ chat.chatter_user_name }</span>: { chat.messageJsx }</p>
+    <div>
+      { chatMessages.map((chatMessage, i) => (
+        <Fragment key={ i }>
+          { chatMessage }
+        </Fragment>
       )) }
-    </Fragment>
+    </div>
   );
 };

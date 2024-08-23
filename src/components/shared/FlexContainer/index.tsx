@@ -1,19 +1,34 @@
-import { styled } from 'styled-components';
+import type { HTMLAttributes } from 'react';
 
-export interface FlexContainerProps {
-  $column?: boolean,
-  $reverse?: boolean,
+import { css } from '@emotion/react';
+
+export interface FlexContainerProps extends HTMLAttributes<HTMLDivElement> {
+  column?: boolean,
+  gap?: string,
+  reverse?: boolean,
 };
 
-export const FlexContainer = styled.div<FlexContainerProps>`
-  display: flex;
-  flex-direction: ${({ $column, $reverse }) => {
-    if ($column) {
-      if ($reverse) return 'column-reverse';
-      return 'column';
-    }
+export const FlexContainer = ({ children, column, gap: providedGap, reverse, ...propsDiv }: FlexContainerProps) => {
+  const gap = (providedGap) ? css`gap: ${providedGap};` : '';
+  let flexDirection = 'row';
+  
+  if (reverse) flexDirection = 'row-reverse';
 
-    if ($reverse) return 'row-reverse';
-    return 'row';
-  }};
-`;
+  if (column) {
+    if (reverse) flexDirection = 'column-reverse';
+    flexDirection = 'column';
+  }
+
+  const cssDiv = css`
+    display: flex;
+    flex-direction: ${flexDirection};
+    ${gap}
+  `;
+
+  // Render component
+  return (
+    <div css={ cssDiv } { ...propsDiv }>
+      { children }
+    </div>
+  );
+};

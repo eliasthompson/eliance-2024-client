@@ -1,46 +1,83 @@
-import { styled } from 'styled-components';
+import type { ComponentPropsWithoutRef, HTMLAttributes, JSX } from 'react';
 
-interface TwitchButtonProps {
-  $variant?: string,
-};
+import { css } from '@emotion/react';
 
-export const TwitchButton = styled.button<TwitchButtonProps>`
-  cursor: pointer;
-  display: inline-flex;
-  position: relative;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-  overflow: hidden;
-  text-decoration: none;
-  white-space: nowrap;
-  user-select: none;
-  font-weight: 600;
-  font-size: 1.3rem;
-  height: 3rem;
-  border-radius: 0.4rem;
-  color: #ffffff;
-  background-color: ${({ $variant = 'primary' }) => ($variant === 'primary') ? '#9147ff' : 'transparent'};
-  
-  &:active {
-    background-color: ${({ $variant = 'primary' }) => ($variant === 'primary') ? '##5c16c5' : 'rgb(83 83 95 / 55%)'};
+type ValidTwitchButtonAsTags = keyof JSX.IntrinsicElements;
+
+export type TwitchButtonProps<Tag extends ValidTwitchButtonAsTags> = {
+  as?: Tag | ValidTwitchButtonAsTags;
+  attach?: 'top' | 'right' | 'bottom' | 'left',
+  variant?: string,
+} & (Omit<ComponentPropsWithoutRef<Tag>, 'type'> & HTMLAttributes<HTMLOrSVGElement>);
+
+export const defaultTwitchButtonAsValue = 'button' as const;
+
+export const TwitchButton = <Tag extends ValidTwitchButtonAsTags = typeof defaultTwitchButtonAsValue>({ as = defaultTwitchButtonAsValue, attach, children, variant, ...propsButton }: TwitchButtonProps<Tag>) => {
+  let backgroundColor = '#9147ff';
+  let backgroundColorActive = '#5c16c5';
+  let backgroundColorHover = '#772ce8';
+  let borderRadius = css`border-radius: 0.4rem;`;
+
+  if (attach === 'top') borderRadius = css`border-radius: 0 0 0.4rem 0.4rem;`;
+  else if (attach === 'right') borderRadius = css`border-radius: 0.4rem 0 0 0.4rem;`;
+  else if (attach === 'bottom') borderRadius = css`border-radius: 0.4rem 0.4rem 0 0;`;
+  else if (attach === 'left') borderRadius = css`border-radius: 0 0.4rem 0.4rem 0;`;
+
+  if (variant === 'secondary') {
+    backgroundColor = 'rgba(83, 83, 95, 0.38)';
+    backgroundColorActive = 'rgba(83, 83, 95, 0.48);';
+    backgroundColorHover = 'rgba(83, 83, 95, 0.55)';
   }
-  
-  &:hover {
-    background-color: ${({ $variant = 'primary' }) => ($variant === 'primary') ? '#772ce8' : 'rgb(83 83 95 / 48%)'};
-  }
 
-  div {
+  const cssButton = css`
+    cursor: pointer;
+    display: inline-flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    overflow: hidden;
+    text-decoration: none;
+    white-space: nowrap;
+    user-select: none;
+    font-weight: 600;
+    font-size: 1.3rem;
+    height: 3rem;
+    color: #ffffff;
+    background-color: ${backgroundColor};
+    flex: none;
+    ${borderRadius}
+    
+    &:active {
+      background-color: ${backgroundColorActive};
+    }
+    
+    &:hover {
+      background-color: ${backgroundColorHover};
+    }
+  `;
+  const cssDiv1 = css`
     display: flex;
     align-items: center;
     flex-grow: 0;
     padding: 0px 1rem;
+  `;
+  const cssDiv2 = css`
+    flex-grow: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+  `;
+  const Element: ValidTwitchButtonAsTags = as;
 
-    div {
-      flex-grow: 0 !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: flex-start !important;
-    }
-  }
-`;
+  // Render component
+  return (
+    <Element css={ cssButton } { ...propsButton }>
+      <div css={ cssDiv1 }>
+        <div css={ cssDiv2 }>
+          { children }
+        </div>
+      </div>
+    </Element>
+  );
+};

@@ -11,10 +11,10 @@
     "paths": {
       "@components/*": ["src/components/*"],
       "@fonts/*": ["public/fonts/*"],
-      "@src": ["src"],
-      "@src/*": ["src/*"],
       "@store": ["src/store"],
-      "@store/*": ["src/store/*"]
+      "@store/*": ["src/store/*"],
+      "@src": ["src"],
+      "@src/*": ["src/*"]
     },
     "target": "ES2022"
   }

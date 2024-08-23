@@ -1,17 +1,25 @@
-import { styled } from 'styled-components';
+import { css } from '@emotion/react';
+import { ImgHTMLAttributes } from 'react';
 
-export interface TwitchProfileImageProps {
-  $size: string,
+export interface TwitchProfileImageProps extends ImgHTMLAttributes<HTMLImageElement> {
+  size: string,
 };
 
-export const TwitchProfileImage = styled.img<TwitchProfileImageProps>`
-  position: relative;
-  width: ${({ $size }) => $size};
-  height: ${({ $size }) => $size};
-  border-radius: calc(${({ $size }) => $size} / 2);
-  filter: drop-shadow(0 0 calc(${({ $size }) => $size} / 10) #000000);
+export const TwitchProfileImage = ({ size, ...propsImg }: TwitchProfileImageProps) => {
+  const cssImg = css`
+    position: relative;
+    width: ${size};
+    height: ${size};
+    border-radius: calc(${size} / 2);
+    filter: drop-shadow(0 0 calc(${size} / 10) #000000);
 
-  &:not(:last-child) {
-    margin-left: calc(${({ $size }) => $size} * -0.8);
-  }
-`;
+    &:not(:last-child) {
+      margin-left: calc(${size} * -0.8);
+    }
+  `;
+
+  // Render component
+  return (
+    <img css={ cssImg } { ...propsImg } />
+  );
+};

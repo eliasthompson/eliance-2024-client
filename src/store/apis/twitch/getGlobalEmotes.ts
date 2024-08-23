@@ -16,7 +16,7 @@ export interface TwitchApiGetGlobalEmotesResponse {
   template: string,
 }
 
-export const { useLazyGetGlobalEmotesQuery } = twitchApi.enhanceEndpoints({
+export const { useGetGlobalEmotesQuery } = twitchApi.enhanceEndpoints({
   addTagTypes: ['GLOBAL_EMOTE_DATA'],
 }).injectEndpoints({
   endpoints: (build) => ({

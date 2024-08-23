@@ -1,13 +1,14 @@
 export default {
   plugins: [
-    'babel-plugin-styled-components',
+    '@emotion/babel-plugin',
   ],
   presets: [
     '@babel/preset-env',
     [
       '@babel/preset-react',
       {
-        'runtime': 'automatic',
+        runtime: 'automatic',
+        importSource: '@emotion/react',
       },
     ],
     '@babel/preset-typescript',

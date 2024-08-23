@@ -34,7 +34,6 @@ export const { useCreateEventSubSubscriptionQuery } = twitchApi.injectEndpoints(
         },
         method: 'POST',
         url: '/eventsub/subscriptions',
-        // url: 'http://localhost:8081/eventsub/subscription',
       }),
     }),
   })

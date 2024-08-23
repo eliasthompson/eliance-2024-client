@@ -17,6 +17,10 @@ export const { useValidateTokenQuery } = twitchApi.injectEndpoints({
         method: 'GET',
         url: 'https://id.twitch.tv/oauth2/validate',
       }),
+      providesTags: (result, error) => {
+        if (error?.status === 401) return ['UNAUTHORIZED'];
+        return [];
+      }
     }),
   })
 });

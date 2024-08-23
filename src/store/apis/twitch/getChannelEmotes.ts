@@ -23,7 +23,7 @@ export interface TwitchApiGetChannelEmotesResponse {
   template: string,
 }
 
-export const { useLazyGetChannelEmotesQuery } = twitchApi.enhanceEndpoints({
+export const { useGetChannelEmotesQuery } = twitchApi.enhanceEndpoints({
   addTagTypes: ['CHANNEL_EMOTE_DATA'],
 }).injectEndpoints({
   endpoints: (build) => ({

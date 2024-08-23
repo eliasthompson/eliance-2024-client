@@ -113,9 +113,9 @@ export const Container = () => {
   // Render component
   return (
     <Fragment>
-      <FlexContainer $reverse={ true }>
+      <FlexContainer reverse={ true }>
         { (streamers.length) ? streamers.slice().reverse().map((streamer) => (
-          <TwitchProfileImage key={ streamer.id } $size="100px" src={ streamer.profile_image_url } />
+          <TwitchProfileImage key={ streamer.id } size="100px" src={ streamer.profile_image_url } />
         )) : null }
       </FlexContainer>
 

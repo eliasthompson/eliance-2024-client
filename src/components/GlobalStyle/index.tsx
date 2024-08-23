@@ -1,10 +1,11 @@
-import { createGlobalStyle } from 'styled-components';
+import { Global, css } from '@emotion/react';
 
 import robotoLight from '@fonts/Roboto-Light.ttf';
 import robotoRegular from '@fonts/Roboto-Regular.ttf';
 import robotoMedium from '@fonts/Roboto-Medium.ttf';
 
-export const GlobalStyle = createGlobalStyle`
+export const GlobalStyle = () => {
+  const cssGlobal = css`
     @font-face {
       font-family: 'Roboto';
       font-style: normal;
@@ -72,4 +73,9 @@ export const GlobalStyle = createGlobalStyle`
       align-items: center;
       justify-content: center;
     }
-`
+`;
+
+  return (
+    <Global styles={ cssGlobal } />
+  );
+};
