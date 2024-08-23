@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
-import { fetchRefreshedBaseQuery } from '@store/apis/fetchRefreshedBaseQuery';
+import { fetchRefreshedBaseQuery } from '@store/apis/twitch/fetchRefreshedBaseQuery';
 
 export interface TwitchApiErrorResponse {
   error?: string,

@@ -5,6 +5,8 @@ import robotoRegular from '@fonts/Roboto-Regular.ttf';
 import robotoMedium from '@fonts/Roboto-Medium.ttf';
 
 export const GlobalStyle = () => {
+  const backgroundColor = (window.obsstudio) ? 'transparent' : '#121212';
+
   const cssGlobal = css`
     @font-face {
       font-family: 'Roboto';
@@ -49,7 +51,7 @@ export const GlobalStyle = () => {
     #root {
       overflow-x: hidden;
       height: 100%;
-      background-color: #121212;
+      background-color: ${backgroundColor};
     }
 
     body,
