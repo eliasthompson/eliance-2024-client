@@ -14,7 +14,7 @@ export interface TwitchApiGetUsersResponse {
     description: string,
     profile_image_url: string,
     offline_image_url: string,
-    email: string,
+    email: string | null,
     created_at: string,
   }[],
 }

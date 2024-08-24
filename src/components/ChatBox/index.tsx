@@ -19,7 +19,7 @@ import { useLazyGetEmoteSetsQuery } from '@store/apis/twitch/getEmoteSets';
 export const ChatBox = () => {
   const dispatch = useDispatch();
   const { lastJsonMessage: newMessage } = useWebSocket<TwitchEventSubChatBoxMessage>('wss://eventsub.wss.twitch.tv/ws', { share: true });
-  const { user } = useSelector(({ twitchInfo }) => twitchInfo);
+  const { user } = useSelector(({ info }) => info);
   const { messageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
   const { error: eventSubSubscriptionError, isLoading: isEventSubSubscriptionLoading } = useCreateEventSubSubscriptionQuery({ broadcasterId: user.id, sessionId, type: 'channel.chat.message', version: 1 });
   const { data: channelChatBadgesData, error: channelChatBadgesError, isLoading: isChannelChatBadgesLoading } = useGetChannelChatBadgesQuery({ broadcasterId: user.id });

@@ -17,7 +17,7 @@ export const { useGetChannelsQuery } = twitchApi.enhanceEndpoints({
     getChannels: build.query<TwitchApiGetChannelsResponse, TwitchApiGetChannelsRequest>({
       query: ({ broadcasterIds }) => ({
         method: 'GET',
-        url: `/channels?${broadcasterIds.map((broadcasterId, i) => (i) ? `&broadcaster_id=${broadcasterId}` : `broadcaster_id=${broadcasterId}`)}`,
+        url: `/channels?${broadcasterIds.map((broadcasterId) => `broadcaster_id=${broadcasterId}`).join('&')}`,
       }),
       providesTags: (result, error, { broadcasterIds }) => {
         if (result) return broadcasterIds.map((broadcasterId) => ({ type: 'CHANNEL_DATA', id: broadcasterId }));
