@@ -70,8 +70,7 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
       }
 
       <strong style={ { color: event.color || '#808080' } }>
-        { event.chatter_user_name }
-        { (pronouns) ? `(${pronouns.toLowerCase()})` : null }
+        { event.chatter_user_name }&nbsp;{ (pronouns) ? `(${pronouns.toLowerCase()})` : null }
       </strong>:&nbsp;
 
       { 
