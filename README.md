@@ -10,7 +10,6 @@
 - [ ] errors
 - [ ] design
 - [ ] right side??
-- [ ] BUG: chat messages with multiple channel emotes
 - [ ] figure out bits in messages
 
 ### Guest/User Data Flow

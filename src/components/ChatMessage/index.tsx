@@ -13,22 +13,16 @@ import { useSelector } from '@store';
 
 export const ChatMessage = ({ event }: ChatMessageProps) => {
   const { badges: messageBadges, message: { fragments } } = event;
-  const messageEmotes = fragments.filter(({ type }) => type === 'emote').map(({ emote }) => emote);
-  const emoteSetIds = messageEmotes.map(({ emote_set_id: emoteSetId }) => emoteSetId);
   console.log(fragments);
 
   const { broadcasterId } = useSelector(({ info }) => info);
   const { data: channelChatBadgesData, error: channelChatBadgesError, isLoading: isChannelChatBadgesLoading } = useGetChannelChatBadgesQuery({ broadcasterId });
-  const { data: channelEmotesData, error: channelEmotesError, isLoading: isChannelEmotesLoading } = useGetChannelEmotesQuery({ broadcasterId });
-  const { data: emoteSetsData, error: emoteSetsError, isLoading: isEmoteSetsLoading } = useGetEmoteSetsQuery({ emoteSetIds }, { skip: !emoteSetIds.length });
   const { data: globalChatBadgesData, error: globalChatBadgesError, isLoading: isGlobalChatBadgesLoading } = useGetGlobalChatBadgesQuery();
   const { data: globalEmotesData, error: globalEmotesError, isLoading: isGlobalEmotesLoading } = useGetGlobalEmotesQuery();
   const { data: pronounsData, error: pronounsError, isLoading: isPronounsLoading } = useGetPronounsQuery();
   const { data: userData, error: userError, isLoading: isUserLoading } = useGetUserQuery({ login: event.chatter_user_login });
   const isLoading = (
     isChannelChatBadgesLoading
-    || isChannelEmotesLoading
-    || isEmoteSetsLoading
     || isGlobalChatBadgesLoading
     || isGlobalEmotesLoading
     || isPronounsLoading
@@ -36,8 +30,6 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
   );
   const isRenderable = !!(
     channelChatBadgesData
-    && channelEmotesData
-    && (emoteSetsData || !emoteSetIds.length)
     && globalChatBadgesData
     && globalEmotesData
     && pronounsData
@@ -47,16 +39,15 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
     color: #ff0000;
   `;
 
-  const { template } = globalEmotesData || {};
+  const { template = '' } = globalEmotesData || {};
   const badgesData = [...((globalChatBadgesData || {}).data || []), ...((channelChatBadgesData || {}).data || [])];
-  const emotesData = [...((globalEmotesData || {}).data || []), ...((channelEmotesData || {}).data || []), ...((emoteSetsData || {}).data || [])];
-  const emoteIds = messageEmotes.map(({ id }) => id);
+  const messageEmotes = fragments.filter(({ type }) => type === 'emote').map(({ emote }) => emote);
   const pronouns = ((pronounsData || []).find(({ name }) => name === (userData || [{}])[0].pronoun_id) || {}).display;
   const badges = badgesData.reduce((acc: TwitchChatBoxBadge[], { set_id: setId, versions }) => [
     ...acc,
     ...versions.map((version) => ({ ...version, set_id: setId })),
   ], []);
-  const emotes = emotesData.filter(({ id }) => emoteIds.includes(id)).map((emote) => {
+  const emotes = messageEmotes.map((emote) => {
     const format = (emote.format.includes('animated')) ? 'animated' : 'static';
     const url = template.replace('{{id}}', emote.id).replace('{{format}}', format).replace('{{theme_mode}}', 'dark').replace('{{scale}}', '3.0');
 
