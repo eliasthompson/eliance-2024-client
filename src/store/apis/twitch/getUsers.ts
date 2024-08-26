@@ -1,7 +1,7 @@
 import { twitchApi } from '.';
 
 export interface TwitchApiGetUsersRequest {
-  logins: string[],
+  ids: string[],
 }
 
 export interface TwitchApiGetUsersResponse {
@@ -24,12 +24,12 @@ export const { useLazyGetUsersQuery } = twitchApi.enhanceEndpoints({
 }).injectEndpoints({
   endpoints: (build) => ({
     getUsers: build.query<TwitchApiGetUsersResponse, TwitchApiGetUsersRequest>({
-      query: ({ logins }) => ({
+      query: ({ ids }) => ({
         method: 'GET',
-        url: `/users?${logins.map((login) => `login=${login}`).join('&')}`,
+        url: `/users?${ids.map((id) => `id=${id}`).join('&')}`,
       }),
-      providesTags: (result, error, { logins }) => {
-        if (result) return logins.map((login) => ({ type: 'USER_DATA', id: login }));
+      providesTags: (result, error, { ids }) => {
+        if (result) return ids.map((id) => ({ type: 'USER_DATA', id }));
         if (error?.status === 401) return ['UNAUTHORIZED'];
         return [];
       }

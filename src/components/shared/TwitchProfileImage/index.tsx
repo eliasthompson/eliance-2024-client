@@ -1,9 +1,6 @@
 import { css } from '@emotion/react';
-import { ImgHTMLAttributes } from 'react';
 
-export interface TwitchProfileImageProps extends ImgHTMLAttributes<HTMLImageElement> {
-  size: string,
-};
+import type { TwitchProfileImageProps } from '@components/shared/TwitchProfileImage/types';
 
 export const TwitchProfileImage = ({ size, ...propsImg }: TwitchProfileImageProps) => {
   const cssImg = css`

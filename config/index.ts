@@ -1,0 +1,41 @@
+const urlParams = new URLSearchParams(window.location.search);
+
+export const clientId = urlParams.get('clientId') || 'rauupizoywti00mgyshjkvewuvlepx';
+export const customRoleId = urlParams.get('customRoleId') || '805d6510-9e0a-11ee-a7ad-09ce7f9a4a71';
+export const namespace = urlParams.get('namespace') || 'c8ca632e-9553-4f40-a631-260abdf16be3';
+export const scopes = (urlParams.get('scopes')) ? urlParams.get('scopes').split(',') : [
+  'bits:read',
+  'channel:bot',
+  'channel:read:ads',
+  'channel:read:charity',
+  'channel:read:editors',
+  'channel:read:goals',
+  'channel:read:guest_star',
+  'channel:read:hype_train',
+  'channel:read:polls',
+  'channel:read:predictions',
+  'channel:read:redemptions',
+  'channel:read:subscriptions',
+  'channel:read:vips',
+  'moderation:read',
+  'moderator:read:automod_settings',
+  'moderator:read:chat_messages',
+  'moderator:read:chat_settings',
+  'moderator:read:chatters',
+  'moderator:read:followers',
+  'moderator:read:guest_star',
+  'moderator:read:shield_mode',
+  'moderator:read:shoutouts',
+  'moderator:read:suspicious_users',
+  'moderator:read:unban_requests',
+  'moderator:read:warnings',
+  'user:read:broadcast',
+  'user:read:chat',
+  'user:read:emotes',
+  'user:read:follows',
+  'user:read:moderated_channels',
+  'user:read:subscriptions',
+  'user:read:whispers',
+  'chat:read',
+  'whispers:read',
+];

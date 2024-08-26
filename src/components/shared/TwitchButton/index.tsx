@@ -1,18 +1,10 @@
-import type { ComponentPropsWithoutRef, HTMLAttributes, JSX } from 'react';
-
 import { css } from '@emotion/react';
 
-type ValidTwitchButtonAsTags = keyof JSX.IntrinsicElements;
-
-export type TwitchButtonProps<Tag extends ValidTwitchButtonAsTags> = {
-  as?: Tag | ValidTwitchButtonAsTags;
-  attach?: 'top' | 'right' | 'bottom' | 'left',
-  variant?: string,
-} & (Omit<ComponentPropsWithoutRef<Tag>, 'type'> & HTMLAttributes<HTMLOrSVGElement>);
+import type { TwitchButtonProps, TwitchButtonValidTags } from '@components/shared/TwitchButton/types';
 
 export const defaultTwitchButtonAsValue = 'button' as const;
 
-export const TwitchButton = <Tag extends ValidTwitchButtonAsTags = typeof defaultTwitchButtonAsValue>({ as = defaultTwitchButtonAsValue, attach, children, variant, ...propsButton }: TwitchButtonProps<Tag>) => {
+export const TwitchButton = <Tag extends TwitchButtonValidTags = typeof defaultTwitchButtonAsValue>({ as = defaultTwitchButtonAsValue, attach, children, variant, ...propsButton }: TwitchButtonProps<Tag>) => {
   let backgroundColor = '#9147ff';
   let backgroundColorActive = '#5c16c5';
   let backgroundColorHover = '#772ce8';
@@ -68,7 +60,7 @@ export const TwitchButton = <Tag extends ValidTwitchButtonAsTags = typeof defaul
     align-items: center !important;
     justify-content: flex-start !important;
   `;
-  const Element: ValidTwitchButtonAsTags = as;
+  const Element: TwitchButtonValidTags = as;
 
   // Render component
   return (

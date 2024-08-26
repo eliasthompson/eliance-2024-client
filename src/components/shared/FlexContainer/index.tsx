@@ -1,14 +1,8 @@
-import type { HTMLAttributes } from 'react';
-
 import { css } from '@emotion/react';
 
-export interface FlexContainerProps extends HTMLAttributes<HTMLDivElement> {
-  column?: boolean,
-  gap?: string,
-  reverse?: boolean,
-};
+import type { FlexContainerProps } from '@components/shared/FlexContainer/types';
 
-export const FlexContainer = ({ children, column, gap: providedGap, reverse, ...propsDiv }: FlexContainerProps) => {
+export const FlexContainer = ({ children, column, cssContainer: cssContainerProvided , gap: providedGap, reverse, ...propsDiv }: FlexContainerProps) => {
   const gap = (providedGap) ? css`gap: ${providedGap};` : '';
   let flexDirection = 'row';
   
@@ -23,6 +17,7 @@ export const FlexContainer = ({ children, column, gap: providedGap, reverse, ...
     display: flex;
     flex-direction: ${flexDirection};
     ${gap}
+    ${cssContainerProvided?.styles}
   `;
 
   // Render component

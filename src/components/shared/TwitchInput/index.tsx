@@ -1,10 +1,6 @@
-import type { InputHTMLAttributes } from 'react';
-
 import { css } from '@emotion/react';
 
-export interface TwitchInputProps extends InputHTMLAttributes<HTMLInputElement> {
-  attach?: 'top' | 'right' | 'bottom' | 'left',
-};
+import type { TwitchInputProps } from '@components/shared/TwitchInput/types';
 
 export const TwitchInput = ({ attach, ...propsInput }: TwitchInputProps) => {
   let borderRadius = css`border-radius: 0.4rem;`;

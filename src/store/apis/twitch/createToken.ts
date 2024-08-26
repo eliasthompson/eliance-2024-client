@@ -2,13 +2,13 @@ import type { TwitchAuthState } from '@store/slices/twitchAuth';
 
 import { twitchApi } from '.';
 
-export interface TwitchApiGetTokensRequest {
+export interface TwitchApiCreateTokenRequest {
   clientId: string,
   deviceCode: string,
   scopes: TwitchAuthState['scopes'],
 }
 
-export interface TwitchApiGetTokensResponse {
+export interface TwitchApiCreateTokenResponse {
   access_token: string,
   expires_in: number,
   refresh_token: string,
@@ -16,9 +16,9 @@ export interface TwitchApiGetTokensResponse {
   token_type: string,
 };
 
-export const { useLazyGetTokensQuery } = twitchApi.injectEndpoints({
+export const { useCreateTokenMutation } = twitchApi.injectEndpoints({
   endpoints: (build) => ({
-    getTokens: build.query<TwitchApiGetTokensResponse, TwitchApiGetTokensRequest>({
+    createToken: build.mutation<TwitchApiCreateTokenResponse, TwitchApiCreateTokenRequest>({
       query: ({ clientId, deviceCode, scopes }) => ({
         body: new URLSearchParams({
           client_id: clientId,

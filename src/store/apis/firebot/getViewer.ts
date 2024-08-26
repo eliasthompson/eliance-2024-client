@@ -1,5 +1,3 @@
-import type { FirebotApiErrorResponse } from '@store/apis/firebot';
-
 import { firebotApi } from '.';
 
 export interface FirebotApiGetViewerPayload {
@@ -40,7 +38,7 @@ export const { useLazyGetViewerQuery } = firebotApi.enhanceEndpoints({
   addTagTypes: ['VIEWER_DATA'],
 }).injectEndpoints({
   endpoints: (build) => ({
-    getViewer: build.query<FirebotApiGetViewerResponse | FirebotApiErrorResponse, FirebotApiGetViewerPayload>({
+    getViewer: build.query<FirebotApiGetViewerResponse, FirebotApiGetViewerPayload>({
       query: ({ userId }) => ({
         method: 'GET',
         url: `/viewers/${userId}`,

@@ -1,11 +1,14 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 
+import type { ErrorMessageProps } from '@components/shared/ErrorMessage/types';
 import type { TwitchApiGetCreatorGoalsResponse } from '@src/store/apis/twitch/getCreatorGoals';
 import type { TwitchApiGetUsersResponse } from '@store/apis/twitch/getUsers';
+import type { TwitchEventSubChannelChatMessageNotificationMessage } from '@components/ChatBox/types';
 
 import { createSlice } from '@reduxjs/toolkit';
 
 export type InfoUser = TwitchApiGetUsersResponse['data'][number] & {
+  active: boolean,
   color?: string,
   isLive?: boolean,
   isSharing?: boolean,
@@ -14,23 +17,37 @@ export type InfoUser = TwitchApiGetUsersResponse['data'][number] & {
 };
 
 export interface InfoState {
-  customRoleId: string,
+  broadcasterId: string | null,
+  broadcasterLogin: string | null,
+  chats: TwitchEventSubChannelChatMessageNotificationMessage['payload']['event'][],
+  errors: ErrorMessageProps['error'][],
   goal: TwitchApiGetCreatorGoalsResponse['data'][number] | null,
-  guests: InfoUser[],
-  user: InfoUser | null,
+  persons: InfoUser[],
 };
 
 export const initialInfoState: InfoState = {
-  customRoleId: '805d6510-9e0a-11ee-a7ad-09ce7f9a4a71',
+  broadcasterId: null,
+  broadcasterLogin: null,
+  chats: [],
+  errors: [],
   goal: null,
-  guests: [],
-  user: null,
+  persons: [],
 };
 
 export const infoSlice = createSlice({
   initialState: initialInfoState,
   name: 'info',
   reducers: {
+    addChat: (state, { payload }: PayloadAction<TwitchEventSubChannelChatMessageNotificationMessage['payload']['event']>) => {
+      state.chats.push(payload);
+      if (state.chats.length > 100) state.chats.shift();
+    },
+    addError: (state, { payload }: PayloadAction<ErrorMessageProps['error']>) => {
+      state.errors.push(payload);
+    },
+    removeError: (state, { payload }: PayloadAction<number>) => {
+      state.errors.splice(payload, 1);
+    },
     setInfo: (state, { payload }: PayloadAction<Partial<InfoState>>) => {
       Object.assign(state, payload);
     },
@@ -39,6 +56,9 @@ export const infoSlice = createSlice({
 
 export const {
   actions: {
+    addChat,
+    addError,
+    removeError,
     setInfo,
   },
 } = infoSlice;

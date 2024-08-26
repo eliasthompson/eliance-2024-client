@@ -5,7 +5,7 @@ import robotoRegular from '@fonts/Roboto-Regular.ttf';
 import robotoMedium from '@fonts/Roboto-Medium.ttf';
 
 export const GlobalStyle = () => {
-  const backgroundColor = (window.obsstudio) ? 'transparent' : '#121212';
+  const backgroundColor = (window.obsstudio) ? 'transparent' : '#0e0e10';
 
   const cssGlobal = css`
     @font-face {
@@ -59,7 +59,8 @@ export const GlobalStyle = () => {
       position: relative;
       display: flex;
       flex-direction: column;
-      width: 100%;
+      width: 1920px;
+      height: 1080px;
     }
 
     body {

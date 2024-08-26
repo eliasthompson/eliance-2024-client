@@ -4,9 +4,9 @@ import { fetchRefreshedBaseQuery } from '@store/apis/twitch/fetchRefreshedBaseQu
 
 export interface TwitchApiErrorResponse {
   error?: string,
-  message: string,
   status: number,
-}
+  message: string,
+};
 
 export const twitchApi = createApi({
   baseQuery: fetchRefreshedBaseQuery,

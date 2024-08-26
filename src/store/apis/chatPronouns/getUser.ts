@@ -12,7 +12,7 @@ export interface ChatPronounsApiGetUserResponse {
   pronoun_id: ChatPronounsApiGetPronounsResponse['name'],
 }
 
-export const { useLazyGetUserQuery } = chatPronounsApi.enhanceEndpoints({
+export const { useGetUserQuery } = chatPronounsApi.enhanceEndpoints({
   addTagTypes: ['USER_DATA'],
 }).injectEndpoints({
   endpoints: (build) => ({

@@ -1,5 +1,3 @@
-import type { FirebotApiErrorResponse } from '@store/apis/firebot';
-
 import { firebotApi } from '.';
 
 export interface FirebotApiAddViewerToCustomRolePayload {
@@ -11,7 +9,7 @@ export const { useAddViewerToCustomRoleMutation } = firebotApi.enhanceEndpoints(
   addTagTypes: ['CUSTOM_ROLE_DATA'],
 }).injectEndpoints({
   endpoints: (build) => ({
-    addViewerToCustomRole: build.mutation<void | FirebotApiErrorResponse, FirebotApiAddViewerToCustomRolePayload>({
+    addViewerToCustomRole: build.mutation<void, FirebotApiAddViewerToCustomRolePayload>({
       query: ({ customRoleId, userId }) => ({
         method: 'GET',
         url: `/customRoles/${customRoleId}/viewer/${userId}`,

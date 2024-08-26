@@ -1,5 +1,5 @@
 {
-  "include": ["src/**/*", "public/fonts"],
+  "include": ["config/**/*", "public/**/*", "src/**/*"],
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
@@ -10,6 +10,8 @@
     "noEmit": true,
     "paths": {
       "@components/*": ["src/components/*"],
+      "@config": ["config"],
+      "@config/*": ["config*"],
       "@fonts/*": ["public/fonts/*"],
       "@store": ["src/store"],
       "@store/*": ["src/store/*"],

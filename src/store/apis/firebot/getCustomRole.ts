@@ -1,5 +1,3 @@
-import type { FirebotApiErrorResponse } from '@store/apis/firebot';
-
 import { firebotApi } from '.';
 
 export interface FirebotApiGetCustomRolePayload {
@@ -20,7 +18,7 @@ export const { useGetCustomRoleQuery } = firebotApi.enhanceEndpoints({
   addTagTypes: ['CUSTOM_ROLE_DATA'],
 }).injectEndpoints({
   endpoints: (build) => ({
-    getCustomRole: build.query<FirebotApiGetCustomRoleResponse | FirebotApiErrorResponse, FirebotApiGetCustomRolePayload>({
+    getCustomRole: build.query<FirebotApiGetCustomRoleResponse, FirebotApiGetCustomRolePayload>({
       query: ({ customRoleId }) => ({
         method: 'GET',
         url: `/customRoles/${customRoleId}`,

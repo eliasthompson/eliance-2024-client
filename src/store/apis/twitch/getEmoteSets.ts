@@ -22,7 +22,7 @@ export interface TwitchApiGetEmoteSetsResponse {
   template: string,
 }
 
-export const { useLazyGetEmoteSetsQuery } = twitchApi.enhanceEndpoints({
+export const { useGetEmoteSetsQuery } = twitchApi.enhanceEndpoints({
   addTagTypes: ['EMOTE_SET_DATA'],
 }).injectEndpoints({
   endpoints: (build) => ({

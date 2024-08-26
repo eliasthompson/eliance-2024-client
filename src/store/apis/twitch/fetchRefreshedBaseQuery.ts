@@ -4,6 +4,7 @@ import type { RootState } from '@store';
 import { Mutex } from 'async-mutex';
 import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 
+import { clientId } from '@config';
 import { setTwitchAuth } from '@store/slices/twitchAuth';
 
 export interface TwitchApiRefreshTokenResponse {
@@ -17,8 +18,8 @@ export const mutex = new Mutex()
 export const baseQuery = fetchBaseQuery({
   baseUrl: 'https://api.twitch.tv/helix',
   prepareHeaders(headers, api) {
-    if (api.endpoint !== 'getDeviceCode' && api.endpoint !== 'getTokens' && api.endpoint !== 'getRefreshedToken') {
-      const { twitchAuth: { accessToken, clientId } } = api.getState() as RootState;
+    if (api.endpoint !== 'getDeviceCode' && api.endpoint !== 'createToken' && api.endpoint !== 'refreshToken') {
+      const { twitchAuth: { accessToken } } = api.getState() as RootState;
 
       if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
       if (clientId && api.endpoint !== 'validateToken') headers.set('Client-Id', clientId);
@@ -30,7 +31,7 @@ export const baseQuery = fetchBaseQuery({
 export const fetchRefreshedBaseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
   await mutex.waitForUnlock();
 
-  const { twitchAuth: { clientId, refreshToken } } = api.getState() as RootState;
+  const { twitchAuth: { refreshToken } } = api.getState() as RootState;
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error?.status === 401) {
@@ -50,7 +51,7 @@ export const fetchRefreshedBaseQuery: BaseQueryFn<string | FetchArgs, unknown, F
             },
             method: 'POST',
             url: 'https://id.twitch.tv/oauth2/token',
-          }, { ...api, endpoint: 'getRefreshedToken' }, extraOptions) as { data: TwitchApiRefreshTokenResponse };
+          }, { ...api, endpoint: 'refreshToken' }, extraOptions) as { data: TwitchApiRefreshTokenResponse };
       
           if (data) {
             const { access_token: accessToken, refresh_token: refreshToken } = data
