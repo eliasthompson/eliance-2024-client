@@ -76,7 +76,7 @@
   - [ ] data for each chat:
     - [ ] `channel.chat.message`
       - [ ] message types:
-        - [ ] text
+        - [x] text
         - [ ] channel_points_highlighted
         - [ ] channel_points_sub_only
         - [ ] user_intro
@@ -99,7 +99,7 @@
     - [ ] endpoints:
       - [ ] 
     - [ ] event subs:
-      - [ ] [`channel.chat.message`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatmessage)
+      - [x] [`channel.chat.message`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatmessage)
       - [ ] [`channel.chat.notification`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
   - [ ] show text, emotes, badges, pronouns, mentions, username, color, & bits
   - [ ] handle deletes, timeouts, and clears
