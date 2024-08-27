@@ -24,6 +24,7 @@
     - [ ] poll created
     - [ ] prediction created
     - [ ] prediction results
+    - [ ] shoutout
     - [ ] announcement
     - [ ] raid
     - [ ] sub
