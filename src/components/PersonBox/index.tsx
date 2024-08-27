@@ -8,7 +8,7 @@ import type { InfoUser } from '@store/slices/info';
 import { FlexContainer } from '@components/shared/FlexContainer';
 import { TwitchProfileImage } from '@components/shared/TwitchProfileImage';
 import { addTwitchEventSubMessageId, setTwitchEventSub } from '@src/store/slices/twitchEventSub';
-import { customRoleId } from '@config';
+import { firebotGuestRoleId } from '@config';
 import { setInfo } from '@store/slices/info';
 import { useDispatch, useSelector } from '@store';
 import { useGetCustomRoleQuery } from '@store/apis/firebot/getCustomRole';
@@ -28,7 +28,7 @@ export const PersonBox = () => {
   const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubMessage>('wss://eventsub.wss.twitch.tv/ws', { share: true });
   const { goal, guests, user } = useSelector(({ info }) => info);
   const { messageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
-  const { data: customRoleData, error: customRoleError, isLoading: isCustomRoleLoading } = useGetCustomRoleQuery({ customRoleId });
+  const { data: customRoleData, error: customRoleError, isLoading: isCustomRoleLoading } = useGetCustomRoleQuery({ customRoleId: firebotGuestRoleId });
   const { data: pronounsData, error: pronounsError, isLoading: isPronounsLoading } = useGetPronounsQuery();
   const { data: tokenData, error: tokenError, isLoading: isTokenLoading } = useValidateTokenQuery();
   const [getCreatorGoals, { data: creatorGoalsData, error: creatorGoalsError, isLoading: isCreatorGoalsLoading }] = useLazyGetCreatorGoalsQuery();

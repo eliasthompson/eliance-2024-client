@@ -2,15 +2,110 @@
 
 ## Todo
 
-- [ ] pull latest sub, follower, and cheer for broadcaster
-- [ ] eventsub to update follower, cheer, and goal (update cache)
-- [ ] alerts (tied to eventsub)
 - [ ] person box
-  - [ ] rotate guest info (and main channel info)
-- [ ] errors
+  - [ ] rotate between persons
+  - [ ] refocus to broadcaster and hide guests on big event
+  - [ ] data for each person:
+    - [ ] profile pic (twitch profile pic)
+    - [ ] name (firebot name > twitch display name)
+    - [ ] pronouns (pronouns pronouns > firebot pronouns > null)
+    - [ ] twitch username (twitch login)
+    - [ ] local time(?) (firebot timezone > null)
+    - [ ] upcoming schedule(?) (twitch schedule > null)
+    - [ ] endpoints:
+      - [ ] 
+    - [ ] event subs:
+      - [ ] 
+- [ ] event box
+  - [ ] small events, social actions, and goals stay in box, big event expand the box to near full width
+  - [ ] big events (event queue):
+    - [ ] hype train created
+    - [ ] hype train success
+    - [ ] poll created
+    - [ ] prediction created
+    - [ ] prediction results
+    - [ ] announcement
+    - [ ] raid
+    - [ ] sub
+    - [ ] resub
+    - [ ] gift sub
+    - [ ] community gift subs
+    - [ ] prime sub
+    - [ ] cheer
+    - [ ] pyonchi cam
+    - [ ] pyonchi treat
+    - [ ] ring fit break
+    - [ ] add quote
+    - [ ] add one ice cube to water
+    - [ ] [any cameo redemption]
+    - [ ] backlog wheel selection
+    - [ ] become vip
+    - [ ] add custom layout element
+    - [ ] channel goal created
+    - [ ] channel goal met
+    - [ ] charity donation
+    - [ ] donation goal met
+  - [ ] small events (event queue - always shown after big events):
+    - [ ] poll results
+    - [ ] hype train failure
+    - [ ] new follower
+    - [ ] hydrate
+    - [ ] give mary a cookie
+  - [ ] social actions (on until over):
+    - [ ] poll AND hype train (rotate)
+    - [ ] predicitons AND pinned chat (rotate)
+  - [ ] goals:
+    - [ ] chanel goals loop
+    - [ ] donation goals
+  - [ ] endpoints:
+    - [ ] 
+  - [ ] event subs:
+    - [ ] 
+- [ ] chat box
+  - [ ] hide on big event
+  - [ ] chat mode column w/ icons (?)
+    - [ ] follower mode
+    - [ ] subscriber mode (?)
+    - [ ] slow mode (?)
+    - [ ] emote mode
+    - [ ] endpoints:
+      - [ ] [`GET chat/settings`](https://dev.twitch.tv/docs/api/reference/#get-chat-settings)
+    - [ ] event subs:
+      - [ ] [`channel.chat_settings.update`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchat_settingsupdate)
+  - [ ] data for each chat:
+    - [ ] `channel.chat.message`
+      - [ ] message types:
+        - [ ] text
+        - [ ] channel_points_highlighted
+        - [ ] channel_points_sub_only
+        - [ ] user_intro
+        - [ ] power_ups_message_effect
+        - [ ] power_ups_gigantified_emote
+    - [ ] `channel.chat.notification`
+      - [ ] notice types:
+        - [ ] sub - unhandled, will be event
+        - [ ] resub - handled only if includes messages
+        - [ ] sub_gift - unhandled, will be event
+        - [ ] community_sub_gift - unhandled, will be event
+        - [ ] gift_paid_upgrade - handled only if includes messages
+        - [ ] prime_paid_upgrade - handled only if includes messages
+        - [ ] raid - unhandled
+        - [ ] unraid - unhandled
+        - [ ] pay_it_forward - unhandled
+        - [ ] announcement - handled
+        - [ ] bits_badge_tier - handled only if includes messages
+        - [ ] charity_donation - handled only if includes messages
+    - [ ] endpoints:
+      - [ ] 
+    - [ ] event subs:
+      - [ ] [`channel.chat.message`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatmessage)
+      - [ ] [`channel.chat.notification`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
+  - [ ] show text, emotes, badges, pronouns, mentions, username, color, & bits
+  - [ ] handle deletes, timeouts, and clears
+  - [ ] handle special messages (highlights, resubs, announcements(?), big emotes/powerups)
+- [ ] error display and handling
 - [ ] design
-- [ ] right side??
-- [ ] figure out bits in messages
+- [ ] animations
 
 ### Guest/User Data Flow
 
@@ -28,8 +123,8 @@
       - [x] Firebot: `GET /viewers/:userId` Get Viewer - get viewer data on all persons (color = defaultColor, name = displayName, pronouns = apiPronouns)
       - [x] Twitch: `GET /users` Get Users - get user data on all persons (display_name, profile_image_url, login)
       - [x] Twitch: `GET /streams` Get Streams - get stream data on all persons (isLive)
-      <!-- - if viewer has no metadata, then:
-        - [ ] Firebot: `POST /viewers/:userId` Add Metadata To View - add metadata to viewer -->
+      - if viewer has no metadata, then:
+        - [ ] Firebot: `POST /viewers/:userId` Add Metadata To View - add metadata to viewer (only iscontent, )
     - combine & show data
 - [ ] on event:
   - [ ] on guest star guest update:

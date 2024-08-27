@@ -1,9 +1,10 @@
-const urlParams = new URLSearchParams(window.location.search);
+import * as uuid from 'uuid';
 
-export const clientId = urlParams.get('clientId') || 'rauupizoywti00mgyshjkvewuvlepx';
-export const customRoleId = urlParams.get('customRoleId') || '805d6510-9e0a-11ee-a7ad-09ce7f9a4a71';
-export const namespace = urlParams.get('namespace') || 'c8ca632e-9553-4f40-a631-260abdf16be3';
-export const scopes = (urlParams.get('scopes')) ? urlParams.get('scopes').split(',') : [
+export const urlParams = new URLSearchParams(window.location.search);
+export const clientId = urlParams.get('clientId') || null;
+export const firebotGuestRoleId = urlParams.get('firebotGuestRoleId') || null;
+export const namespace = urlParams.get('namespace') || uuid.v4();
+export const scopes = [
   'bits:read',
   'channel:bot',
   'channel:read:ads',

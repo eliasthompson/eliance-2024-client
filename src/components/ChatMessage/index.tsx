@@ -3,8 +3,6 @@ import { css } from '@emotion/react';
 import type { ChatMessageProps, TwitchChatBoxBadge } from '@components/ChatMessage/types';
 
 import { useGetChannelChatBadgesQuery } from '@store/apis/twitch/getChannelChatBadges';
-import { useGetChannelEmotesQuery } from '@store/apis/twitch/getChannelEmotes';
-import { useGetEmoteSetsQuery } from '@store/apis/twitch/getEmoteSets';
 import { useGetGlobalChatBadgesQuery } from '@store/apis/twitch/getGlobalChatBadges';
 import { useGetGlobalEmotesQuery } from '@store/apis/twitch/getGlobalEmotes';
 import { useGetPronounsQuery } from '@store/apis/chatPronouns/getPronouns';
@@ -70,7 +68,8 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
       }
 
       <strong style={ { color: event.color || '#808080' } }>
-        { event.chatter_user_name }&nbsp;{ (pronouns) ? `(${pronouns.toLowerCase()})` : null }
+        { event.chatter_user_name }
+        { (pronouns) ? ` (${pronouns.toLowerCase()})` : null }
       </strong>:&nbsp;
 
       { 
