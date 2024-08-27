@@ -31,8 +31,8 @@ export const Container = () => {
   const cssBar = css`
     position: absolute;
     bottom: 0;
-    width: 1872px;
-    height: 105px;
+    width: var(--bar-width);
+    height: var(--bar-height);
     background-color: ${backgroundColor};
   `;
 

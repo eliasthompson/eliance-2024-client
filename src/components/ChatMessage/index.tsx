@@ -10,9 +10,6 @@ import { useGetUserQuery } from '@store/apis/chatPronouns/getUser';
 import { useSelector } from '@store';
 
 export const ChatMessage = ({ event }: ChatMessageProps) => {
-  const { badges: messageBadges, message: { fragments } } = event;
-  console.log(fragments);
-
   const { broadcasterId } = useSelector(({ info }) => info);
   const { data: channelChatBadgesData, error: channelChatBadgesError, isLoading: isChannelChatBadgesLoading } = useGetChannelChatBadgesQuery({ broadcasterId });
   const { data: globalChatBadgesData, error: globalChatBadgesError, isLoading: isGlobalChatBadgesLoading } = useGetGlobalChatBadgesQuery();
@@ -33,10 +30,22 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
     && pronounsData
     && userData
   );
-  const cssStrong = css`
-    color: #ff0000;
+  const cssImgBadge = css`
+    height: calc(var(--font-size) / 13 * 18);
+    width: calc(var(--font-size) / 13 * 18);
+    margin: 0 0.3rem 0 0;
+    vertical-align: text-bottom;
+  `;
+  const cssSpanPronouns = css`
+    filter: brightness(67%);
+  `;
+  const cssImgEmote = css`
+    height: calc(var(--font-size) / 13 * 28);
+    margin: -0.5rem 0;
+    vertical-align: text-bottom;
   `;
 
+  const { badges: messageBadges, message: { fragments } } = event;
   const { template = '' } = globalEmotesData || {};
   const badgesData = [...((globalChatBadgesData || {}).data || []), ...((channelChatBadgesData || {}).data || [])];
   const messageEmotes = fragments.filter(({ type }) => type === 'emote').map(({ emote }) => emote);
@@ -62,21 +71,21 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
         messageBadges.map((messageBadge, i) => {
           const { image_url_4x: imageUrl4x } = badges.find(({ id, set_id: setId }) => id === messageBadge.id && setId === messageBadge.set_id) || {};
 
-          if (imageUrl4x) return <img key={ i } src={ imageUrl4x } />;
+          if (imageUrl4x) return <img key={ i } src={ imageUrl4x } css={ cssImgBadge } />;
           return null;
         })
       }
 
       <strong style={ { color: event.color || '#808080' } }>
         { event.chatter_user_name }
-        { (pronouns) ? ` (${pronouns.toLowerCase()})` : null }
+        { (pronouns) ? <span css={ cssSpanPronouns }> ({ pronouns.toLowerCase() })</span> : null }
       </strong>:&nbsp;
 
       { 
         fragments.map((fragment, i) => {
           const { url } = emotes.find(({ id }) => id === fragment.emote?.id) || {};
 
-          if (url) return <img key={ i } src={ url } />;
+          if (url) return <img key={ i } src={ url } css={ cssImgEmote } />;
           if (fragment.type === 'mention') return <strong key={ i }>{ fragment.text }</strong>;
           return <span key={ i }>{ fragment.text }</span>;
         })

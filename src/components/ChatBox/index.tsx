@@ -19,7 +19,12 @@ export const ChatBox = () => {
   const { data: eventSubSubscriptionData, error: eventSubSubscriptionError, isLoading: isEventSubSubscriptionLoading } = useCreateEventSubSubscriptionQuery({ broadcasterId, sessionId, type: 'channel.chat.message', version: 1 });
   const isRenderable = !!(eventSubSubscriptionData);
   const cssContainer = css`
-    flex: 2;
+    flex: 3;
+    justify-content: flex-end;
+    /* width: 520px;
+    width: 400px; */
+    line-height: calc((var(--bar-height) - (var(--padding) * 2)) / 3);
+    padding: 0 var(--padding) var(--padding);
   `;
 
   // Set chats on new channel chat message notification 

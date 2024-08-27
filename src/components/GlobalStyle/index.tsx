@@ -37,6 +37,14 @@ export const GlobalStyle = () => {
       --safe-area-inset-left: env(safe-area-inset-left);
       --safe-area-inset-right: env(safe-area-inset-right);
       --safe-area-inset-bottom: env(safe-area-inset-bottom);
+
+      --container-width: 1920px;
+      --container-height: 1080px;
+      --bar-width: 1872px;
+      --bar-height: 105px;
+      --padding: 12px;
+      --line-height: calc((var(--bar-height) - (var(--padding) * 2)) / 3);
+      --font-size: calc(var(--line-height) * (13 / 20));
     }
 
     * {
@@ -59,16 +67,15 @@ export const GlobalStyle = () => {
       position: relative;
       display: flex;
       flex-direction: column;
-      width: 1920px;
-      height: 1080px;
+      width: var(--container-width);
+      height: var(--container-height);
     }
 
     body {
       font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
       color: #FFFFFF;
-      font-size: 16px;
+      font-size: var(--font-size);
       font-weight: 400;
-      letter-spacing: 0.5px;
       -webkit-overflow-scrolling: touch;
     }
 
