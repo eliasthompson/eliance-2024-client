@@ -8,9 +8,9 @@ import { store } from '@store';
 
 createRoot(document.querySelector('#root')!).render(
   <StrictMode>
-    <Provider store={ store }>
+    <Provider store={store}>
       <GlobalStyle />
       <Container />
     </Provider>
-  </StrictMode>
+  </StrictMode>,
 );

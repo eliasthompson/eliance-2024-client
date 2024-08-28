@@ -1,11 +1,11 @@
 import { Global, css } from '@emotion/react';
 
-import robotoLight from '@fonts/Roboto-Light.ttf';
-import robotoRegular from '@fonts/Roboto-Regular.ttf';
-import robotoMedium from '@fonts/Roboto-Medium.ttf';
+import robotoLight from '@assets/fonts/Roboto-Light.ttf';
+import robotoRegular from '@assets/fonts/Roboto-Regular.ttf';
+import robotoMedium from '@assets/fonts/Roboto-Medium.ttf';
 
 export const GlobalStyle = () => {
-  const backgroundColor = (window.obsstudio) ? 'transparent' : '#0e0e10';
+  const backgroundColor = window.obsstudio ? 'transparent' : '#0e0e10';
 
   const cssGlobal = css`
     @font-face {
@@ -13,7 +13,8 @@ export const GlobalStyle = () => {
       font-style: normal;
       font-weight: 300;
       src: url(${robotoLight}) format('truetype');
-      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC,
+        U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     }
 
     @font-face {
@@ -21,7 +22,8 @@ export const GlobalStyle = () => {
       font-style: normal;
       font-weight: 400;
       src: url(${robotoRegular}) format('truetype');
-      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC,
+        U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     }
 
     @font-face {
@@ -29,7 +31,8 @@ export const GlobalStyle = () => {
       font-style: normal;
       font-weight: 500;
       src: url(${robotoMedium}) format('truetype');
-      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC,
+        U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
     }
 
     :root {
@@ -73,7 +76,7 @@ export const GlobalStyle = () => {
 
     body {
       font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
-      color: #FFFFFF;
+      color: #ffffff;
       font-size: var(--font-size);
       font-weight: 400;
       -webkit-overflow-scrolling: touch;
@@ -83,9 +86,7 @@ export const GlobalStyle = () => {
       align-items: center;
       justify-content: center;
     }
-`;
+  `;
 
-  return (
-    <Global styles={ cssGlobal } />
-  );
+  return <Global styles={cssGlobal} />;
 };

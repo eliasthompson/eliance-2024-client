@@ -4,16 +4,36 @@ import type { TwitchButtonProps, TwitchButtonValidTags } from '@components/share
 
 export const defaultTwitchButtonAsValue = 'button' as const;
 
-export const TwitchButton = <Tag extends TwitchButtonValidTags = typeof defaultTwitchButtonAsValue>({ as = defaultTwitchButtonAsValue, attach, children, variant, ...propsButton }: TwitchButtonProps<Tag>) => {
+export const TwitchButton = <Tag extends TwitchButtonValidTags = typeof defaultTwitchButtonAsValue>({
+  as = defaultTwitchButtonAsValue,
+  attach,
+  children,
+  variant,
+  ...propsButton
+}: TwitchButtonProps<Tag>) => {
   let backgroundColor = '#9147ff';
   let backgroundColorActive = '#5c16c5';
   let backgroundColorHover = '#772ce8';
-  let borderRadius = css`border-radius: 0.4rem;`;
+  let borderRadius = css`
+    border-radius: 0.4rem;
+  `;
 
-  if (attach === 'top') borderRadius = css`border-radius: 0 0 0.4rem 0.4rem;`;
-  else if (attach === 'right') borderRadius = css`border-radius: 0.4rem 0 0 0.4rem;`;
-  else if (attach === 'bottom') borderRadius = css`border-radius: 0.4rem 0.4rem 0 0;`;
-  else if (attach === 'left') borderRadius = css`border-radius: 0 0.4rem 0.4rem 0;`;
+  if (attach === 'top')
+    borderRadius = css`
+      border-radius: 0 0 0.4rem 0.4rem;
+    `;
+  else if (attach === 'right')
+    borderRadius = css`
+      border-radius: 0.4rem 0 0 0.4rem;
+    `;
+  else if (attach === 'bottom')
+    borderRadius = css`
+      border-radius: 0.4rem 0.4rem 0 0;
+    `;
+  else if (attach === 'left')
+    borderRadius = css`
+      border-radius: 0 0.4rem 0.4rem 0;
+    `;
 
   if (variant === 'secondary') {
     backgroundColor = 'rgba(83, 83, 95, 0.38)';
@@ -39,11 +59,11 @@ export const TwitchButton = <Tag extends TwitchButtonValidTags = typeof defaultT
     background-color: ${backgroundColor};
     flex: none;
     ${borderRadius}
-    
+
     &:active {
       background-color: ${backgroundColorActive};
     }
-    
+
     &:hover {
       background-color: ${backgroundColorHover};
     }
@@ -64,11 +84,9 @@ export const TwitchButton = <Tag extends TwitchButtonValidTags = typeof defaultT
 
   // Render component
   return (
-    <Element css={ cssButton } { ...propsButton }>
-      <div css={ cssDiv1 }>
-        <div css={ cssDiv2 }>
-          { children }
-        </div>
+    <Element css={cssButton} {...propsButton}>
+      <div css={cssDiv1}>
+        <div css={cssDiv2}>{children}</div>
       </div>
     </Element>
   );

@@ -9,22 +9,27 @@ import type { TwitchEventSubChannelChatNotificationNotificationMessage } from '@
 import { createSlice } from '@reduxjs/toolkit';
 
 export type InfoUser = TwitchApiGetUsersResponse['data'][number] & {
-  active: boolean,
-  color?: string,
-  isLive?: boolean,
-  isSharing?: boolean,
-  name?: string,
-  pronouns?: string,
+  active: boolean;
+  color?: string;
+  isLive?: boolean;
+  isSharing?: boolean;
+  name?: string;
+  pronouns?: string;
 };
 
 export interface InfoState {
-  broadcasterId: string | null,
-  broadcasterLogin: string | null,
-  chats: (TwitchEventSubChannelChatMessageNotificationMessage['payload']['event'] | TwitchEventSubChannelChatNotificationNotificationMessage['payload']['event'])[],
-  errors: ErrorMessageProps['error'][],
-  goal: TwitchApiGetCreatorGoalsResponse['data'][number] | null,
-  persons: InfoUser[],
-};
+  broadcasterId: string | null;
+  broadcasterLogin: string | null;
+  chats: ((
+    | TwitchEventSubChannelChatMessageNotificationMessage['payload']['event']
+    | TwitchEventSubChannelChatNotificationNotificationMessage['payload']['event']
+  ) & {
+    isDeleted?: boolean;
+  })[];
+  errors: ErrorMessageProps['error'][];
+  goal: TwitchApiGetCreatorGoalsResponse['data'][number] | null;
+  persons: InfoUser[];
+}
 
 export const getStoredRecentChats = () => {
   let localStoredChats: InfoState['chats'] = [];
@@ -79,14 +84,8 @@ export const infoSlice = createSlice({
       Object.assign(state, payload);
     },
   },
-})
+});
 
 export const {
-  actions: {
-    addChat,
-    addError,
-    clearChats,
-    removeError,
-    setInfo,
-  },
+  actions: { addChat, addError, clearChats, removeError, setInfo },
 } = infoSlice;

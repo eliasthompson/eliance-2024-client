@@ -1,6 +1,7 @@
 {
-  "include": ["config/**/*", "public/**/*", "src/**/*"],
+  "include": ["config/**/*", "src/**/*"],
   "compilerOptions": {
+    "allowArbitraryExtensions": true,
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "esModuleInterop": true,
@@ -9,10 +10,10 @@
     "moduleResolution": "node",
     "noEmit": true,
     "paths": {
+      "@assets/*": ["src/assets/*"],
       "@components/*": ["src/components/*"],
       "@config": ["config"],
       "@config/*": ["config*"],
-      "@fonts/*": ["public/fonts/*"],
       "@store": ["src/store"],
       "@store/*": ["src/store/*"],
       "@src": ["src"],

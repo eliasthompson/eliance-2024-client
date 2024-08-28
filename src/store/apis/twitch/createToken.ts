@@ -1,20 +1,20 @@
-import type { TwitchAuthState } from '@store/slices/twitchAuth';
+import type { scopes } from '@config';
 
 import { twitchApi } from '.';
 
 export interface TwitchApiCreateTokenRequest {
-  clientId: string,
-  deviceCode: string,
-  scopes: TwitchAuthState['scopes'],
+  clientId: string;
+  deviceCode: string;
+  scopes: typeof scopes;
 }
 
 export interface TwitchApiCreateTokenResponse {
-  access_token: string,
-  expires_in: number,
-  refresh_token: string,
-  scope: string[],
-  token_type: string,
-};
+  access_token: string;
+  expires_in: number;
+  refresh_token: string;
+  scope: string[];
+  token_type: string;
+}
 
 export const { useCreateTokenMutation } = twitchApi.injectEndpoints({
   endpoints: (build) => ({
@@ -33,5 +33,5 @@ export const { useCreateTokenMutation } = twitchApi.injectEndpoints({
         url: 'https://id.twitch.tv/oauth2/token',
       }),
     }),
-  })
+  }),
 });

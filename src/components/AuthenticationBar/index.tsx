@@ -16,13 +16,26 @@ import { useGetDeviceCodeQuery } from '@store/apis/twitch/getDeviceCode';
 
 export const AuthenticationBar = ({ cssBar: cssBarProvided }: AuthenticationBarProps) => {
   const dispatch = useDispatch();
-  const { data: deviceCodeData, error: deviceCodeError, isLoading: isDeviceCodeLoading } = useGetDeviceCodeQuery({ clientId, scopes });
+  const {
+    data: deviceCodeData,
+    error: deviceCodeError,
+    isLoading: isDeviceCodeLoading,
+  } = useGetDeviceCodeQuery({ clientId, scopes });
   const [createTokenMutation] = useCreateTokenMutation();
   const handleAuthenticateClick = useCallback(async () => {
-    const { data: tokenData } = await createTokenMutation({ clientId, deviceCode: deviceCodeData.device_code, scopes });
+    const { data: tokenData } = await createTokenMutation({
+      clientId,
+      deviceCode: deviceCodeData.device_code,
+      scopes,
+    });
 
     if (tokenData) {
-      dispatch(setTwitchAuth({ accessToken: tokenData.access_token, refreshToken: tokenData.refresh_token }));
+      dispatch(
+        setTwitchAuth({
+          accessToken: tokenData.access_token,
+          refreshToken: tokenData.refresh_token,
+        }),
+      );
       dispatch(twitchApiUtil.invalidateTags(['UNAUTHORIZED']));
     }
   }, [deviceCodeData, createTokenMutation]);
@@ -30,18 +43,14 @@ export const AuthenticationBar = ({ cssBar: cssBarProvided }: AuthenticationBarP
     const inputElement = document.getElementById('verification-url-input');
 
     if (inputElement) {
-      let range = document.createRange();
+      const range = document.createRange();
       range.selectNode(inputElement);
       window.getSelection().removeAllRanges();
       window.getSelection().addRange(range);
       document.execCommand('copy');
     }
   }, []);
-  const isRenderable = (
-    !isDeviceCodeLoading
-    && !deviceCodeError
-    && deviceCodeData
-  );
+  const isRenderable = !isDeviceCodeLoading && !deviceCodeError && deviceCodeData;
   const cssBar = css`
     gap: 1rem;
     align-items: center;
@@ -54,24 +63,29 @@ export const AuthenticationBar = ({ cssBar: cssBarProvided }: AuthenticationBarP
 
   // Prep render of grant button
   let verifyActions = (
-    <TwitchButton as="a" href={ deviceCodeData.verification_uri } target="_blank" variant="secondary">Grant&nbsp;<MdOpenInNew /></TwitchButton>
+    <TwitchButton as="a" href={deviceCodeData.verification_uri} target="_blank" variant="secondary">
+      Grant&nbsp;
+      <MdOpenInNew />
+    </TwitchButton>
   );
 
   // Prep render of input and copy button if we're in obs
   if (window.obsstudio) {
-    verifyActions= (
+    verifyActions = (
       <FlexContainer>
-        <TwitchInput id="verification-url-input" attach="right" readOnly value={ deviceCodeData.verification_uri } />
-        <TwitchButton onClick={ handleCopyClick } attach="left" variant="secondary"><MdContentCopy /></TwitchButton>
+        <TwitchInput id="verification-url-input" attach="right" readOnly value={deviceCodeData.verification_uri} />
+        <TwitchButton onClick={handleCopyClick} attach="left" variant="secondary">
+          <MdContentCopy />
+        </TwitchButton>
       </FlexContainer>
     );
   }
 
   // Render component
   return (
-    <FlexContainer cssContainer={ cssBar }>
-      { verifyActions }
-      <TwitchButton onClick={ handleAuthenticateClick }>Authenticate</TwitchButton>
+    <FlexContainer cssContainer={cssBar}>
+      {verifyActions}
+      <TwitchButton onClick={handleAuthenticateClick}>Authenticate</TwitchButton>
     </FlexContainer>
   );
 };

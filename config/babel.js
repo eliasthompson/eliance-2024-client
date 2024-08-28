@@ -1,7 +1,5 @@
 export default {
-  plugins: [
-    '@emotion/babel-plugin',
-  ],
+  plugins: ['@emotion/babel-plugin'],
   presets: [
     '@babel/preset-env',
     [
@@ -13,4 +11,4 @@ export default {
     ],
     '@babel/preset-typescript',
   ],
-}
+};

@@ -4,12 +4,10 @@ import type { FirebotApiErrorResponse } from '@store/apis/firebot';
 import type { TwitchApiErrorResponse } from '@store/apis/twitch';
 
 export interface ApiError {
-  status: number,
-  data: FirebotApiErrorResponse | TwitchApiErrorResponse,
-};
+  status: number;
+  data: FirebotApiErrorResponse | TwitchApiErrorResponse;
+}
 
 export interface ErrorMessageProps {
-  error: (Error | FetchBaseQueryError) & {
-
-  },
-};
+  error: Error | FetchBaseQueryError;
+}

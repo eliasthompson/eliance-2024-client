@@ -3,9 +3,9 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 export interface TwitchAuthState {
-  accessToken: string | null,
-  refreshToken: string | null,
-};
+  accessToken: string | null;
+  refreshToken: string | null;
+}
 
 export const initialTwitchAuthState: TwitchAuthState = {
   accessToken: localStorage.getItem('accessToken'),
@@ -25,10 +25,8 @@ export const twitchAuthSlice = createSlice({
       }
     },
   },
-})
+});
 
 export const {
-  actions: {
-    setTwitchAuth,
-  },
+  actions: { setTwitchAuth },
 } = twitchAuthSlice;

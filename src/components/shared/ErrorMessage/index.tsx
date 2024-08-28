@@ -4,11 +4,11 @@ import type { ApiError, ErrorMessageProps } from '@components/shared/ErrorMessag
 
 export const isApiError = (error: unknown): error is ApiError => {
   return (
-    error !== null
-    && typeof error === 'object'
-    && typeof (error as any).status === 'number'
-    && 'status' in error
-    && !(error instanceof Error)
+    error !== null &&
+    typeof error === 'object' &&
+    typeof (error as { status: unknown }).status === 'number' &&
+    'status' in error &&
+    !(error instanceof Error)
   );
 };
 
@@ -24,11 +24,9 @@ export const ErrorMessage = ({ error: providedError }: ErrorMessageProps) => {
     error = new Error(data.message);
 
     if ('error' in data) error.name = `${status} ${data.error}`;
-    else  error.name = String(status);
+    else error.name = String(status);
   }
 
   // Render component
-  return (
-    <strong css={ cssStrong }>{ error.toString() }</strong>
-  );
+  return <strong css={cssStrong}>{error.toString()}</strong>;
 };

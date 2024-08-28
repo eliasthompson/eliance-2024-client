@@ -10,10 +10,11 @@ import { twitchAuthSlice } from '@store/slices/twitchAuth';
 import { twitchEventSubSlice } from '@store/slices/twitchEventSub';
 
 export const store = configureStore({
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware()
-    .concat(chatPronounsApi.middleware)
-    .concat(firebotApi.middleware)
-    .concat(twitchApi.middleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware()
+      .concat(chatPronounsApi.middleware)
+      .concat(firebotApi.middleware)
+      .concat(twitchApi.middleware),
   reducer: {
     [chatPronounsApi.reducerPath]: chatPronounsApi.reducer,
     [firebotApi.reducerPath]: firebotApi.reducer,

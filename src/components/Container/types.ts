@@ -1,76 +1,80 @@
 export interface FirebotEventSubMessagePayload {
-  type: 'invoke',
-  name: 'subscribe-events',
-};
+  type: 'invoke';
+  name: 'subscribe-events';
+}
 
 export interface FirebotEventSubMessage {
-  type: string,
-  name: string,
-  data: any,
-};
+  type: string;
+  name: string;
+  data?: object;
+}
 
 export interface TwitchEventSubWelcomeMessage {
   metadata: {
-    message_id: string,
-    message_type: 'session_welcome',
-    message_timestamp: string,
-  },
+    message_id: string;
+    message_type: 'session_welcome';
+    message_timestamp: string;
+  };
   payload: {
     session: {
-      id: string,
-      status: 'connected',
-      connected_at: string,
-      keepalive_timeout_seconds: number,
-      reconnect_url: null,
-    },
-  },
-};
+      id: string;
+      status: 'connected';
+      connected_at: string;
+      keepalive_timeout_seconds: number;
+      reconnect_url: null;
+    };
+  };
+}
 
 export interface TwitchEventSubKeepaliveMessage {
   metadata: {
-    message_id: string,
-    message_type: 'session_keepalive',
-    message_timestamp: string,
-  },
-  payload: object,
-};
+    message_id: string;
+    message_type: 'session_keepalive';
+    message_timestamp: string;
+  };
+  payload: object;
+}
 
 export interface TwitchEventSubNotificationMessage {
   metadata: {
-    message_id: string,
-    message_type: 'notification',
-    message_timestamp: string,
-  },
+    message_id: string;
+    message_type: 'notification';
+    message_timestamp: string;
+  };
   payload: {
     subscription: {
-      id: string,
-      status: 'enabled',
-      version: string,
-      cost: number,
+      id: string;
+      status: 'enabled';
+      version: string;
+      cost: number;
       transport: {
-        method: 'websocket',
-        session_id: string,
-      },
-      created_at: string,
-    },
-  },
-};
+        method: 'websocket';
+        session_id: string;
+      };
+      created_at: string;
+    };
+  };
+}
 
 export interface TwitchEventSubReconnectMessage {
   metadata: {
-    message_id: string,
-    message_type: 'session_reconnect',
-    message_timestamp: string,
-  },
+    message_id: string;
+    message_type: 'session_reconnect';
+    message_timestamp: string;
+  };
   payload: {
     session: {
-      id: string,
-      status: 'reconnecting',
-      keepalive_timeout_seconds: null,
-      reconnect_url: string,
-      connected_at: string,
-    },
-  },
-};
+      id: string;
+      status: 'reconnecting';
+      keepalive_timeout_seconds: null;
+      reconnect_url: string;
+      connected_at: string;
+    };
+  };
+}
 
-export type TwitchEventSubMessage = TwitchEventSubWelcomeMessage | TwitchEventSubKeepaliveMessage | TwitchEventSubNotificationMessage | TwitchEventSubReconnectMessage;
+export type TwitchEventSubMessage =
+  | TwitchEventSubWelcomeMessage
+  | TwitchEventSubKeepaliveMessage
+  | TwitchEventSubNotificationMessage
+  | TwitchEventSubReconnectMessage;

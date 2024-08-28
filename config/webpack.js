@@ -11,6 +11,7 @@ export default {
       const pathDirectories = filename.split('/');
 
       pathDirectories.shift();
+      pathDirectories.shift();
       pathDirectories.pop();
 
       return `${pathDirectories.join('/')}/[name].[contenthash:8][ext]`;

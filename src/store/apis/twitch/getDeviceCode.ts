@@ -1,17 +1,17 @@
 import { twitchApi } from '.';
 
 export interface TwitchApiGetDeviceCodeRequest {
-  clientId: string,
-  scopes: string[],
+  clientId: string;
+  scopes: string[];
 }
 
 export interface TwitchApiGetDeviceCodeResponse {
-  device_code: string,
-  expires_in: number,
-  interval: number,
-  user_code: string,
-  verification_uri: string,
-};
+  device_code: string;
+  expires_in: number;
+  interval: number;
+  user_code: string;
+  verification_uri: string;
+}
 
 export const { useGetDeviceCodeQuery } = twitchApi.injectEndpoints({
   endpoints: (build) => ({
@@ -28,5 +28,5 @@ export const { useGetDeviceCodeQuery } = twitchApi.injectEndpoints({
         url: 'https://id.twitch.tv/oauth2/device',
       }),
     }),
-  })
+  }),
 });

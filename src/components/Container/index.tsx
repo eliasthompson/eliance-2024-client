@@ -3,7 +3,11 @@ import { Fragment, useEffect } from 'react';
 import { css } from '@emotion/react';
 import * as uuid from 'uuid';
 
-import type { FirebotEventSubMessage, FirebotEventSubMessagePayload, TwitchEventSubMessage } from '@components/Container/types';
+import type {
+  FirebotEventSubMessage,
+  FirebotEventSubMessagePayload,
+  TwitchEventSubMessage,
+} from '@components/Container/types';
 
 import { AuthenticationBar } from '@components/AuthenticationBar';
 import { ErrorMessage } from '@components/shared/ErrorMessage';
@@ -17,15 +21,23 @@ import { useValidateTokenQuery } from '@src/store/apis/twitch/validateToken';
 
 export const Container = () => {
   const dispatch = useDispatch();
-  const { lastJsonMessage: firebotMessage, readyState: firebotReadyState, sendJsonMessage: sendFirebotMessage } = useWebSocket<FirebotEventSubMessage>('ws://localhost:7472', { share: true });
-  const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubMessage>('wss://eventsub.wss.twitch.tv/ws', { share: true });
+  const {
+    lastJsonMessage: firebotMessage,
+    readyState: firebotReadyState,
+    sendJsonMessage: sendFirebotMessage,
+  } = useWebSocket<FirebotEventSubMessage>('ws://localhost:7472', {
+    share: true,
+  });
+  const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubMessage>('wss://eventsub.wss.twitch.tv/ws', {
+    share: true,
+  });
   const { broadcasterId, broadcasterLogin, errors } = useSelector(({ info }) => info);
   const { messageIds: firebotMessageIds } = useSelector(({ firebotEventSub }) => firebotEventSub);
   const { messageIds: twitchMessageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
   const { data: tokenData, error: tokenError, isLoading: isTokenLoading } = useValidateTokenQuery();
   const isAuthorized = !(tokenError && 'status' in tokenError && tokenError.status === 401);
   const isRenderable = !!(broadcasterId && broadcasterLogin && sessionId);
-  const backgroundColor = (window.obsstudio) ? 'transparent' : '#18181b';
+  const backgroundColor = window.obsstudio ? 'transparent' : '#18181b';
   const cssBar = css`
     position: absolute;
     bottom: 0;
@@ -36,12 +48,22 @@ export const Container = () => {
 
   // Set user id if token data exists
   useEffect(() => {
-    if (tokenData) dispatch(setInfo({ broadcasterId: tokenData.user_id, broadcasterLogin: tokenData.login }));
+    if (tokenData)
+      dispatch(
+        setInfo({
+          broadcasterId: tokenData.user_id,
+          broadcasterLogin: tokenData.login,
+        }),
+      );
   }, [dispatch, tokenData]);
 
   // Subscribe to firebot event sub events on first connection
   useEffect(() => {
-    if (firebotMessage === null && firebotReadyState === 1) sendFirebotMessage<FirebotEventSubMessagePayload>({ type: 'invoke', name: 'subscribe-events' });
+    if (firebotMessage === null && firebotReadyState === 1)
+      sendFirebotMessage<FirebotEventSubMessagePayload>({
+        type: 'invoke',
+        name: 'subscribe-events',
+      });
   }, [dispatch, firebotMessage, firebotReadyState]);
 
   // Log firebot event sub message id on success response
@@ -53,7 +75,7 @@ export const Container = () => {
       if (!firebotMessageIds.includes(messageId) && type === 'response' && name === 'success') {
         dispatch(addFirebotEventSubMessageId(messageId));
       }
-    }          
+    }
   }, [dispatch, firebotMessage, firebotMessageIds]);
 
   // Set twitch event sub session id & log message id on session welcome
@@ -66,7 +88,7 @@ export const Container = () => {
         dispatch(setTwitchEventSub({ sessionId: payload.session.id }));
         dispatch(addTwitchEventSubMessageId(messageId));
       }
-    }          
+    }
   }, [dispatch, twitchMessage, twitchMessageIds]);
 
   // Set api errors
@@ -80,15 +102,9 @@ export const Container = () => {
   // Render component
   return (
     <Fragment>
-      { (isAuthorized) ? (
-        <InfoBar cssBar={ cssBar } />
-      ) : (
-        <AuthenticationBar cssBar={ cssBar } />
-      ) }
+      {isAuthorized ? <InfoBar cssBar={cssBar} /> : <AuthenticationBar cssBar={cssBar} />}
 
-      { (errors.length) ? errors.map((error, i) => (
-        <ErrorMessage key={ i } error={ error } />
-      )) : null }
+      {errors.length ? errors.map((error, i) => <ErrorMessage key={i} error={error} />) : null}
     </Fragment>
   );
 };

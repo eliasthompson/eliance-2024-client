@@ -6,9 +6,9 @@ import { store } from '../src/store';
 
 export const Wrapper = ({ children }) => (
   <StrictMode>
-    <Provider store={ store }>
+    <Provider store={store}>
       <GlobalStyle />
-      { children }
+      {children}
     </Provider>
   </StrictMode>
 );

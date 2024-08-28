@@ -3,9 +3,9 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 export interface TwitchEventSubState {
-  messageIds: string[],
-  sessionId: string | null,
-};
+  messageIds: string[];
+  sessionId: string | null;
+}
 
 export const initialTwitchEventSubState: TwitchEventSubState = {
   messageIds: [],
@@ -23,11 +23,8 @@ export const twitchEventSubSlice = createSlice({
       Object.assign(state, payload);
     },
   },
-})
+});
 
 export const {
-  actions: {
-    addTwitchEventSubMessageId,
-    setTwitchEventSub,
-  },
+  actions: { addTwitchEventSubMessageId, setTwitchEventSub },
 } = twitchEventSubSlice;

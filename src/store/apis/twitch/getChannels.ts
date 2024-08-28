@@ -1,29 +1,35 @@
 import { twitchApi } from '.';
 
 export interface TwitchApiGetChannelsRequest {
-  broadcasterIds: string[],
+  broadcasterIds: string[];
 }
 
 export interface TwitchApiGetChannelsResponse {
   data: {
-    broadcaster_name: string,
-  }[],
+    broadcaster_name: string;
+  }[];
 }
 
-export const { useGetChannelsQuery } = twitchApi.enhanceEndpoints({
-  addTagTypes: ['CHANNEL_DATA'],
-}).injectEndpoints({
-  endpoints: (build) => ({
-    getChannels: build.query<TwitchApiGetChannelsResponse, TwitchApiGetChannelsRequest>({
-      query: ({ broadcasterIds }) => ({
-        method: 'GET',
-        url: `/channels?${broadcasterIds.map((broadcasterId) => `broadcaster_id=${broadcasterId}`).join('&')}`,
-      }),
-      providesTags: (result, error, { broadcasterIds }) => {
-        if (result) return broadcasterIds.map((broadcasterId) => ({ type: 'CHANNEL_DATA', id: broadcasterId }));
-        if (error?.status === 401) return ['UNAUTHORIZED'];
-        return [];
-      }
-    }),
+export const { useGetChannelsQuery } = twitchApi
+  .enhanceEndpoints({
+    addTagTypes: ['CHANNEL_DATA'],
   })
-});
+  .injectEndpoints({
+    endpoints: (build) => ({
+      getChannels: build.query<TwitchApiGetChannelsResponse, TwitchApiGetChannelsRequest>({
+        query: ({ broadcasterIds }) => ({
+          method: 'GET',
+          url: `/channels?${broadcasterIds.map((broadcasterId) => `broadcaster_id=${broadcasterId}`).join('&')}`,
+        }),
+        providesTags: (result, error, { broadcasterIds }) => {
+          if (result)
+            return broadcasterIds.map((broadcasterId) => ({
+              type: 'CHANNEL_DATA',
+              id: broadcasterId,
+            }));
+          if (error?.status === 401) return ['UNAUTHORIZED'];
+          return [];
+        },
+      }),
+    }),
+  });

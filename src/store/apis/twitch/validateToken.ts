@@ -1,14 +1,14 @@
-import type { TwitchAuthState } from '@store/slices/twitchAuth';
+import type { scopes } from '@config';
 
 import { twitchApi } from '.';
 
 export interface TwitchApiValidateTokenResponse {
-  client_id: string,
-  login: string,
-  scopes: TwitchAuthState['scopes'],
-  user_id: string,
-  expires_in: number,
-};
+  client_id: string;
+  login: string;
+  scopes: typeof scopes;
+  user_id: string;
+  expires_in: number;
+}
 
 export const { useValidateTokenQuery } = twitchApi.injectEndpoints({
   endpoints: (build) => ({
@@ -20,7 +20,7 @@ export const { useValidateTokenQuery } = twitchApi.injectEndpoints({
       providesTags: (result, error) => {
         if (error?.status === 401) return ['UNAUTHORIZED'];
         return [];
-      }
+      },
     }),
-  })
+  }),
 });

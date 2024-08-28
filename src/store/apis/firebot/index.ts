@@ -2,8 +2,8 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 
 export interface FirebotApiErrorResponse {
-  status: 'error',
-  message: string,
+  status: 'error';
+  message: string;
 }
 
 export const firebotApi = createApi({

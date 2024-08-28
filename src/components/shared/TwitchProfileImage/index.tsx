@@ -16,7 +16,5 @@ export const TwitchProfileImage = ({ size, ...propsImg }: TwitchProfileImageProp
   `;
 
   // Render component
-  return (
-    <img css={ cssImg } { ...propsImg } />
-  );
+  return <img css={cssImg} {...propsImg} />;
 };

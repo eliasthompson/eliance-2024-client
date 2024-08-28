@@ -20,27 +20,61 @@ import { useCreateEventSubSubscriptionChannelChatSettingsUpdateQuery } from '@st
 
 export const ChatBox = () => {
   const dispatch = useDispatch();
-  const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubChatBoxMessage>('wss://eventsub.wss.twitch.tv/ws', { share: true });
+  const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubChatBoxMessage>(
+    'wss://eventsub.wss.twitch.tv/ws',
+    { share: true },
+  );
   const { broadcasterId, chats } = useSelector(({ info }) => info);
   const { messageIds: twitchMessageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
-  const { data: eventSubSubscriptionChannelChatClearData, error: eventSubSubscriptionChannelChatClearError, isLoading: isEventSubSubscriptionChannelChatClearLoading } = useCreateEventSubSubscriptionChannelChatClearQuery({ broadcasterId, sessionId });
-  const { data: eventSubSubscriptionChannelChatMessageData, error: eventSubSubscriptionChannelChatMessageError, isLoading: isEventSubSubscriptionChannelChatMessageLoading } = useCreateEventSubSubscriptionChannelChatMessageQuery({ broadcasterId, sessionId });
-  const { data: eventSubSubscriptionChannelChatNotificationData, error: eventSubSubscriptionChannelChatNotificationError, isLoading: isEventSubSubscriptionChannelChatNotificationLoading } = useCreateEventSubSubscriptionChannelChatNotificationQuery({ broadcasterId, sessionId });
-  const { data: eventSubSubscriptionChannelChatSettingsUpdateData, error: eventSubSubscriptionChannelChatSettingsUpdateError, isLoading: isEventSubSubscriptionChannelChatSettingsUpdateLoading } = useCreateEventSubSubscriptionChannelChatSettingsUpdateQuery({ broadcasterId, sessionId });
-  const { data: chatSettingsData, error: chatSettingsError, isLoading: isChatSettingsLoading } = useGetChatSettingsQuery({ broadcasterId });
-  const isLoading = (
-    isEventSubSubscriptionChannelChatClearLoading
-    || isEventSubSubscriptionChannelChatMessageLoading
-    || isEventSubSubscriptionChannelChatNotificationLoading
-    || isEventSubSubscriptionChannelChatSettingsUpdateLoading
-    || isChatSettingsLoading
-  );
+  const {
+    data: eventSubSubscriptionChannelChatClearData,
+    // error: eventSubSubscriptionChannelChatClearError,
+    isLoading: isEventSubSubscriptionChannelChatClearLoading,
+  } = useCreateEventSubSubscriptionChannelChatClearQuery({
+    broadcasterId,
+    sessionId,
+  });
+  const {
+    data: eventSubSubscriptionChannelChatMessageData,
+    // error: eventSubSubscriptionChannelChatMessageError,
+    isLoading: isEventSubSubscriptionChannelChatMessageLoading,
+  } = useCreateEventSubSubscriptionChannelChatMessageQuery({
+    broadcasterId,
+    sessionId,
+  });
+  const {
+    data: eventSubSubscriptionChannelChatNotificationData,
+    // error: eventSubSubscriptionChannelChatNotificationError,
+    isLoading: isEventSubSubscriptionChannelChatNotificationLoading,
+  } = useCreateEventSubSubscriptionChannelChatNotificationQuery({
+    broadcasterId,
+    sessionId,
+  });
+  const {
+    data: eventSubSubscriptionChannelChatSettingsUpdateData,
+    // error: eventSubSubscriptionChannelChatSettingsUpdateError,
+    isLoading: isEventSubSubscriptionChannelChatSettingsUpdateLoading,
+  } = useCreateEventSubSubscriptionChannelChatSettingsUpdateQuery({
+    broadcasterId,
+    sessionId,
+  });
+  const {
+    data: chatSettingsData,
+    // error: chatSettingsError,
+    isLoading: isChatSettingsLoading,
+  } = useGetChatSettingsQuery({ broadcasterId });
+  const isLoading =
+    isEventSubSubscriptionChannelChatClearLoading ||
+    isEventSubSubscriptionChannelChatMessageLoading ||
+    isEventSubSubscriptionChannelChatNotificationLoading ||
+    isEventSubSubscriptionChannelChatSettingsUpdateLoading ||
+    isChatSettingsLoading;
   const isRenderable = !!(
-    eventSubSubscriptionChannelChatClearData
-    && eventSubSubscriptionChannelChatMessageData
-    && eventSubSubscriptionChannelChatNotificationData
-    && eventSubSubscriptionChannelChatSettingsUpdateData
-    && chatSettingsData
+    eventSubSubscriptionChannelChatClearData &&
+    eventSubSubscriptionChannelChatMessageData &&
+    eventSubSubscriptionChannelChatNotificationData &&
+    eventSubSubscriptionChannelChatSettingsUpdateData &&
+    chatSettingsData
   );
   const cssContainer = css`
     flex: 3;
@@ -74,10 +108,12 @@ export const ChatBox = () => {
             dispatch(addChat(payload.event));
             dispatch(addTwitchEventSubMessageId(messageId));
           } else if (subscriptionType === 'channel.chat_settings.update') {
-            dispatch(getChatSettingsUtil.updateQueryData('getChatSettings', { broadcasterId }, (state) => {
-              const { broadcaster_user_id, broadcaster_user_login, broadcaster_user_name, ...event } = payload.event;
-              if (state) Object.assign(state.data[0], event);
-            }));
+            dispatch(
+              getChatSettingsUtil.updateQueryData('getChatSettings', { broadcasterId }, (state) => {
+                const { broadcaster_user_id, broadcaster_user_login, broadcaster_user_name, ...event } = payload.event;
+                if (state) Object.assign(state.data[0], event);
+              }),
+            );
           } else if (subscriptionType === 'channel.chat.clear') {
             dispatch(clearChats());
           }
@@ -86,23 +122,36 @@ export const ChatBox = () => {
     }
   }, [broadcasterId, dispatch, twitchMessage, twitchMessageIds]);
 
-
   // Render nothing if data is loading or required data is incomplete
   if (isLoading || !isRenderable) return null;
 
   // Render component
   return (
-    <FlexContainer cssContainer={ cssContainer }>
-      <FlexContainer column css={ cssContainerSettings }>
-        <FollowerIcon colored={ chatSettingsData.data[0].follower_mode } filled={ chatSettingsData.data[0].follower_mode } cssIcon={ css`opacity:${(chatSettingsData.data[0].follower_mode) ? 1 : 0.5} ; ${cssIconSettings.styles}` } />
+    <FlexContainer cssContainer={cssContainer}>
+      <FlexContainer column css={cssContainerSettings}>
+        <FollowerIcon
+          colored={chatSettingsData.data[0].follower_mode}
+          filled={chatSettingsData.data[0].follower_mode}
+          cssIcon={css`
+            opacity: ${chatSettingsData.data[0].follower_mode ? 1 : 0.5};
+            ${cssIconSettings.styles}
+          `}
+        />
         {/* <SubscriberIcon colored={ chatSettingsData.data[0].subscriber_mode } filled={ chatSettingsData.data[0].subscriber_mode } cssIcon={ css`opacity:${(chatSettingsData.data[0].subscriber_mode) ? 1 : 0.5} ; ${cssIconSettings.styles}` } /> */}
-        <EmoteIcon colored={ chatSettingsData.data[0].emote_mode } filled={ chatSettingsData.data[0].emote_mode } cssIcon={ css`opacity:${(chatSettingsData.data[0].emote_mode) ? 1 : 0.5} ; ${cssIconSettings.styles}` } />
+        <EmoteIcon
+          colored={chatSettingsData.data[0].emote_mode}
+          filled={chatSettingsData.data[0].emote_mode}
+          cssIcon={css`
+            opacity: ${chatSettingsData.data[0].emote_mode ? 1 : 0.5};
+            ${cssIconSettings.styles}
+          `}
+        />
       </FlexContainer>
 
-      <FlexContainer column cssContainer={ cssContainerMessages }>
-        { chats.map((chat, i) => (
-          <ChatMessage key={ i } event={ chat } />
-        )) }
+      <FlexContainer column cssContainer={cssContainerMessages}>
+        {chats.map((chat, i) => (
+          <ChatMessage key={i} event={chat} />
+        ))}
       </FlexContainer>
     </FlexContainer>
   );
