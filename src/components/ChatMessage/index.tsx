@@ -1,8 +1,10 @@
+import { Fragment } from 'react';
 import { css } from '@emotion/react';
 
 import type { ChatMessageProps, TwitchChatBoxBadge } from '@components/ChatMessage/types';
 
 import { AnnouncementIcon } from '@components/shared/svgs/AnnouncementIcon';
+import { ChannelPointIcon } from '@components/shared/svgs/ChannelPointIcon';
 import { FlexContainer } from '@components/shared/FlexContainer';
 import { useGetChannelChatBadgesQuery } from '@store/apis/twitch/getChannelChatBadges';
 import { useGetGlobalChatBadgesQuery } from '@store/apis/twitch/getGlobalChatBadges';
@@ -10,11 +12,14 @@ import { useGetGlobalEmotesQuery } from '@store/apis/twitch/getGlobalEmotes';
 import { useGetPronounsQuery } from '@store/apis/chatPronouns/getPronouns';
 import { useGetUserQuery } from '@store/apis/chatPronouns/getUser';
 import { useSelector } from '@store';
-import { Fragment } from 'react/jsx-runtime';
 
 export const noticeTypes = {
-  announcement: { IconComponent: AnnouncementIcon },
-};
+  announcement: AnnouncementIcon,
+  channel_points_highlighted: ChannelPointIcon,
+  channel_points_sub_only: ChannelPointIcon,
+  power_ups_message_effect: AnnouncementIcon,
+  power_ups_gigantified_emote: AnnouncementIcon,
+} as const;
 
 export const ChatMessage = ({ event }: ChatMessageProps) => {
   const { broadcasterId } = useSelector(({ info }) => info);
@@ -37,8 +42,10 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
     && pronounsData
     && userData
   );
-  let backgroundColorPEvent = 'transparent';
-  let noticeNode = null;
+  const isSpecialMessage = ('notice_type' in event || event.message_type !== 'text');
+  const isHighlightMessage = ('message_type' in event && event.message_type === 'channel_points_highlighted');
+  let IconComponent: (typeof noticeTypes[keyof typeof noticeTypes]) | null = null;
+  let specialType: string | null = null;
 
   const { badges: messageBadges, message: { fragments } } = event;
   const { template = '' } = globalEmotesData || {};
@@ -56,8 +63,14 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
     return { ...emote, url };
   });
 
-  if ('notice_type' in event) backgroundColorPEvent = 'rgba(255, 255, 255, 5%)';
+  if (isSpecialMessage) {
+    specialType = ('notice_type' in event) ? event.notice_type : event.message_type;
+    IconComponent = noticeTypes[specialType];
+  }
 
+  const backgroundColorPEvent = (isSpecialMessage) ? 'rgba(0, 0, 0, 70%)' : 'transparent';
+  const backgroundColorSpanFragments = (isHighlightMessage) ? '#755ebc' : 'transparent';
+  const paddingSpanFragments = (isHighlightMessage) ? '0 calc(var(--padding) / 4)' : '0';
   const cssPEvent = css`
     position: relative;
     gap: calc(var(--padding) / 2);
@@ -78,33 +91,28 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
     height: calc(var(--line-height) - (var(--padding) / 2));
   `;
   const cssPMessage = css`
-    padding: 0 0 0 calc((var(--line-height) - (var(--padding) / 2)) + (var(--padding) * 1.5));
+    padding: calc(var(--padding) / 4) 0 calc(var(--padding) / 4) calc((var(--line-height) - (var(--padding) / 2)) + (var(--padding) * 1.5));
+    line-height: calc(((var(--bar-height) - (var(--padding) * 1.5)) / 3) - (var(--padding) / 2));
+    font-size: calc((((var(--bar-height) - (var(--padding) * 1.5)) / 3) - (var(--padding) / 2)) / 6 * 5);
   `;
   const cssImgBadge = css`
-    height: calc(var(--font-size) / 13 * 18);
-    width: calc(var(--font-size) / 13 * 18);
-    margin: 0 0.3rem 0 0;
+    height: calc(((var(--bar-height) - (var(--padding) * 1.5)) / 3) - (var(--padding) / 2));
+    width: calc(((var(--bar-height) - (var(--padding) * 1.5)) / 3) - (var(--padding) / 2));
+    margin: 0 calc(var(--padding) / 4) 0 0;
     vertical-align: text-bottom;
   `;
   const cssSpanPronouns = css`
     filter: brightness(67%);
   `;
+  const cssSpanFragments = css`
+    background-color: ${backgroundColorSpanFragments};
+    padding: ${paddingSpanFragments};
+  `;
   const cssImgEmote = css`
-    height: calc(var(--font-size) / 13 * 28);
-    margin: -0.5rem 0;
+    height: var(--line-height);
+    margin: calc(var(--padding) / -4) 0;
     vertical-align: text-bottom;
   `;
-
-  if ('notice_type' in event) {
-    const { IconComponent } = noticeTypes[event.notice_type];
-
-    noticeNode = (
-      <Fragment>
-        <div css={ cssDivMarker } />
-        <IconComponent cssIcon={ cssIconNotice } />
-      </Fragment>
-    );
-  }
 
   // Render nothing if data is loading or required data is incomplete
   if (isLoading || !isRenderable) return null;
@@ -112,7 +120,12 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
   // Render component
   return (
     <FlexContainer cssContainer={ css`background-color: ${('notice_type' in event) ? 'rgba(255, 255, 255, 5%)' : 'transparent' }; ${cssPEvent.styles}` }>
-      { noticeNode }
+      { (IconComponent) ? (
+        <Fragment>
+          <div css={ cssDivMarker } />
+          <IconComponent cssIcon={ cssIconNotice } />
+        </Fragment>
+      ) : null }
 
       <p css={ cssPMessage }>
         {
@@ -129,15 +142,17 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
           { (pronouns) ? <span css={ cssSpanPronouns }> ({ pronouns.toLowerCase() })</span> : null }
         </strong>:&nbsp;
 
-        {
-          fragments.map((fragment, i) => {
-            const { url } = emotes.find(({ id }) => id === fragment.emote?.id) || {};
+        <span css={ cssSpanFragments }>
+          {
+            fragments.map((fragment, i) => {
+              const { url } = emotes.find(({ id }) => id === fragment.emote?.id) || {};
 
-            if (url) return <img key={ i } src={ url } css={ cssImgEmote } />;
-            if (fragment.type === 'mention') return <strong key={ i }>{ fragment.text }</strong>;
-            return <span key={ i }>{ fragment.text }</span>;
-          })
-        }
+              if (url) return <img key={ i } src={ url } css={ cssImgEmote } />;
+              if (fragment.type === 'mention') return <strong key={ i }>{ fragment.text }</strong>;
+              return <span key={ i }>{ fragment.text }</span>;
+            })
+          }
+        </span>
       </p>
     </FlexContainer>
   );

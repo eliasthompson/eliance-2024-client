@@ -44,7 +44,7 @@ export const GlobalStyle = () => {
       --bar-height: 105px;
       --padding: 12px;
       --line-height: calc((var(--bar-height) - (var(--padding) * 2)) / 3);
-      --font-size: calc(var(--line-height) * (13 / 20));
+      --font-size: calc(var(--line-height) / 6 * 5);
     }
 
     * {

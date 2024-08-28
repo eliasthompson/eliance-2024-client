@@ -8,11 +8,12 @@ import { ChatMessage } from '@components/ChatMessage';
 import { EmoteIcon } from '@components/shared/svgs/EmoteIcon';
 import { FlexContainer } from '@components/shared/FlexContainer';
 import { FollowerIcon } from '@components/shared/svgs/FollowerIcon';
-import { SubscriberIcon } from '@components/shared/svgs/SubscriberIcon';
-import { addChat } from '@store/slices/info';
+// import { SubscriberIcon } from '@components/shared/svgs/SubscriberIcon';
+import { addChat, clearChats } from '@store/slices/info';
 import { addTwitchEventSubMessageId } from '@store/slices/twitchEventSub';
 import { getChatSettingsUtil, useGetChatSettingsQuery } from '@store/apis/twitch/getChatSettings';
 import { useDispatch, useSelector } from '@store';
+import { useCreateEventSubSubscriptionChannelChatClearQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatClear';
 import { useCreateEventSubSubscriptionChannelChatMessageQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatMessage';
 import { useCreateEventSubSubscriptionChannelChatNotificationQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatNotification';
 import { useCreateEventSubSubscriptionChannelChatSettingsUpdateQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatSettingsUpdate';
@@ -22,18 +23,21 @@ export const ChatBox = () => {
   const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubChatBoxMessage>('wss://eventsub.wss.twitch.tv/ws', { share: true });
   const { broadcasterId, chats } = useSelector(({ info }) => info);
   const { messageIds: twitchMessageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
+  const { data: eventSubSubscriptionChannelChatClearData, error: eventSubSubscriptionChannelChatClearError, isLoading: isEventSubSubscriptionChannelChatClearLoading } = useCreateEventSubSubscriptionChannelChatClearQuery({ broadcasterId, sessionId });
   const { data: eventSubSubscriptionChannelChatMessageData, error: eventSubSubscriptionChannelChatMessageError, isLoading: isEventSubSubscriptionChannelChatMessageLoading } = useCreateEventSubSubscriptionChannelChatMessageQuery({ broadcasterId, sessionId });
   const { data: eventSubSubscriptionChannelChatNotificationData, error: eventSubSubscriptionChannelChatNotificationError, isLoading: isEventSubSubscriptionChannelChatNotificationLoading } = useCreateEventSubSubscriptionChannelChatNotificationQuery({ broadcasterId, sessionId });
   const { data: eventSubSubscriptionChannelChatSettingsUpdateData, error: eventSubSubscriptionChannelChatSettingsUpdateError, isLoading: isEventSubSubscriptionChannelChatSettingsUpdateLoading } = useCreateEventSubSubscriptionChannelChatSettingsUpdateQuery({ broadcasterId, sessionId });
   const { data: chatSettingsData, error: chatSettingsError, isLoading: isChatSettingsLoading } = useGetChatSettingsQuery({ broadcasterId });
   const isLoading = (
-    isEventSubSubscriptionChannelChatMessageLoading
+    isEventSubSubscriptionChannelChatClearLoading
+    || isEventSubSubscriptionChannelChatMessageLoading
     || isEventSubSubscriptionChannelChatNotificationLoading
     || isEventSubSubscriptionChannelChatSettingsUpdateLoading
     || isChatSettingsLoading
   );
   const isRenderable = !!(
-    eventSubSubscriptionChannelChatMessageData
+    eventSubSubscriptionChannelChatClearData
+    && eventSubSubscriptionChannelChatMessageData
     && eventSubSubscriptionChannelChatNotificationData
     && eventSubSubscriptionChannelChatSettingsUpdateData
     && chatSettingsData
@@ -50,8 +54,9 @@ export const ChatBox = () => {
   `;
   const cssContainerMessages = css`
     flex: 1;
+    gap: calc(var(--padding) / 4);
     justify-content: flex-end;
-    line-height: var(--line-height);
+    line-height: calc((var(--bar-height) - (var(--padding) * 1.5)) / 3);
     padding: 0 var(--padding) var(--padding) 0;
   `;
 
@@ -73,6 +78,8 @@ export const ChatBox = () => {
               const { broadcaster_user_id, broadcaster_user_login, broadcaster_user_name, ...event } = payload.event;
               if (state) Object.assign(state.data[0], event);
             }));
+          } else if (subscriptionType === 'channel.chat.clear') {
+            dispatch(clearChats());
           }
         }
       }

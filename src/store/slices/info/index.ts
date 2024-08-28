@@ -26,10 +26,25 @@ export interface InfoState {
   persons: InfoUser[],
 };
 
+export const getStoredRecentChats = () => {
+  let localStoredChats: InfoState['chats'] = [];
+
+  try {
+    const localStoredChatsItem = localStorage.getItem('recentChats');
+
+    if (localStoredChatsItem !== null) localStoredChats = JSON.parse(localStoredChatsItem);
+    else localStorage.setItem('recentChats', JSON.stringify([]));
+  } catch (error) {
+    //
+  }
+
+  return localStoredChats;
+};
+
 export const initialInfoState: InfoState = {
   broadcasterId: null,
   broadcasterLogin: null,
-  chats: [],
+  chats: getStoredRecentChats(),
   errors: [],
   goal: null,
   persons: [],
@@ -42,9 +57,20 @@ export const infoSlice = createSlice({
     addChat: (state, { payload }: PayloadAction<InfoState['chats'][number]>) => {
       state.chats.push(payload);
       if (state.chats.length > 100) state.chats.shift();
+
+      const storedRecentChats = getStoredRecentChats();
+
+      storedRecentChats.push(payload);
+      if (storedRecentChats.length > 3) storedRecentChats.shift();
+
+      localStorage.setItem('recentChats', JSON.stringify(storedRecentChats));
     },
     addError: (state, { payload }: PayloadAction<InfoState['errors'][number]>) => {
       state.errors.push(payload);
+    },
+    clearChats: (state) => {
+      state.chats.length = 0;
+      localStorage.setItem('recentChats', JSON.stringify([]));
     },
     removeError: (state, { payload }: PayloadAction<number>) => {
       state.errors.splice(payload, 1);
@@ -59,6 +85,7 @@ export const {
   actions: {
     addChat,
     addError,
+    clearChats,
     removeError,
     setInfo,
   },

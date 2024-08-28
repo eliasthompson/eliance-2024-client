@@ -64,6 +64,14 @@
     - [ ] 
 - [ ] chat box
   - [ ] hide on big event
+  - [ ] handle:
+    - [x] messages
+    - [x] notifications
+    - [x] settings
+    - [ ] deletes
+    - [ ] timeouts
+    - [x] clears
+  - [x] store three latest chats, clear on clear
   - [x] chat mode column w/ icons (?)
     - [x] follower mode
     - [x] subscriber mode (?)
@@ -73,39 +81,39 @@
       - [x] [`GET chat/settings`](https://dev.twitch.tv/docs/api/reference/#get-chat-settings)
       - [x] [`POST eventsub/subscriptions`](https://dev.twitch.tv/docs/api/reference/#create-eventsub-subscription)
     - [x] event subs:
+      - [x] [`channel.chat.clear`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatclear)
+      - [x] [`channel.chat.message`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatmessage)
+      - [x] [`channel.chat.notification`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
       - [x] [`channel.chat_settings.update`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchat_settingsupdate)
   - [ ] data for each chat:
     - [ ] `channel.chat.message`
       - [ ] message types:
-        - [x] text
-        - [ ] channel_points_highlighted
-        - [ ] channel_points_sub_only
-        - [ ] user_intro
-        - [ ] power_ups_message_effect
-        - [ ] power_ups_gigantified_emote
+        - [x] `text`
+        - [x] `channel_points_highlighted`
+        - [ ] `channel_points_sub_only`
+        - [ ] `user_intro`
+        - [ ] `power_ups_message_effect`
+        - [ ] `power_ups_gigantified_emote`
     - [ ] `channel.chat.notification`
       - [ ] notice types:
-        - [ ] sub - unhandled, will be event
-        - [ ] resub - handled only if includes messages
-        - [ ] sub_gift - unhandled, will be event
-        - [ ] community_sub_gift - unhandled, will be event
-        - [ ] gift_paid_upgrade - handled only if includes messages
-        - [ ] prime_paid_upgrade - handled only if includes messages
-        - [ ] raid - unhandled
-        - [ ] unraid - unhandled
-        - [ ] pay_it_forward - unhandled
-        - [x] announcement - handled
-        - [ ] bits_badge_tier - handled only if includes messages
-        - [ ] charity_donation - handled only if includes messages
+        - [ ] `sub` - unhandled, will be event
+        - [ ] `resub` - handled only if includes messages
+        - [ ] `sub_gift` - unhandled, will be event
+        - [ ] `community_sub_gift` - unhandled, will be event
+        - [ ] `gift_paid_upgrade` - handled only if includes messages
+        - [ ] `prime_paid_upgrade` - handled only if includes messages
+        - [ ] `raid` - unhandled
+        - [ ] `unraid` - unhandled
+        - [ ] `pay_it_forward` - unhandled
+        - [x] `announcement` - handled
+        - [ ] `bits_badge_tier` - handled only if includes messages
+        - [ ] `charity_donation` - handled only if includes messages
     - [ ] endpoints:
       - [x] [`GET chat/badges`](https://dev.twitch.tv/docs/api/reference/#get-channel-chat-badges)
       - [x] [`GET chat/badges/global`](https://dev.twitch.tv/docs/api/reference/#get-global-chat-badges)
       - [x] [`GET chat/emotes/global`](https://dev.twitch.tv/docs/api/reference/#get-global-emotes)
       - [x] [`GET pronouns`](https://pronouns.alejo.io/api/pronouns)
       - [x] [`GET users/:login`](https://pronouns.alejo.io/api/users/eliasthompson)
-    - [ ] event subs:
-      - [x] [`channel.chat.message`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatmessage)
-      - [x] [`channel.chat.notification`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
   - [ ] show/parse:
     - [x] text
     - [x] emotes
@@ -115,8 +123,7 @@
     - [x] username
     - [x] color
     - [ ] bits
-    - [ ] notice type
-  - [ ] handle deletes, timeouts, and clears
+    - [x] notice type
 - [ ] error display and handling
 - [ ] design
 - [ ] animations
