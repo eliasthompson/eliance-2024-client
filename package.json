@@ -7,14 +7,14 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "lint": "eslint",
-    "lint-fix": "eslint --fix",
     "prebuild": "eslint --fix && tsc",
     "build": "webpack --config config/webpack.js --mode production",
+    "lint-fix": "eslint --fix",
+    "lint": "eslint",
+    "prepare": "husky",
     "start": "webpack serve --config config/webpack.js",
-    "tscheck": "tsc",
     "test": "test",
-    "prepare": "husky"
+    "tscheck": "tsc"
   },
   "author": "Elias Thompson",
   "license": "ISC",
