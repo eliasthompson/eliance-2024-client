@@ -1,26 +1,24 @@
-import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
-
 import useWebSocket from 'react-use-websocket';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect } from 'react';
 import { css } from '@emotion/react';
 import * as uuid from 'uuid';
 
-import type { FirebotEventSubMessageResponse, FirebotEventSubMessagePayload, TwitchEventSubMessageResponse } from '@components/Container/types';
+import type { FirebotEventSubMessage, FirebotEventSubMessagePayload, TwitchEventSubMessage } from '@components/Container/types';
 
 import { AuthenticationBar } from '@components/AuthenticationBar';
 import { ErrorMessage } from '@components/shared/ErrorMessage';
 import { InfoBar } from '@components/InfoBar';
+import { addError, setInfo } from '@store/slices/info';
 import { addFirebotEventSubMessageId } from '@store/slices/firebotEventSub';
 import { addTwitchEventSubMessageId, setTwitchEventSub } from '@src/store/slices/twitchEventSub';
 import { namespace } from '@config';
-import { addError, setInfo } from '@store/slices/info';
 import { useDispatch, useSelector } from '@store';
 import { useValidateTokenQuery } from '@src/store/apis/twitch/validateToken';
 
 export const Container = () => {
   const dispatch = useDispatch();
-  const { lastJsonMessage: firebotMessage, readyState: firebotReadyState, sendJsonMessage: sendFirebotMessage } = useWebSocket<FirebotEventSubMessageResponse>('ws://localhost:7472', { share: true });
-  const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubMessageResponse>('wss://eventsub.wss.twitch.tv/ws', { share: true });
+  const { lastJsonMessage: firebotMessage, readyState: firebotReadyState, sendJsonMessage: sendFirebotMessage } = useWebSocket<FirebotEventSubMessage>('ws://localhost:7472', { share: true });
+  const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubMessage>('wss://eventsub.wss.twitch.tv/ws', { share: true });
   const { broadcasterId, broadcasterLogin, errors } = useSelector(({ info }) => info);
   const { messageIds: firebotMessageIds } = useSelector(({ firebotEventSub }) => firebotEventSub);
   const { messageIds: twitchMessageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);

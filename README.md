@@ -64,15 +64,16 @@
     - [ ] 
 - [ ] chat box
   - [ ] hide on big event
-  - [ ] chat mode column w/ icons (?)
-    - [ ] follower mode
-    - [ ] subscriber mode (?)
+  - [x] chat mode column w/ icons (?)
+    - [x] follower mode
+    - [x] subscriber mode (?)
     - [ ] slow mode (?)
-    - [ ] emote mode
-    - [ ] endpoints:
-      - [ ] [`GET chat/settings`](https://dev.twitch.tv/docs/api/reference/#get-chat-settings)
-    - [ ] event subs:
-      - [ ] [`channel.chat_settings.update`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchat_settingsupdate)
+    - [x] emote mode
+    - [x] endpoints:
+      - [x] [`GET chat/settings`](https://dev.twitch.tv/docs/api/reference/#get-chat-settings)
+      - [x] [`POST eventsub/subscriptions`](https://dev.twitch.tv/docs/api/reference/#create-eventsub-subscription)
+    - [x] event subs:
+      - [x] [`channel.chat_settings.update`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchat_settingsupdate)
   - [ ] data for each chat:
     - [ ] `channel.chat.message`
       - [ ] message types:
@@ -93,17 +94,29 @@
         - [ ] raid - unhandled
         - [ ] unraid - unhandled
         - [ ] pay_it_forward - unhandled
-        - [ ] announcement - handled
+        - [x] announcement - handled
         - [ ] bits_badge_tier - handled only if includes messages
         - [ ] charity_donation - handled only if includes messages
     - [ ] endpoints:
-      - [ ] 
+      - [x] [`GET chat/badges`](https://dev.twitch.tv/docs/api/reference/#get-channel-chat-badges)
+      - [x] [`GET chat/badges/global`](https://dev.twitch.tv/docs/api/reference/#get-global-chat-badges)
+      - [x] [`GET chat/emotes/global`](https://dev.twitch.tv/docs/api/reference/#get-global-emotes)
+      - [x] [`GET pronouns`](https://pronouns.alejo.io/api/pronouns)
+      - [x] [`GET users/:login`](https://pronouns.alejo.io/api/users/eliasthompson)
     - [ ] event subs:
       - [x] [`channel.chat.message`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatmessage)
-      - [ ] [`channel.chat.notification`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
-  - [ ] show text, emotes, badges, pronouns, mentions, username, color, & bits
+      - [x] [`channel.chat.notification`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
+  - [ ] show/parse:
+    - [x] text
+    - [x] emotes
+    - [x] badges
+    - [x] pronouns
+    - [x] mentions
+    - [x] username
+    - [x] color
+    - [ ] bits
+    - [ ] notice type
   - [ ] handle deletes, timeouts, and clears
-  - [ ] handle special messages (highlights, resubs, announcements(?), big emotes/powerups)
 - [ ] error display and handling
 - [ ] design
 - [ ] animations

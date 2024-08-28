@@ -1,0 +1,59 @@
+/* follower */
+.tw-root--theme-dark .activity-feed-v2-event--follow {
+    color: #ff38db;
+}
+
+/* redemption */
+.tw-root--theme-dark .activity-feed-v2-event--reward-request {
+    color: #ffd37a
+}
+
+/* ??? */
+.tw-root--theme-dark .activity-feed-v2-event--hosting {
+    color: #ffaaa8
+}
+
+/* raid */
+.tw-root--theme-dark .activity-feed-v2-event--raiding {
+    color: #ebeb00
+}
+
+/* bits */
+.tw-root--theme-dark .activity-feed-v2-event--monetary {
+    color: #5cffbe
+}
+
+/* subs */
+.tw-root--theme-dark .activity-feed-v2-event--subscription {
+    color: #1f69ff
+}
+
+/* hype train */
+.tw-root--theme-dark .activity-feed-v2-event--multi-stage {
+    color: #00d6d6
+}
+
+/* donation */
+.tw-root--theme-dark .activity-feed-v2-event--charity {
+    color: #5cffbe
+}
+
+/* ??? */
+.tw-root--theme-dark .activity-feed-v2-event--pinned-chat {
+    color: #ffb31a
+}
+
+/* default */
+.tw-root--theme-dark .activity-feed-v2-event--twitch {
+    color: #9147ff
+}
+
+/* goal */
+.tw-root--theme-dark .activity-feed-v2-event--creator-goal {
+    color: #00c274
+}
+
+/* gold train(?) */
+.activity-feed-v2-event--golden-kappa-train,.tw-root--theme-dark .activity-feed-v2-event--golden-kappa-train,.tw-root--theme-light .activity-feed-v2-event--golden-kappa-train {
+    color: #ffb31a
+}

@@ -2,12 +2,19 @@ import { css } from '@emotion/react';
 
 import type { ChatMessageProps, TwitchChatBoxBadge } from '@components/ChatMessage/types';
 
+import { AnnouncementIcon } from '@components/shared/svgs/AnnouncementIcon';
+import { FlexContainer } from '@components/shared/FlexContainer';
 import { useGetChannelChatBadgesQuery } from '@store/apis/twitch/getChannelChatBadges';
 import { useGetGlobalChatBadgesQuery } from '@store/apis/twitch/getGlobalChatBadges';
 import { useGetGlobalEmotesQuery } from '@store/apis/twitch/getGlobalEmotes';
 import { useGetPronounsQuery } from '@store/apis/chatPronouns/getPronouns';
 import { useGetUserQuery } from '@store/apis/chatPronouns/getUser';
 import { useSelector } from '@store';
+import { Fragment } from 'react/jsx-runtime';
+
+export const noticeTypes = {
+  announcement: { IconComponent: AnnouncementIcon },
+};
 
 export const ChatMessage = ({ event }: ChatMessageProps) => {
   const { broadcasterId } = useSelector(({ info }) => info);
@@ -30,20 +37,8 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
     && pronounsData
     && userData
   );
-  const cssImgBadge = css`
-    height: calc(var(--font-size) / 13 * 18);
-    width: calc(var(--font-size) / 13 * 18);
-    margin: 0 0.3rem 0 0;
-    vertical-align: text-bottom;
-  `;
-  const cssSpanPronouns = css`
-    filter: brightness(67%);
-  `;
-  const cssImgEmote = css`
-    height: calc(var(--font-size) / 13 * 28);
-    margin: -0.5rem 0;
-    vertical-align: text-bottom;
-  `;
+  let backgroundColorPEvent = 'transparent';
+  let noticeNode = null;
 
   const { badges: messageBadges, message: { fragments } } = event;
   const { template = '' } = globalEmotesData || {};
@@ -61,35 +56,89 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
     return { ...emote, url };
   });
 
+  if ('notice_type' in event) backgroundColorPEvent = 'rgba(255, 255, 255, 5%)';
+
+  const cssPEvent = css`
+    position: relative;
+    gap: calc(var(--padding) / 2);
+    align-items: center;
+    background-color: ${backgroundColorPEvent};
+  `;
+  const cssDivMarker = css`
+    position: absolute;
+    left: 0;
+    width: calc(var(--padding) / 2);
+    height: 100%;
+    margin: auto 0;
+    background-color: green;
+  `;
+  const cssIconNotice = css`
+    position: absolute;
+    left: var(--padding);
+    height: calc(var(--line-height) - (var(--padding) / 2));
+  `;
+  const cssPMessage = css`
+    padding: 0 0 0 calc((var(--line-height) - (var(--padding) / 2)) + (var(--padding) * 1.5));
+  `;
+  const cssImgBadge = css`
+    height: calc(var(--font-size) / 13 * 18);
+    width: calc(var(--font-size) / 13 * 18);
+    margin: 0 0.3rem 0 0;
+    vertical-align: text-bottom;
+  `;
+  const cssSpanPronouns = css`
+    filter: brightness(67%);
+  `;
+  const cssImgEmote = css`
+    height: calc(var(--font-size) / 13 * 28);
+    margin: -0.5rem 0;
+    vertical-align: text-bottom;
+  `;
+
+  if ('notice_type' in event) {
+    const { IconComponent } = noticeTypes[event.notice_type];
+
+    noticeNode = (
+      <Fragment>
+        <div css={ cssDivMarker } />
+        <IconComponent cssIcon={ cssIconNotice } />
+      </Fragment>
+    );
+  }
+
   // Render nothing if data is loading or required data is incomplete
   if (isLoading || !isRenderable) return null;
 
   // Render component
   return (
-    <p>
-      { 
-        messageBadges.map((messageBadge, i) => {
-          const { image_url_4x: imageUrl4x } = badges.find(({ id, set_id: setId }) => id === messageBadge.id && setId === messageBadge.set_id) || {};
+    <FlexContainer cssContainer={ css`background-color: ${('notice_type' in event) ? 'rgba(255, 255, 255, 5%)' : 'transparent' }; ${cssPEvent.styles}` }>
+      { noticeNode }
 
-          if (imageUrl4x) return <img key={ i } src={ imageUrl4x } css={ cssImgBadge } />;
-          return null;
-        })
-      }
+      <p css={ cssPMessage }>
+        {
+          messageBadges.map((messageBadge, i) => {
+            const { image_url_4x: imageUrl4x } = badges.find(({ id, set_id: setId }) => id === messageBadge.id && setId === messageBadge.set_id) || {};
 
-      <strong style={ { color: event.color || '#808080' } }>
-        { event.chatter_user_name }
-        { (pronouns) ? <span css={ cssSpanPronouns }> ({ pronouns.toLowerCase() })</span> : null }
-      </strong>:&nbsp;
+            if (imageUrl4x) return <img key={ i } src={ imageUrl4x } css={ cssImgBadge } />;
+            return null;
+          })
+        }
 
-      { 
-        fragments.map((fragment, i) => {
-          const { url } = emotes.find(({ id }) => id === fragment.emote?.id) || {};
+        <strong style={ { color: event.color || '#808080' } }>
+          { event.chatter_user_name }
+          { (pronouns) ? <span css={ cssSpanPronouns }> ({ pronouns.toLowerCase() })</span> : null }
+        </strong>:&nbsp;
 
-          if (url) return <img key={ i } src={ url } css={ cssImgEmote } />;
-          if (fragment.type === 'mention') return <strong key={ i }>{ fragment.text }</strong>;
-          return <span key={ i }>{ fragment.text }</span>;
-        })
-      }
-    </p>
+        {
+          fragments.map((fragment, i) => {
+            const { url } = emotes.find(({ id }) => id === fragment.emote?.id) || {};
+
+            if (url) return <img key={ i } src={ url } css={ cssImgEmote } />;
+            if (fragment.type === 'mention') return <strong key={ i }>{ fragment.text }</strong>;
+            return <span key={ i }>{ fragment.text }</span>;
+          })
+        }
+      </p>
+    </FlexContainer>
   );
 };

@@ -43,6 +43,7 @@ export const AuthenticationBar = ({ cssBar: cssBarProvided }: AuthenticationBarP
     && deviceCodeData
   );
   const cssBar = css`
+    gap: 1rem;
     align-items: center;
     justify-content: center;
     ${cssBarProvided?.styles}
@@ -68,7 +69,7 @@ export const AuthenticationBar = ({ cssBar: cssBarProvided }: AuthenticationBarP
 
   // Render component
   return (
-    <FlexContainer gap="1rem" css={ cssBar }>
+    <FlexContainer cssContainer={ cssBar }>
       { verifyActions }
       <TwitchButton onClick={ handleAuthenticateClick }>Authenticate</TwitchButton>
     </FlexContainer>

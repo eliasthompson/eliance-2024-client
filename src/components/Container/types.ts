@@ -3,13 +3,13 @@ export interface FirebotEventSubMessagePayload {
   name: 'subscribe-events',
 };
 
-export interface FirebotEventSubMessageResponse {
+export interface FirebotEventSubMessage {
   type: string,
   name: string,
   data: any,
 };
 
-export interface TwitchEventSubWelcomeMessageResponse {
+export interface TwitchEventSubWelcomeMessage {
   metadata: {
     message_id: string,
     message_type: 'session_welcome',
@@ -26,7 +26,7 @@ export interface TwitchEventSubWelcomeMessageResponse {
   },
 };
 
-export interface TwitchEventSubKeepaliveMessageResponse {
+export interface TwitchEventSubKeepaliveMessage {
   metadata: {
     message_id: string,
     message_type: 'session_keepalive',
@@ -35,7 +35,7 @@ export interface TwitchEventSubKeepaliveMessageResponse {
   payload: object,
 };
 
-export interface TwitchEventSubNotificationMessageResponse {
+export interface TwitchEventSubNotificationMessage {
   metadata: {
     message_id: string,
     message_type: 'notification',
@@ -56,7 +56,7 @@ export interface TwitchEventSubNotificationMessageResponse {
   },
 };
 
-export interface TwitchEventSubReconnectMessageResponse {
+export interface TwitchEventSubReconnectMessage {
   metadata: {
     message_id: string,
     message_type: 'session_reconnect',
@@ -73,4 +73,4 @@ export interface TwitchEventSubReconnectMessageResponse {
   },
 };
 
-export type TwitchEventSubMessageResponse = TwitchEventSubWelcomeMessageResponse | TwitchEventSubKeepaliveMessageResponse | TwitchEventSubNotificationMessageResponse | TwitchEventSubReconnectMessageResponse;
+export type TwitchEventSubMessage = TwitchEventSubWelcomeMessage | TwitchEventSubKeepaliveMessage | TwitchEventSubNotificationMessage | TwitchEventSubReconnectMessage;

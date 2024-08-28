@@ -14,7 +14,7 @@ export const firebotEventSubSlice = createSlice({
   initialState: initialFirebotEventSubState,
   name: 'firebotEventSub',
   reducers: {
-    addFirebotEventSubMessageId: (state, { payload }: PayloadAction<string>) => {
+    addFirebotEventSubMessageId: (state, { payload }: PayloadAction<FirebotEventSubState['messageIds'][number]>) => {
       state.messageIds.push(payload);
     },
   },
