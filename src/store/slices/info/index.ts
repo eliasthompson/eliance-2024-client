@@ -20,18 +20,20 @@ export type InfoUser = TwitchApiGetUsersResponse['data'][number] & {
 export interface InfoState {
   broadcasterId: string | null;
   broadcasterLogin: string | null;
+  broadcasterColor: string | null;
   chats: ((
     | TwitchEventSubChannelChatMessageNotificationMessage['payload']['event']
     | TwitchEventSubChannelChatNotificationNotificationMessage['payload']['event']
   ) & {
-    isDeleted?: boolean;
+    messageTimestamp: string;
+    deletedTimestamp?: string;
   })[];
   errors: ErrorMessageProps['error'][];
   goal: TwitchApiGetCreatorGoalsResponse['data'][number] | null;
   persons: InfoUser[];
 }
 
-export const getStoredRecentChats = () => {
+export const getStoredRecentChats = (ex: number = 24 * 60 * 60 * 1000) => {
   let localStoredChats: InfoState['chats'] = [];
 
   try {
@@ -43,12 +45,18 @@ export const getStoredRecentChats = () => {
     //
   }
 
-  return localStoredChats;
+  return localStoredChats.filter((localStoredChat) => {
+    const chatTime = new Date(localStoredChat.messageTimestamp).getTime();
+    const referenceDate = new Date().getTime() - ex;
+
+    return chatTime > referenceDate;
+  });
 };
 
 export const initialInfoState: InfoState = {
   broadcasterId: null,
   broadcasterLogin: null,
+  broadcasterColor: null,
   chats: getStoredRecentChats(),
   errors: [],
   goal: null,

@@ -3,11 +3,8 @@ import { Fragment, useEffect } from 'react';
 import { css } from '@emotion/react';
 import * as uuid from 'uuid';
 
-import type {
-  FirebotEventSubMessage,
-  FirebotEventSubMessagePayload,
-  TwitchEventSubMessage,
-} from '@components/Container/types';
+import type { FirebotEventSubMessage, FirebotEventSubMessagePayload } from '@store/apis/firebot';
+import type { TwitchEventSubMessage } from '@components/types';
 
 import { AuthenticationBar } from '@components/AuthenticationBar';
 import { ErrorMessage } from '@components/shared/ErrorMessage';
@@ -46,15 +43,9 @@ export const Container = () => {
     background-color: ${backgroundColor};
   `;
 
-  // Set user id if token data exists
+  // Set broadcaster id if token data exists
   useEffect(() => {
-    if (tokenData)
-      dispatch(
-        setInfo({
-          broadcasterId: tokenData.user_id,
-          broadcasterLogin: tokenData.login,
-        }),
-      );
+    if (tokenData) dispatch(setInfo({ broadcasterId: tokenData.user_id, broadcasterLogin: tokenData.login }));
   }, [dispatch, tokenData]);
 
   // Subscribe to firebot event sub events on first connection

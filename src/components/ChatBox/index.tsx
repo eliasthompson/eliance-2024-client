@@ -2,7 +2,7 @@ import useWebSocket from 'react-use-websocket';
 import { css } from '@emotion/react';
 import { useEffect } from 'react';
 
-import type { TwitchEventSubChatBoxMessage } from '@components/ChatBox/types';
+import type { TwitchEventSubMessage } from '@components/types';
 
 import { ChatMessage } from '@components/ChatMessage';
 import { EmoteIcon } from '@components/shared/svgs/EmoteIcon';
@@ -20,10 +20,9 @@ import { useCreateEventSubSubscriptionChannelChatSettingsUpdateQuery } from '@st
 
 export const ChatBox = () => {
   const dispatch = useDispatch();
-  const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubChatBoxMessage>(
-    'wss://eventsub.wss.twitch.tv/ws',
-    { share: true },
-  );
+  const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubMessage>('wss://eventsub.wss.twitch.tv/ws', {
+    share: true,
+  });
   const { broadcasterId, chats } = useSelector(({ info }) => info);
   const { messageIds: twitchMessageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
   const {
@@ -85,13 +84,14 @@ export const ChatBox = () => {
   `;
   const cssIconSettings = css`
     height: calc((var(--bar-height) - (var(--padding) * 2.5)) / 2);
+    filter: drop-shadow(#000000 0 0 calc(var(--padding) * 0.75));
   `;
   const cssContainerMessages = css`
     flex: 1;
     gap: calc(var(--padding) / 4);
     justify-content: flex-end;
     line-height: calc((var(--bar-height) - (var(--padding) * 1.5)) / 3);
-    padding: 0 var(--padding) var(--padding) 0;
+    padding: 0 0 var(--padding) var(--padding);
   `;
 
   // Handle twitch event sub messages
@@ -100,23 +100,28 @@ export const ChatBox = () => {
       const { metadata, payload } = twitchMessage;
       const { message_id: messageId, message_type: messageType } = metadata;
 
-      if (!twitchMessageIds.includes(messageId) && messageType === 'notification' && 'subscription_type' in metadata) {
+      if (!twitchMessageIds.includes(messageId) && messageType === 'notification' && 'event' in payload) {
         const { subscription_type: subscriptionType } = metadata;
+        const { event } = payload;
 
-        if ('event' in payload) {
-          if (subscriptionType === 'channel.chat.message' || subscriptionType === 'channel.chat.notification') {
-            dispatch(addChat(payload.event));
+        if (subscriptionType === 'channel.chat.message' || subscriptionType === 'channel.chat.notification') {
+          if ('message' in event && event.message.text) {
+            const { message_timestamp: messageTimestamp } = metadata;
+
+            dispatch(addChat({ ...event, messageTimestamp }));
             dispatch(addTwitchEventSubMessageId(messageId));
-          } else if (subscriptionType === 'channel.chat_settings.update') {
-            dispatch(
-              getChatSettingsUtil.updateQueryData('getChatSettings', { broadcasterId }, (state) => {
-                const { broadcaster_user_id, broadcaster_user_login, broadcaster_user_name, ...event } = payload.event;
-                if (state) Object.assign(state.data[0], event);
-              }),
-            );
-          } else if (subscriptionType === 'channel.chat.clear') {
-            dispatch(clearChats());
           }
+        } else if (subscriptionType === 'channel.chat_settings.update') {
+          dispatch(
+            getChatSettingsUtil.updateQueryData('getChatSettings', { broadcasterId }, (state) => {
+              const { broadcaster_user_id, broadcaster_user_login, broadcaster_user_name, ...eventData } = event;
+              if (state) Object.assign(state.data[0], eventData);
+            }),
+          );
+          dispatch(addTwitchEventSubMessageId(messageId));
+        } else if (subscriptionType === 'channel.chat.clear') {
+          dispatch(clearChats());
+          dispatch(addTwitchEventSubMessageId(messageId));
         }
       }
     }
@@ -128,6 +133,11 @@ export const ChatBox = () => {
   // Render component
   return (
     <FlexContainer cssContainer={cssContainer}>
+      <FlexContainer column cssContainer={cssContainerMessages}>
+        {chats.map((chat, i) => (
+          <ChatMessage key={i} event={chat} />
+        ))}
+      </FlexContainer>
       <FlexContainer column css={cssContainerSettings}>
         <FollowerIcon
           colored={chatSettingsData.data[0].follower_mode}
@@ -146,12 +156,6 @@ export const ChatBox = () => {
             ${cssIconSettings.styles}
           `}
         />
-      </FlexContainer>
-
-      <FlexContainer column cssContainer={cssContainerMessages}>
-        {chats.map((chat, i) => (
-          <ChatMessage key={i} event={chat} />
-        ))}
       </FlexContainer>
     </FlexContainer>
   );

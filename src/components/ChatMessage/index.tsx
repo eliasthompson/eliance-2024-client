@@ -6,6 +6,7 @@ import type { ChatMessageProps, TwitchChatBoxBadge } from '@components/ChatMessa
 import { AnnouncementIcon } from '@components/shared/svgs/AnnouncementIcon';
 import { ChannelPointIcon } from '@components/shared/svgs/ChannelPointIcon';
 import { FlexContainer } from '@components/shared/FlexContainer';
+import { SparkleIcon } from '@components/shared/svgs/SparkleIcon';
 import { useGetChannelChatBadgesQuery } from '@store/apis/twitch/getChannelChatBadges';
 import { useGetGlobalChatBadgesQuery } from '@store/apis/twitch/getGlobalChatBadges';
 import { useGetGlobalEmotesQuery } from '@store/apis/twitch/getGlobalEmotes';
@@ -17,12 +18,20 @@ export const noticeTypes = {
   announcement: AnnouncementIcon,
   channel_points_highlighted: ChannelPointIcon,
   channel_points_sub_only: ChannelPointIcon,
-  power_ups_message_effect: AnnouncementIcon,
-  power_ups_gigantified_emote: AnnouncementIcon,
+  user_intro: SparkleIcon,
+  // power_ups_message_effect: BitsIcon,
+  // power_ups_gigantified_emote: BitsIcon,
+} as const;
+
+export const announcementColors = {
+  BLUE: 'linear-gradient(#00d6d6, #9146ff)',
+  GREEN: 'linear-gradient(#00db84, #57bee6)',
+  ORANGE: 'linear-gradient(#ffb31a, #e0e000)',
+  PURPLE: 'linear-gradient(#9146ff, #ff75e6)',
 } as const;
 
 export const ChatMessage = ({ event }: ChatMessageProps) => {
-  const { broadcasterId } = useSelector(({ info }) => info);
+  const { broadcasterId, broadcasterColor } = useSelector(({ info }) => info);
   const {
     data: channelChatBadgesData,
     // error: channelChatBadgesError,
@@ -57,6 +66,7 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
     pronounsData &&
     userData
   );
+  const isAction = event.message.text.startsWith('\u0001ACTION');
   const isSpecialMessage = 'notice_type' in event || event.message_type !== 'text';
   const isHighlightMessage = 'message_type' in event && event.message_type === 'channel_points_highlighted';
   let IconComponent: (typeof noticeTypes)[keyof typeof noticeTypes] | null = null;
@@ -95,12 +105,24 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
 
   const backgroundColorPEvent = isSpecialMessage ? 'rgba(0, 0, 0, 70%)' : 'transparent';
   const backgroundColorSpanFragments = isHighlightMessage ? '#755ebc' : 'transparent';
+  const backgroundDivMarker =
+    'notice_type' in event && event.notice_type === 'announcement' && event.announcement?.color !== 'PRIMARY'
+      ? announcementColors[event.announcement?.color]
+      : broadcasterColor;
+  const colorStrongLogin = event.color || '#808080';
+  const filterPEvent = isSpecialMessage ? 'drop-shadow(#000000 0 0 calc(var(--padding) * 0.75))' : 'none';
+  const filterPMessageChild = isSpecialMessage ? 'none' : 'drop-shadow(#000000 0 0 calc(var(--padding) * 0.75))';
+  const filterSpanPronouns = isSpecialMessage
+    ? 'brightness(67%)'
+    : 'brightness(67%) drop-shadow(#000000 0 0 calc(var(--padding) * 0.75))';
+  const fontStyleSpanFragments = isAction ? 'italic' : 'normal';
   const paddingSpanFragments = isHighlightMessage ? '0 calc(var(--padding) / 4)' : '0';
   const cssPEvent = css`
     position: relative;
     gap: calc(var(--padding) / 2);
     align-items: center;
     background-color: ${backgroundColorPEvent};
+    filter: ${filterPEvent};
   `;
   const cssDivMarker = css`
     position: absolute;
@@ -108,7 +130,7 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
     width: calc(var(--padding) / 2);
     height: 100%;
     margin: auto 0;
-    background-color: green;
+    background: ${backgroundDivMarker};
   `;
   const cssIconNotice = css`
     position: absolute;
@@ -120,6 +142,10 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
       calc((var(--line-height) - (var(--padding) / 2)) + (var(--padding) * 1.5));
     line-height: calc(((var(--bar-height) - (var(--padding) * 1.5)) / 3) - (var(--padding) / 2));
     font-size: calc((((var(--bar-height) - (var(--padding) * 1.5)) / 3) - (var(--padding) / 2)) / 6 * 5);
+
+    * {
+      filter: ${filterPMessageChild};
+    }
   `;
   const cssImgBadge = css`
     height: calc(((var(--bar-height) - (var(--padding) * 1.5)) / 3) - (var(--padding) / 2));
@@ -127,12 +153,17 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
     margin: 0 calc(var(--padding) / 4) 0 0;
     vertical-align: text-bottom;
   `;
+  const cssStrongLogin = css`
+    color: ${colorStrongLogin};
+  `;
   const cssSpanPronouns = css`
-    filter: brightness(67%);
+    color: ${colorStrongLogin};
+    filter: ${filterSpanPronouns};
   `;
   const cssSpanFragments = css`
     background-color: ${backgroundColorSpanFragments};
     padding: ${paddingSpanFragments};
+    font-style: ${fontStyleSpanFragments};
   `;
   const cssImgEmote = css`
     height: var(--line-height);
@@ -166,10 +197,8 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
           if (imageUrl4x) return <img key={i} src={imageUrl4x} css={cssImgBadge} />;
           return null;
         })}
-        <strong style={{ color: event.color || '#808080' }}>
-          {event.chatter_user_name}
-          {pronouns ? <span css={cssSpanPronouns}> ({pronouns.toLowerCase()})</span> : null}
-        </strong>
+        <strong css={cssStrongLogin}>{event.chatter_user_name}</strong>
+        {pronouns ? <strong css={cssSpanPronouns}> ({pronouns.toLowerCase()})</strong> : null}
         :&nbsp;
         <span css={cssSpanFragments}>
           {fragments.map((fragment, i) => {

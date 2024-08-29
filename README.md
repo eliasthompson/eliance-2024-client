@@ -13,9 +13,9 @@
     - [ ] local time(?) (firebot timezone > null)
     - [ ] upcoming schedule(?) (twitch schedule > null)
     - [ ] endpoints:
-      - [ ] 
+      - [ ]
     - [ ] event subs:
-      - [ ] 
+      - [ ]
 - [ ] event box
   - [ ] small events, social actions, and goals stay in box, big event expand the box to near full width
   - [ ] big events (event queue):
@@ -59,9 +59,9 @@
     - [ ] chanel goals loop
     - [ ] donation goals
   - [ ] endpoints:
-    - [ ] 
+    - [ ]
   - [ ] event subs:
-    - [ ] 
+    - [ ]
 - [ ] chat box
   - [ ] hide on big event
   - [ ] handle:
@@ -89,25 +89,25 @@
     - [ ] `channel.chat.message`
       - [ ] message types:
         - [x] `text`
-        - [x] `channel_points_highlighted`
-        - [ ] `channel_points_sub_only`
-        - [ ] `user_intro`
-        - [ ] `power_ups_message_effect`
-        - [ ] `power_ups_gigantified_emote`
+        - [x] `channel_points_highlighted` - channel point
+        - [?] `channel_points_sub_only` - channel point
+        - [?] `user_intro` - sparkle(?)
+        - [ ] `power_ups_message_effect` - bits
+        - [ ] `power_ups_gigantified_emote` - bits
     - [ ] `channel.chat.notification`
       - [ ] notice types:
-        - [ ] `sub` - unhandled, will be event
-        - [ ] `resub` - handled only if includes messages
-        - [ ] `sub_gift` - unhandled, will be event
-        - [ ] `community_sub_gift` - unhandled, will be event
-        - [ ] `gift_paid_upgrade` - handled only if includes messages
-        - [ ] `prime_paid_upgrade` - handled only if includes messages
+        - [ ] `sub` - unhandled, will be event - star
+        - [ ] `resub` - handled only if includes messages - star
+        - [ ] `sub_gift` - unhandled, will be event - gift
+        - [ ] `community_sub_gift` - unhandled, will be event - gift
+        - [ ] `gift_paid_upgrade` - handled only if includes messages - star
+        - [ ] `prime_paid_upgrade` - handled only if includes messages - star
         - [ ] `raid` - unhandled
-        - [ ] `unraid` - unhandled
+        - [x] `unraid` - unhandled
         - [ ] `pay_it_forward` - unhandled
-        - [x] `announcement` - handled
-        - [ ] `bits_badge_tier` - handled only if includes messages
-        - [ ] `charity_donation` - handled only if includes messages
+        - [x] `announcement` - handled - megaphone
+        - [ ] `bits_badge_tier` - handled only if includes messages - bits
+        - [ ] `charity_donation` - handled only if includes messages - bits
     - [ ] endpoints:
       - [x] [`GET chat/badges`](https://dev.twitch.tv/docs/api/reference/#get-channel-chat-badges)
       - [x] [`GET chat/badges/global`](https://dev.twitch.tv/docs/api/reference/#get-global-chat-badges)
@@ -124,6 +124,7 @@
     - [x] color
     - [ ] bits
     - [x] notice type
+    - [x] `/me`
 - [ ] error display and handling
 - [ ] design
 - [ ] animations
@@ -149,6 +150,6 @@
     - combine & show data
 - [ ] on event:
   - [ ] on guest star guest update:
-    - [ ]  fix guest list and refetch stuff if needed
+    - [ ] fix guest list and refetch stuff if needed
   - [ ] on firebot custom role update
     - [ ] fix guest list and refetch stuff if needed

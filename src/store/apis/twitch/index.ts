@@ -22,23 +22,89 @@ export interface TwitchApiCreateEventSubSubscriptionResponse {
   max_total_cost: number;
 }
 
-export interface TwitchEventSubRevocationMessage<Metadata, Payload, Subscription> {
-  metadata: Metadata & {
-    message_type: 'revocation';
-  };
-  payload: Payload & {
-    subscription: Subscription & {
-      status: 'authorization_revoked' | 'user_removed' | 'version_removed';
-    };
-    event: undefined;
-  };
-}
-
 export interface TwitchApiErrorResponse {
   error?: string;
   status: number;
   message: string;
 }
+
+export type TwitchEventSubBaseMessage<Metadata, Payload> = {
+  metadata: Metadata;
+  payload: Payload;
+};
+export type TwitchEventSubSystemMessage<MessageType, Payload> = TwitchEventSubBaseMessage<
+  {
+    message_id: string;
+    message_type: MessageType;
+    message_timestamp: string;
+  },
+  Payload
+>;
+export type TwitchEventSubSystemSessionMessage<MessageType, Status> = TwitchEventSubSystemMessage<
+  MessageType,
+  {
+    session: {
+      id: string;
+      status: Status;
+      keepalive_timeout_seconds: null;
+      reconnect_url: string;
+      connected_at: string;
+    };
+  }
+>;
+export type TwitchEventSubSubscriptionMessage<
+  MessageType,
+  SubscriptionType,
+  SubscriptionVersion,
+  SubscriptionStatus,
+  SubscriptionCondition,
+  Event,
+> = TwitchEventSubBaseMessage<
+  {
+    message_id: string;
+    message_type: MessageType;
+    message_timestamp: string;
+    subscription_type: SubscriptionType;
+    subscription_version: SubscriptionVersion;
+  },
+  {
+    subscription: {
+      id: string;
+      status: SubscriptionStatus;
+      type: SubscriptionType;
+      version: SubscriptionVersion;
+      cost: number;
+      condition: SubscriptionCondition;
+      transport: {
+        method: 'websocket';
+        session_id: string;
+      };
+      created_at: string;
+    };
+    event: Event;
+  }
+>;
+export type TwitchEventSubNotificationMessage<SubscriptionType, SubscriptionVersion, SubscriptionCondition, Event> =
+  TwitchEventSubSubscriptionMessage<
+    'notification',
+    SubscriptionType,
+    SubscriptionVersion,
+    'enabled',
+    SubscriptionCondition,
+    Event
+  >;
+export type TwitchEventSubRevocationMessage<SubscriptionType, SubscriptionVersion, SubscriptionCondition> =
+  TwitchEventSubSubscriptionMessage<
+    'revocation',
+    SubscriptionType,
+    SubscriptionVersion,
+    'authorization_revoked' | 'user_removed' | 'version_removed',
+    SubscriptionCondition,
+    undefined
+  >;
+export type TwitchEventSubWelcomeMessage = TwitchEventSubSystemSessionMessage<'session_welcome', 'connected'>;
+export type TwitchEventSubKeepaliveMessage = TwitchEventSubSystemMessage<'session_keepalive', object>;
+export type TwitchEventSubReconnectMessage = TwitchEventSubSystemSessionMessage<'session_reconnect', 'reconnecting'>;
 
 export const twitchApi = createApi({
   baseQuery: fetchRefreshedBaseQuery,

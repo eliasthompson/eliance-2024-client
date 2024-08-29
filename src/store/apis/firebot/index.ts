@@ -5,6 +5,15 @@ export interface FirebotApiErrorResponse {
   status: 'error';
   message: string;
 }
+export interface FirebotEventSubMessagePayload {
+  type: 'invoke';
+  name: 'subscribe-events';
+}
+export interface FirebotEventSubMessage {
+  type: string;
+  name: string;
+  data?: object;
+}
 
 export const firebotApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:7472/api/v1' }),
