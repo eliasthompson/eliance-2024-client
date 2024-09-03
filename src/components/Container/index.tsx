@@ -34,13 +34,20 @@ export const Container = () => {
   const { data: tokenData, error: tokenError, isLoading: isTokenLoading } = useValidateTokenQuery();
   const isAuthorized = !(tokenError && 'status' in tokenError && tokenError.status === 401);
   const isRenderable = !!(broadcasterId && broadcasterLogin && sessionId);
-  const backgroundColor = window.obsstudio ? 'transparent' : '#18181b';
+  const backgroundColorBar = window.obsstudio ? 'transparent' : 'rgba(0, 0, 0, 33%)';
+  const borderStyleBar = window.obsstudio ? 'none' : 'solid';
+  const bottomBar = window.obsstudio ? '0' : '-6px';
+  const filterBar = window.obsstudio ? 'none' : 'drop-shadow(#000000 0 0 calc(var(--padding) * 0.75))';
   const cssBar = css`
     position: absolute;
-    bottom: 0;
+    bottom: ${bottomBar};
     width: var(--bar-width);
     height: var(--bar-height);
-    background-color: ${backgroundColor};
+    border-color: #9147ff;
+    border-style: ${borderStyleBar};
+    border-width: calc(var(--padding) / 2);
+    background-color: ${backgroundColorBar};
+    filter: ${filterBar};
   `;
 
   // Set broadcaster id if token data exists

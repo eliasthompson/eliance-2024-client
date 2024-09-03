@@ -19,6 +19,14 @@ import {
   TwitchEventSubChannelChatClearNotificationMessage,
   TwitchEventSubChannelChatClearRevocationMessage,
 } from '@store/apis/twitch/createEventSubSubscriptionChannelChatClear';
+import {
+  TwitchEventSubChannelChatClearUserMessagesNotificationMessage,
+  TwitchEventSubChannelChatClearUserMessagesRevocationMessage,
+} from '@store/apis/twitch/createEventSubSubscriptionChannelChatClearUserMessages';
+import {
+  TwitchEventSubChannelChatMessageDeleteNotificationMessage,
+  TwitchEventSubChannelChatMessageDeleteRevocationMessage,
+} from '@store/apis/twitch/createEventSubSubscriptionChannelChatMessageDelete';
 
 export type TwitchEventSubMessage =
   | TwitchEventSubWelcomeMessage
@@ -26,8 +34,12 @@ export type TwitchEventSubMessage =
   | TwitchEventSubReconnectMessage
   | TwitchEventSubChannelChatClearNotificationMessage
   | TwitchEventSubChannelChatClearRevocationMessage
+  | TwitchEventSubChannelChatClearUserMessagesNotificationMessage
+  | TwitchEventSubChannelChatClearUserMessagesRevocationMessage
   | TwitchEventSubChannelChatMessageNotificationMessage
   | TwitchEventSubChannelChatMessageRevocationMessage
+  | TwitchEventSubChannelChatMessageDeleteNotificationMessage
+  | TwitchEventSubChannelChatMessageDeleteRevocationMessage
   | TwitchEventSubChannelChatNotificationNotificationMessage
   | TwitchEventSubChannelChatNotificationRevocationMessage
   | TwitchEventSubChannelChatSettingsUpdateNotificationMessage

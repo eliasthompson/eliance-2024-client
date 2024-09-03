@@ -20,7 +20,10 @@ export interface TwitchApiGetChatSettingsResponse {
   }[];
 }
 
-export const { useGetChatSettingsQuery, util: getChatSettingsUtil } = twitchApi
+export const {
+  useGetChatSettingsQuery,
+  util: { updateQueryData: updateChatSettingsData },
+} = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['CHAT_SETTINGS_DATA'],
   })

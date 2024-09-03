@@ -10,11 +10,9 @@
     "prebuild": "eslint --fix && tsc",
     "build": "webpack --config config/webpack.js --mode production",
     "lint-fix": "eslint --fix",
-    "lint": "eslint",
-    "prepare": "husky",
+    "lint": "eslint && tsc",
     "start": "webpack serve --config config/webpack.js",
-    "test": "test",
-    "tscheck": "tsc"
+    "test": "test"
   },
   "author": "Elias Thompson",
   "license": "ISC",

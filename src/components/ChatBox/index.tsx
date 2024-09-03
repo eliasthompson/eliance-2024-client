@@ -1,6 +1,7 @@
 import useWebSocket from 'react-use-websocket';
 import { css } from '@emotion/react';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import * as uuid from 'uuid';
 
 import type { TwitchEventSubMessage } from '@components/types';
 
@@ -9,12 +10,14 @@ import { EmoteIcon } from '@components/shared/svgs/EmoteIcon';
 import { FlexContainer } from '@components/shared/FlexContainer';
 import { FollowerIcon } from '@components/shared/svgs/FollowerIcon';
 // import { SubscriberIcon } from '@components/shared/svgs/SubscriberIcon';
-import { addChat, clearChats } from '@store/slices/info';
+import { addChat, clearChats, setChatDeletedTimestamp, setUserChatsDeletedTimestamp } from '@store/slices/info';
 import { addTwitchEventSubMessageId } from '@store/slices/twitchEventSub';
-import { getChatSettingsUtil, useGetChatSettingsQuery } from '@store/apis/twitch/getChatSettings';
+import { updateChatSettingsData, useGetChatSettingsQuery } from '@store/apis/twitch/getChatSettings';
 import { useDispatch, useSelector } from '@store';
 import { useCreateEventSubSubscriptionChannelChatClearQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatClear';
+import { useCreateEventSubSubscriptionChannelChatClearUserMessagesQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatClearUserMessages';
 import { useCreateEventSubSubscriptionChannelChatMessageQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatMessage';
+import { useCreateEventSubSubscriptionChannelChatMessageDeleteQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatMessageDelete';
 import { useCreateEventSubSubscriptionChannelChatNotificationQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatNotification';
 import { useCreateEventSubSubscriptionChannelChatSettingsUpdateQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatSettingsUpdate';
 
@@ -23,7 +26,15 @@ export const ChatBox = () => {
   const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubMessage>('wss://eventsub.wss.twitch.tv/ws', {
     share: true,
   });
-  const { broadcasterId, chats } = useSelector(({ info }) => info);
+  const {
+    lastJsonMessage: twitchPSMessage,
+    readyState: twitchPSReadyState,
+    sendJsonMessage: sendTwitchPSMessage,
+  } = useWebSocket<object>('wss://pubsub-edge.twitch.tv', {
+    share: true,
+  });
+  const { accessToken } = useSelector(({ twitchAuth }) => twitchAuth);
+  const { broadcasterId, broadcasterLogin, chats } = useSelector(({ info }) => info);
   const { messageIds: twitchMessageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
   const {
     data: eventSubSubscriptionChannelChatClearData,
@@ -34,10 +45,26 @@ export const ChatBox = () => {
     sessionId,
   });
   const {
+    data: eventSubSubscriptionChannelChatClearUserMessagesData,
+    // error: eventSubSubscriptionChannelChatClearUserMessagesError,
+    isLoading: isEventSubSubscriptionChannelChatClearUserMessagesLoading,
+  } = useCreateEventSubSubscriptionChannelChatClearUserMessagesQuery({
+    broadcasterId,
+    sessionId,
+  });
+  const {
     data: eventSubSubscriptionChannelChatMessageData,
     // error: eventSubSubscriptionChannelChatMessageError,
     isLoading: isEventSubSubscriptionChannelChatMessageLoading,
   } = useCreateEventSubSubscriptionChannelChatMessageQuery({
+    broadcasterId,
+    sessionId,
+  });
+  const {
+    data: eventSubSubscriptionChannelChatMessageDeleteData,
+    // error: eventSubSubscriptionChannelChatMessageDeleteError,
+    isLoading: isEventSubSubscriptionChannelChatMessageDeleteLoading,
+  } = useCreateEventSubSubscriptionChannelChatMessageDeleteQuery({
     broadcasterId,
     sessionId,
   });
@@ -64,13 +91,17 @@ export const ChatBox = () => {
   } = useGetChatSettingsQuery({ broadcasterId });
   const isLoading =
     isEventSubSubscriptionChannelChatClearLoading ||
+    isEventSubSubscriptionChannelChatClearUserMessagesLoading ||
     isEventSubSubscriptionChannelChatMessageLoading ||
+    isEventSubSubscriptionChannelChatMessageDeleteLoading ||
     isEventSubSubscriptionChannelChatNotificationLoading ||
     isEventSubSubscriptionChannelChatSettingsUpdateLoading ||
     isChatSettingsLoading;
   const isRenderable = !!(
     eventSubSubscriptionChannelChatClearData &&
+    eventSubSubscriptionChannelChatClearUserMessagesData &&
     eventSubSubscriptionChannelChatMessageData &&
+    eventSubSubscriptionChannelChatMessageDeleteData &&
     eventSubSubscriptionChannelChatNotificationData &&
     eventSubSubscriptionChannelChatSettingsUpdateData &&
     chatSettingsData
@@ -94,6 +125,53 @@ export const ChatBox = () => {
     padding: 0 0 var(--padding) var(--padding);
   `;
 
+  // const handleTwitchPSPing = useCallback(() => {
+  //   sendTwitchPSMessage({ type: 'PING' });
+  // }, [sendTwitchPSMessage]);
+  // const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>(setTimeout(handleTwitchPSPing, 5 * 60 * 1000));
+
+  useEffect(() => {
+    if (twitchPSReadyState === 1) {
+      const nonce = uuid.v4();
+
+      sendTwitchPSMessage({
+        type: 'LISTEN',
+        nonce,
+        data: {
+          topics: [`pinned-chat-updates-v1.${broadcasterId}`],
+          auth_token: accessToken,
+        },
+      });
+    }
+  }, [twitchPSReadyState]);
+
+  // useEffect(() => {
+  //   setTimeoutId(setTimeout(handleTwitchPSPing, 5 * 60 * 1000));
+  // }, [handleTwitchPSPing, setTimeoutId]);
+
+  useEffect(() => {
+    if (twitchPSMessage) {
+      if (twitchPSMessage.type === 'MESSAGE') {
+        try {
+          const message = JSON.parse(twitchPSMessage.data.message);
+          console.log(message);
+
+          if (message.type === ':tmi.twitch.tv CAP * ACK :twitch.tv/tags\r\n') {
+            sendTwitchPSMessage(`PASS oauth:${accessToken}`);
+            sendTwitchPSMessage(`NICK ${broadcasterLogin}`);
+          } else if (message.type === 'PING :tmi.twitch.tv\r\n') {
+            sendTwitchPSMessage('PONG :tmi.twitch.tv');
+          }
+        } catch (error) {
+          //
+        }
+        // } else if (twitchPSMessage.type === 'PONG') {
+        //   clearTimeout(timeoutId);
+        //   setTimeoutId(setTimeout(handleTwitchPSPing, 5 * 60 * 1000));
+      }
+    }
+  }, [twitchPSMessage]);
+
   // Handle twitch event sub messages
   useEffect(() => {
     if (twitchMessage) {
@@ -113,7 +191,7 @@ export const ChatBox = () => {
           }
         } else if (subscriptionType === 'channel.chat_settings.update') {
           dispatch(
-            getChatSettingsUtil.updateQueryData('getChatSettings', { broadcasterId }, (state) => {
+            updateChatSettingsData('getChatSettings', { broadcasterId }, (state) => {
               const { broadcaster_user_id, broadcaster_user_login, broadcaster_user_name, ...eventData } = event;
               if (state) Object.assign(state.data[0], eventData);
             }),
@@ -122,6 +200,23 @@ export const ChatBox = () => {
         } else if (subscriptionType === 'channel.chat.clear') {
           dispatch(clearChats());
           dispatch(addTwitchEventSubMessageId(messageId));
+        } else if (subscriptionType === 'channel.chat.clear_user_messages') {
+          if ('target_user_id' in event) {
+            dispatch(
+              setUserChatsDeletedTimestamp({
+                chatterUserId: event.target_user_id,
+                deletedTimestamp: metadata.message_timestamp,
+              }),
+            );
+            dispatch(addTwitchEventSubMessageId(messageId));
+          }
+        } else if (subscriptionType === 'channel.chat.message_delete') {
+          if ('message_id' in event) {
+            dispatch(
+              setChatDeletedTimestamp({ messageId: event.message_id, deletedTimestamp: metadata.message_timestamp }),
+            );
+            dispatch(addTwitchEventSubMessageId(messageId));
+          }
         }
       }
     }

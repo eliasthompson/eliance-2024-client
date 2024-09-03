@@ -5,7 +5,11 @@ import robotoRegular from '@assets/fonts/Roboto-Regular.ttf';
 import robotoMedium from '@assets/fonts/Roboto-Medium.ttf';
 
 export const GlobalStyle = () => {
-  const backgroundColor = window.obsstudio ? 'transparent' : '#0e0e10';
+  const backgroundColorBody = window.obsstudio ? 'transparent' : '#121212';
+  const backgroundColorRoot = window.obsstudio ? 'transparent' : '#226600';
+  const backgroundImageRoot = window.obsstudio
+    ? 'none'
+    : 'url("https://static-cdn.jtvnw.net/jtv_user_pictures/d31cb115-0b49-4966-a6eb-3749a5e83908-profile_banner-480.png")';
 
   const cssGlobal = css`
     @font-face {
@@ -60,9 +64,8 @@ export const GlobalStyle = () => {
     html,
     body,
     #root {
-      overflow-x: hidden;
+      overflow: hidden;
       height: 100%;
-      background-color: ${backgroundColor};
     }
 
     body,
@@ -76,15 +79,18 @@ export const GlobalStyle = () => {
 
     body {
       font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      background-color: ${backgroundColorBody};
       color: #ffffff;
       font-size: var(--font-size);
       font-weight: 400;
-      -webkit-overflow-scrolling: touch;
     }
 
     #root {
       align-items: center;
       justify-content: center;
+      background-color: ${backgroundColorRoot};
+      background-image: ${backgroundImageRoot};
+      background-size: cover;
     }
   `;
 

@@ -7,6 +7,7 @@ import { AnnouncementIcon } from '@components/shared/svgs/AnnouncementIcon';
 import { ChannelPointIcon } from '@components/shared/svgs/ChannelPointIcon';
 import { FlexContainer } from '@components/shared/FlexContainer';
 import { SparkleIcon } from '@components/shared/svgs/SparkleIcon';
+import { SubscriberIcon } from '@components/shared/svgs/SubscriberIcon';
 import { useGetChannelChatBadgesQuery } from '@store/apis/twitch/getChannelChatBadges';
 import { useGetGlobalChatBadgesQuery } from '@store/apis/twitch/getGlobalChatBadges';
 import { useGetGlobalEmotesQuery } from '@store/apis/twitch/getGlobalEmotes';
@@ -18,6 +19,8 @@ export const noticeTypes = {
   announcement: AnnouncementIcon,
   channel_points_highlighted: ChannelPointIcon,
   channel_points_sub_only: ChannelPointIcon,
+  // default: TwitchIcon,
+  resub: SubscriberIcon,
   user_intro: SparkleIcon,
   // power_ups_message_effect: BitsIcon,
   // power_ups_gigantified_emote: BitsIcon,
@@ -67,6 +70,7 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
     userData
   );
   const isAction = event.message.text.startsWith('\u0001ACTION');
+  const isDeleted = !!event.deletedTimestamp;
   const isSpecialMessage = 'notice_type' in event || event.message_type !== 'text';
   const isHighlightMessage = 'message_type' in event && event.message_type === 'channel_points_highlighted';
   let IconComponent: (typeof noticeTypes)[keyof typeof noticeTypes] | null = null;
@@ -100,29 +104,30 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
 
   if (isSpecialMessage) {
     specialType = 'notice_type' in event ? event.notice_type : event.message_type;
-    IconComponent = noticeTypes[specialType];
+    IconComponent = noticeTypes[specialType] || noticeTypes.default;
   }
 
-  const backgroundColorPEvent = isSpecialMessage ? 'rgba(0, 0, 0, 70%)' : 'transparent';
+  const backgroundColorContainer = isSpecialMessage ? 'rgba(0, 0, 0, 33%)' : 'transparent';
   const backgroundColorSpanFragments = isHighlightMessage ? '#755ebc' : 'transparent';
   const backgroundDivMarker =
     'notice_type' in event && event.notice_type === 'announcement' && event.announcement?.color !== 'PRIMARY'
       ? announcementColors[event.announcement?.color]
       : broadcasterColor;
+  const colorSpanFragments = isDeleted ? '#adadb8' : 'inherit';
   const colorStrongLogin = event.color || '#808080';
-  const filterPEvent = isSpecialMessage ? 'drop-shadow(#000000 0 0 calc(var(--padding) * 0.75))' : 'none';
+  const filterContainer = isSpecialMessage ? 'drop-shadow(#000000 0 0 calc(var(--padding) * 0.75))' : 'none';
   const filterPMessageChild = isSpecialMessage ? 'none' : 'drop-shadow(#000000 0 0 calc(var(--padding) * 0.75))';
   const filterSpanPronouns = isSpecialMessage
     ? 'brightness(67%)'
     : 'brightness(67%) drop-shadow(#000000 0 0 calc(var(--padding) * 0.75))';
-  const fontStyleSpanFragments = isAction ? 'italic' : 'normal';
+  const fontStyleSpanFragments = isAction || isDeleted ? 'italic' : 'normal';
   const paddingSpanFragments = isHighlightMessage ? '0 calc(var(--padding) / 4)' : '0';
-  const cssPEvent = css`
+  const cssContainer = css`
     position: relative;
     gap: calc(var(--padding) / 2);
     align-items: center;
-    background-color: ${backgroundColorPEvent};
-    filter: ${filterPEvent};
+    background-color: ${backgroundColorContainer};
+    filter: ${filterContainer};
   `;
   const cssDivMarker = css`
     position: absolute;
@@ -163,6 +168,7 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
   const cssSpanFragments = css`
     background-color: ${backgroundColorSpanFragments};
     padding: ${paddingSpanFragments};
+    color: ${colorSpanFragments};
     font-style: ${fontStyleSpanFragments};
   `;
   const cssImgEmote = css`
@@ -176,12 +182,7 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
 
   // Render component
   return (
-    <FlexContainer
-      cssContainer={css`
-        background-color: ${'notice_type' in event ? 'rgba(255, 255, 255, 5%)' : 'transparent'};
-        ${cssPEvent.styles}
-      `}
-    >
+    <FlexContainer cssContainer={cssContainer}>
       {IconComponent ? (
         <Fragment>
           <div css={cssDivMarker} />
@@ -201,13 +202,15 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
         {pronouns ? <strong css={cssSpanPronouns}> ({pronouns.toLowerCase()})</strong> : null}
         :&nbsp;
         <span css={cssSpanFragments}>
-          {fragments.map((fragment, i) => {
-            const { url } = emotes.find(({ id }) => id === fragment.emote?.id) || {};
+          {isDeleted
+            ? 'message deleted'
+            : fragments.map((fragment, i) => {
+                const { url } = emotes.find(({ id }) => id === fragment.emote?.id) || {};
 
-            if (url) return <img key={i} src={url} css={cssImgEmote} />;
-            if (fragment.type === 'mention') return <strong key={i}>{fragment.text}</strong>;
-            return <span key={i}>{fragment.text}</span>;
-          })}
+                if (url) return <img key={i} src={url} css={cssImgEmote} />;
+                if (fragment.type === 'mention') return <strong key={i}>{fragment.text}</strong>;
+                return <span key={i}>{fragment.text}</span>;
+              })}
         </span>
       </p>
     </FlexContainer>

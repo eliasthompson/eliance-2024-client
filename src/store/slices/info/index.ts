@@ -8,15 +8,6 @@ import type { TwitchEventSubChannelChatNotificationNotificationMessage } from '@
 
 import { createSlice } from '@reduxjs/toolkit';
 
-export type InfoUser = TwitchApiGetUsersResponse['data'][number] & {
-  active: boolean;
-  color?: string;
-  isLive?: boolean;
-  isSharing?: boolean;
-  name?: string;
-  pronouns?: string;
-};
-
 export interface InfoState {
   broadcasterId: string | null;
   broadcasterLogin: string | null;
@@ -30,10 +21,17 @@ export interface InfoState {
   })[];
   errors: ErrorMessageProps['error'][];
   goal: TwitchApiGetCreatorGoalsResponse['data'][number] | null;
-  persons: InfoUser[];
+  persons: (TwitchApiGetUsersResponse['data'][number] & {
+    active: boolean;
+    color?: string;
+    isLive?: boolean;
+    isSharing?: boolean;
+    name?: string;
+    pronouns?: string;
+  })[];
 }
 
-export const getStoredRecentChats = (ex: number = 24 * 60 * 60 * 1000) => {
+export const getStoredRecentChats = (ex: number = 60 * 60 * 1000) => {
   let localStoredChats: InfoState['chats'] = [];
 
   try {
@@ -88,6 +86,49 @@ export const infoSlice = createSlice({
     removeError: (state, { payload }: PayloadAction<number>) => {
       state.errors.splice(payload, 1);
     },
+    setChatDeletedTimestamp: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        messageId: InfoState['chats'][number]['message_id'];
+        deletedTimestamp: InfoState['chats'][number]['deletedTimestamp'];
+      }>,
+    ) => {
+      const findChatIndex = ({ message_id: messageId }) => messageId === payload.messageId;
+      const chatIndex = state.chats.findIndex(findChatIndex);
+
+      state.chats[chatIndex].deletedTimestamp = payload.deletedTimestamp;
+
+      const storedRecentChats = getStoredRecentChats();
+      const storedChatIndex = storedRecentChats.findIndex(findChatIndex);
+
+      storedRecentChats[storedChatIndex].deletedTimestamp = payload.deletedTimestamp;
+
+      localStorage.setItem('recentChats', JSON.stringify(storedRecentChats));
+    },
+    setUserChatsDeletedTimestamp: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        chatterUserId: InfoState['chats'][number]['chatter_user_id'];
+        deletedTimestamp: InfoState['chats'][number]['deletedTimestamp'];
+      }>,
+    ) => {
+      for (const [i, chat] of Object.entries(state.chats)) {
+        if (chat.chatter_user_id === payload.chatterUserId) state.chats[i].deletedTimestamp = payload.deletedTimestamp;
+      }
+
+      const storedRecentChats = getStoredRecentChats();
+
+      for (const [i, chat] of Object.entries(storedRecentChats)) {
+        if (chat.chatter_user_id === payload.chatterUserId)
+          storedRecentChats[i].deletedTimestamp = payload.deletedTimestamp;
+      }
+
+      localStorage.setItem('recentChats', JSON.stringify(storedRecentChats));
+    },
     setInfo: (state, { payload }: PayloadAction<Partial<InfoState>>) => {
       Object.assign(state, payload);
     },
@@ -95,5 +136,13 @@ export const infoSlice = createSlice({
 });
 
 export const {
-  actions: { addChat, addError, clearChats, removeError, setInfo },
+  actions: {
+    addChat,
+    addError,
+    clearChats,
+    removeError,
+    setChatDeletedTimestamp,
+    setUserChatsDeletedTimestamp,
+    setInfo,
+  },
 } = infoSlice;

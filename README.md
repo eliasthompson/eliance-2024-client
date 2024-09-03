@@ -56,7 +56,7 @@
     - [ ] poll AND hype train (rotate)
     - [ ] predicitons AND pinned chat (rotate)
   - [ ] goals:
-    - [ ] chanel goals loop
+    - [ ] channel goals loop
     - [ ] donation goals
   - [ ] endpoints:
     - [ ]
@@ -68,8 +68,8 @@
     - [x] messages
     - [x] notifications
     - [x] settings
-    - [ ] deletes
-    - [ ] timeouts
+    - [x] deletes
+    - [x] timeouts
     - [x] clears
   - [x] store three latest chats, clear on clear
   - [x] chat mode column w/ icons (?)
@@ -96,18 +96,18 @@
         - [ ] `power_ups_gigantified_emote` - bits
     - [ ] `channel.chat.notification`
       - [ ] notice types:
-        - [ ] `sub` - unhandled, will be event - star
-        - [ ] `resub` - handled only if includes messages - star
-        - [ ] `sub_gift` - unhandled, will be event - gift
-        - [ ] `community_sub_gift` - unhandled, will be event - gift
-        - [ ] `gift_paid_upgrade` - handled only if includes messages - star
-        - [ ] `prime_paid_upgrade` - handled only if includes messages - star
-        - [ ] `raid` - unhandled
+        - [x] `sub` - unhandled
+        - [?] `resub` - handled - star
+        - [x] `sub_gift` - unhandled
+        - [x] `community_sub_gift` - unhandled
+        - [x] `gift_paid_upgrade` - unhandled
+        - [x] `prime_paid_upgrade` - unhandled
+        - [x] `raid` - unhandled
         - [x] `unraid` - unhandled
-        - [ ] `pay_it_forward` - unhandled
+        - [x] `pay_it_forward` - unhandled
         - [x] `announcement` - handled - megaphone
-        - [ ] `bits_badge_tier` - handled only if includes messages - bits
-        - [ ] `charity_donation` - handled only if includes messages - bits
+        - [?] `bits_badge_tier` - handled only if includes messages - bits
+        - [x] `charity_donation` - unhandled
     - [ ] endpoints:
       - [x] [`GET chat/badges`](https://dev.twitch.tv/docs/api/reference/#get-channel-chat-badges)
       - [x] [`GET chat/badges/global`](https://dev.twitch.tv/docs/api/reference/#get-global-chat-badges)
@@ -120,10 +120,11 @@
     - [x] badges
     - [x] pronouns
     - [x] mentions
+    - [x] replies
     - [x] username
     - [x] color
-    - [ ] bits
-    - [x] notice type
+    - [ ] bits - bits
+    - [x] notice/message type
     - [x] `/me`
 - [ ] error display and handling
 - [ ] design
