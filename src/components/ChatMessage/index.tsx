@@ -19,7 +19,7 @@ export const noticeTypes = {
   announcement: AnnouncementIcon,
   channel_points_highlighted: ChannelPointIcon,
   channel_points_sub_only: ChannelPointIcon,
-  // default: TwitchIcon,
+  default: SubscriberIcon, // TwitchIcon,
   resub: SubscriberIcon,
   user_intro: SparkleIcon,
   // power_ups_message_effect: BitsIcon,

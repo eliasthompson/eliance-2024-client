@@ -1,6 +1,6 @@
 import useWebSocket from 'react-use-websocket';
 import { css } from '@emotion/react';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import * as uuid from 'uuid';
 
 import type { TwitchEventSubMessage } from '@components/types';
@@ -27,14 +27,14 @@ export const ChatBox = () => {
     share: true,
   });
   const {
-    lastJsonMessage: twitchPSMessage,
+    // lastJsonMessage: twitchPSMessage,
     readyState: twitchPSReadyState,
     sendJsonMessage: sendTwitchPSMessage,
   } = useWebSocket<object>('wss://pubsub-edge.twitch.tv', {
     share: true,
   });
   const { accessToken } = useSelector(({ twitchAuth }) => twitchAuth);
-  const { broadcasterId, broadcasterLogin, chats } = useSelector(({ info }) => info);
+  const { broadcasterId, chats } = useSelector(({ info }) => info);
   const { messageIds: twitchMessageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
   const {
     data: eventSubSubscriptionChannelChatClearData,
@@ -149,28 +149,28 @@ export const ChatBox = () => {
   //   setTimeoutId(setTimeout(handleTwitchPSPing, 5 * 60 * 1000));
   // }, [handleTwitchPSPing, setTimeoutId]);
 
-  useEffect(() => {
-    if (twitchPSMessage) {
-      if (twitchPSMessage.type === 'MESSAGE') {
-        try {
-          const message = JSON.parse(twitchPSMessage.data.message);
-          console.log(message);
+  // useEffect(() => {
+  //   if (twitchPSMessage) {
+  //     if (twitchPSMessage.type === 'MESSAGE') {
+  //       try {
+  //         const message = JSON.parse(twitchPSMessage.data.message);
+  //         console.log(message);
 
-          if (message.type === ':tmi.twitch.tv CAP * ACK :twitch.tv/tags\r\n') {
-            sendTwitchPSMessage(`PASS oauth:${accessToken}`);
-            sendTwitchPSMessage(`NICK ${broadcasterLogin}`);
-          } else if (message.type === 'PING :tmi.twitch.tv\r\n') {
-            sendTwitchPSMessage('PONG :tmi.twitch.tv');
-          }
-        } catch (error) {
-          //
-        }
-        // } else if (twitchPSMessage.type === 'PONG') {
-        //   clearTimeout(timeoutId);
-        //   setTimeoutId(setTimeout(handleTwitchPSPing, 5 * 60 * 1000));
-      }
-    }
-  }, [twitchPSMessage]);
+  //         if (message.type === ':tmi.twitch.tv CAP * ACK :twitch.tv/tags\r\n') {
+  //           sendTwitchPSMessage(`PASS oauth:${accessToken}`);
+  //           sendTwitchPSMessage(`NICK ${broadcasterLogin}`);
+  //         } else if (message.type === 'PING :tmi.twitch.tv\r\n') {
+  //           sendTwitchPSMessage('PONG :tmi.twitch.tv');
+  //         }
+  //       } catch (error) {
+  //         //
+  //       }
+  //       // } else if (twitchPSMessage.type === 'PONG') {
+  //       //   clearTimeout(timeoutId);
+  //       //   setTimeoutId(setTimeout(handleTwitchPSPing, 5 * 60 * 1000));
+  //     }
+  //   }
+  // }, [twitchPSMessage]);
 
   // Handle twitch event sub messages
   useEffect(() => {
