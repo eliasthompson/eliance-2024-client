@@ -16,8 +16,9 @@ export interface InfoState {
     | TwitchEventSubChannelChatMessageNotificationMessage['payload']['event']
     | TwitchEventSubChannelChatNotificationNotificationMessage['payload']['event']
   ) & {
-    messageTimestamp: string;
     deletedTimestamp?: string;
+    messageTimestamp: string;
+    pinId?: string;
   })[];
   errors: ErrorMessageProps['error'][];
   goal: TwitchApiGetCreatorGoalsResponse['data'][number] | null;
@@ -67,7 +68,7 @@ export const infoSlice = createSlice({
   reducers: {
     addChat: (state, { payload }: PayloadAction<InfoState['chats'][number]>) => {
       state.chats.push(payload);
-      if (state.chats.length > 100) state.chats.shift();
+      if (state.chats.length > 150) state.chats.shift();
 
       const storedRecentChats = getStoredRecentChats();
 
@@ -82,6 +83,26 @@ export const infoSlice = createSlice({
     clearChats: (state) => {
       state.chats.length = 0;
       localStorage.setItem('recentChats', JSON.stringify([]));
+    },
+    removeChatPinId: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        pinId: InfoState['chats'][number]['pinId'];
+      }>,
+    ) => {
+      const findChatIndex = ({ pinId }: InfoState['chats'][number]) => pinId === payload.pinId;
+      const chatIndex = state.chats.findIndex(findChatIndex);
+
+      if (chatIndex !== -1) state.chats[chatIndex].pinId = undefined;
+
+      const storedRecentChats = getStoredRecentChats();
+      const storedChatIndex = storedRecentChats.findIndex(findChatIndex);
+
+      if (storedChatIndex !== -1) storedRecentChats[storedChatIndex].pinId = undefined;
+
+      localStorage.setItem('recentChats', JSON.stringify(storedRecentChats));
     },
     removeError: (state, { payload }: PayloadAction<number>) => {
       state.errors.splice(payload, 1);
@@ -104,6 +125,31 @@ export const infoSlice = createSlice({
       const storedChatIndex = storedRecentChats.findIndex(findChatIndex);
 
       storedRecentChats[storedChatIndex].deletedTimestamp = payload.deletedTimestamp;
+
+      localStorage.setItem('recentChats', JSON.stringify(storedRecentChats));
+    },
+    setChatPinId: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        messageId: InfoState['chats'][number]['message_id'];
+        pinId: InfoState['chats'][number]['pinId'];
+      }>,
+    ) => {
+      for (const [i, chat] of Object.entries(state.chats)) {
+        if (chat.pinId) state.chats[i].pinId = undefined;
+      }
+
+      const findChatIndex = ({ message_id: messageId }) => messageId === payload.messageId;
+      const chatIndex = state.chats.findIndex(findChatIndex);
+
+      if (chatIndex !== -1) state.chats[chatIndex].pinId = payload.pinId;
+
+      const storedRecentChats = getStoredRecentChats();
+      const storedChatIndex = storedRecentChats.findIndex(findChatIndex);
+
+      if (storedChatIndex !== -1) storedRecentChats[storedChatIndex].pinId = payload.pinId;
 
       localStorage.setItem('recentChats', JSON.stringify(storedRecentChats));
     },
@@ -140,8 +186,10 @@ export const {
     addChat,
     addError,
     clearChats,
+    removeChatPinId,
     removeError,
     setChatDeletedTimestamp,
+    setChatPinId,
     setUserChatsDeletedTimestamp,
     setInfo,
   },

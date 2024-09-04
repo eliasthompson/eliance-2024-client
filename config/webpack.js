@@ -46,7 +46,7 @@ export default {
         },
       },
       {
-        test: /\.(css|png|svg|jpg|gif|ttf)$/,
+        test: /\.(css|png|svg|jpg|gif|ttf|webm|mp4)$/,
         exclude: /node_modules/,
         type: 'asset/resource',
       },

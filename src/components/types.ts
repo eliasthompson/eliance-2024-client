@@ -10,6 +10,11 @@ import type {
   TwitchEventSubKeepaliveMessage,
   TwitchEventSubReconnectMessage,
   TwitchEventSubWelcomeMessage,
+  TwitchPubSubAuthRevokedMessage,
+  TwitchPubSubMessageMessage,
+  TwitchPubSubPongMessage,
+  TwitchPubSubReconnectMessage,
+  TwitchPubSubResponseMessage,
 } from '@store/apis/twitch';
 import {
   TwitchEventSubChannelChatSettingsUpdateNotificationMessage,
@@ -44,3 +49,10 @@ export type TwitchEventSubMessage =
   | TwitchEventSubChannelChatNotificationRevocationMessage
   | TwitchEventSubChannelChatSettingsUpdateNotificationMessage
   | TwitchEventSubChannelChatSettingsUpdateRevocationMessage;
+
+export type TwitchPubSubMessage =
+  | TwitchPubSubPongMessage
+  | TwitchPubSubReconnectMessage
+  | TwitchPubSubAuthRevokedMessage
+  | TwitchPubSubResponseMessage
+  | TwitchPubSubMessageMessage;

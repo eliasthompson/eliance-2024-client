@@ -64,7 +64,7 @@
     - [ ]
 - [ ] chat box
   - [ ] hide on big event
-  - [ ] handle:
+  - [x] handle:
     - [x] messages
     - [x] notifications
     - [x] settings
@@ -85,17 +85,17 @@
       - [x] [`channel.chat.message`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatmessage)
       - [x] [`channel.chat.notification`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
       - [x] [`channel.chat_settings.update`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchat_settingsupdate)
-  - [ ] data for each chat:
-    - [ ] `channel.chat.message`
-      - [ ] message types:
+  - [x] data for each chat:
+    - [x] `channel.chat.message`
+      - [x] message types:
         - [x] `text`
         - [x] `channel_points_highlighted` - channel point
         - [?] `channel_points_sub_only` - channel point
         - [?] `user_intro` - sparkle(?)
-        - [ ] `power_ups_message_effect` - bits
-        - [ ] `power_ups_gigantified_emote` - bits
-    - [ ] `channel.chat.notification`
-      - [ ] notice types:
+        - [x] `power_ups_message_effect` - bits
+        - [x] `power_ups_gigantified_emote` - bits
+    - [x] `channel.chat.notification`
+      - [x] notice types:
         - [x] `sub` - unhandled
         - [?] `resub` - handled - star
         - [x] `sub_gift` - unhandled
@@ -108,13 +108,13 @@
         - [x] `announcement` - handled - megaphone
         - [?] `bits_badge_tier` - handled only if includes messages - bits
         - [x] `charity_donation` - unhandled
-    - [ ] endpoints:
+    - [x] endpoints:
       - [x] [`GET chat/badges`](https://dev.twitch.tv/docs/api/reference/#get-channel-chat-badges)
       - [x] [`GET chat/badges/global`](https://dev.twitch.tv/docs/api/reference/#get-global-chat-badges)
       - [x] [`GET chat/emotes/global`](https://dev.twitch.tv/docs/api/reference/#get-global-emotes)
       - [x] [`GET pronouns`](https://pronouns.alejo.io/api/pronouns)
       - [x] [`GET users/:login`](https://pronouns.alejo.io/api/users/eliasthompson)
-  - [ ] show/parse:
+  - [x] show/parse:
     - [x] text
     - [x] emotes
     - [x] badges
@@ -123,7 +123,7 @@
     - [x] replies
     - [x] username
     - [x] color
-    - [ ] bits - bits
+    - [x] bits - bits
     - [x] notice/message type
     - [x] `/me`
 - [ ] error display and handling

@@ -1,10 +1,10 @@
 import useWebSocket from 'react-use-websocket';
-import { Fragment, useEffect } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import * as uuid from 'uuid';
 
 import type { FirebotEventSubMessage, FirebotEventSubMessagePayload } from '@store/apis/firebot';
-import type { TwitchEventSubMessage } from '@components/types';
+import type { TwitchEventSubMessage, TwitchPubSubMessage } from '@components/types';
 
 import { AuthenticationBar } from '@components/AuthenticationBar';
 import { ErrorMessage } from '@components/shared/ErrorMessage';
@@ -28,10 +28,17 @@ export const Container = () => {
   const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubMessage>('wss://eventsub.wss.twitch.tv/ws', {
     share: true,
   });
+  const { readyState: twitchPSReadyState, sendJsonMessage: sendTwitchPSMessage } = useWebSocket<TwitchPubSubMessage>(
+    'wss://pubsub-edge.twitch.tv',
+    {
+      share: true,
+    },
+  );
   const { broadcasterId, broadcasterLogin, errors } = useSelector(({ info }) => info);
   const { messageIds: firebotMessageIds } = useSelector(({ firebotEventSub }) => firebotEventSub);
   const { messageIds: twitchMessageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
   const { data: tokenData, error: tokenError, isLoading: isTokenLoading } = useValidateTokenQuery();
+  const [pingIntervalId, setPingIntervalId] = useState<NodeJS.Timeout | null>(null);
   const isAuthorized = !(tokenError && 'status' in tokenError && tokenError.status === 401);
   const isRenderable = !!(broadcasterId && broadcasterLogin && sessionId);
   const backgroundColorBar = window.obsstudio ? 'transparent' : 'rgba(0, 0, 0, 33%)';
@@ -89,7 +96,23 @@ export const Container = () => {
     }
   }, [dispatch, twitchMessage, twitchMessageIds]);
 
-  // Set api errors
+  // Handle twitch pub sub pings
+  useEffect(() => {
+    if (twitchPSReadyState === 1 && pingIntervalId === null) {
+      setPingIntervalId(
+        setInterval(
+          () => {
+            sendTwitchPSMessage({ type: 'PING' });
+          },
+          5 * 60 * 1000,
+        ),
+      );
+    }
+
+    return () => clearInterval(pingIntervalId);
+  }, [pingIntervalId, twitchPSReadyState, sendTwitchPSMessage, setPingIntervalId]);
+
+  // Set errors
   useEffect(() => {
     if (tokenError && 'status' in tokenError) dispatch(addError(tokenError));
   }, [dispatch, tokenError]);

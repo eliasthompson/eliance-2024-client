@@ -1,16 +1,24 @@
 import useWebSocket from 'react-use-websocket';
 import { css } from '@emotion/react';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import * as uuid from 'uuid';
 
-import type { TwitchEventSubMessage } from '@components/types';
+import type { TwitchEventSubMessage, TwitchPubSubMessage } from '@components/types';
+import type { TwitchPubSubPinnedChatUpdatesMessageMessage } from '@components/ChatBox/types';
 
 import { ChatMessage } from '@components/ChatMessage';
 import { EmoteIcon } from '@components/shared/svgs/EmoteIcon';
 import { FlexContainer } from '@components/shared/FlexContainer';
 import { FollowerIcon } from '@components/shared/svgs/FollowerIcon';
 // import { SubscriberIcon } from '@components/shared/svgs/SubscriberIcon';
-import { addChat, clearChats, setChatDeletedTimestamp, setUserChatsDeletedTimestamp } from '@store/slices/info';
+import {
+  addChat,
+  clearChats,
+  removeChatPinId,
+  setChatDeletedTimestamp,
+  setChatPinId,
+  setUserChatsDeletedTimestamp,
+} from '@store/slices/info';
 import { addTwitchEventSubMessageId } from '@store/slices/twitchEventSub';
 import { updateChatSettingsData, useGetChatSettingsQuery } from '@store/apis/twitch/getChatSettings';
 import { useDispatch, useSelector } from '@store';
@@ -27,10 +35,10 @@ export const ChatBox = () => {
     share: true,
   });
   const {
-    // lastJsonMessage: twitchPSMessage,
+    lastJsonMessage: twitchPSMessage,
     readyState: twitchPSReadyState,
     sendJsonMessage: sendTwitchPSMessage,
-  } = useWebSocket<object>('wss://pubsub-edge.twitch.tv', {
+  } = useWebSocket<TwitchPubSubMessage>('wss://pubsub-edge.twitch.tv', {
     share: true,
   });
   const { accessToken } = useSelector(({ twitchAuth }) => twitchAuth);
@@ -124,12 +132,28 @@ export const ChatBox = () => {
     line-height: calc((var(--bar-height) - (var(--padding) * 1.5)) / 3);
     padding: 0 0 var(--padding) var(--padding);
   `;
+  const [, setUnpinTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const handleResetUnpinTimeout = useCallback(
+    ({ pinId, updatedAt, endsAt }: { pinId?: string; updatedAt?: number; endsAt?: number } = {}) => {
+      setUnpinTimeoutId((state) => {
+        clearTimeout(state);
 
-  // const handleTwitchPSPing = useCallback(() => {
-  //   sendTwitchPSMessage({ type: 'PING' });
-  // }, [sendTwitchPSMessage]);
-  // const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>(setTimeout(handleTwitchPSPing, 5 * 60 * 1000));
+        if (pinId && endsAt && updatedAt) {
+          return setTimeout(
+            () => {
+              dispatch(removeChatPinId({ pinId }));
+            },
+            (endsAt - updatedAt) * 1000,
+          );
+        }
 
+        return state;
+      });
+    },
+    [dispatch, setUnpinTimeoutId],
+  );
+
+  // Subscribe to twitch pub sub pinned chat updates on first connection
   useEffect(() => {
     if (twitchPSReadyState === 1) {
       const nonce = uuid.v4();
@@ -143,34 +167,38 @@ export const ChatBox = () => {
         },
       });
     }
-  }, [twitchPSReadyState]);
+  }, [twitchPSReadyState, sendTwitchPSMessage]);
 
-  // useEffect(() => {
-  //   setTimeoutId(setTimeout(handleTwitchPSPing, 5 * 60 * 1000));
-  // }, [handleTwitchPSPing, setTimeoutId]);
+  // Handle twitch pub sub messages
+  useEffect(() => {
+    if (twitchPSMessage) {
+      if (twitchPSMessage.type === 'MESSAGE') {
+        try {
+          const message = JSON.parse(twitchPSMessage.data.message);
 
-  // useEffect(() => {
-  //   if (twitchPSMessage) {
-  //     if (twitchPSMessage.type === 'MESSAGE') {
-  //       try {
-  //         const message = JSON.parse(twitchPSMessage.data.message);
-  //         console.log(message);
+          if (twitchPSMessage.data.topic === `pinned-chat-updates-v1.${broadcasterId}`) {
+            const { type, data }: TwitchPubSubPinnedChatUpdatesMessageMessage = message;
 
-  //         if (message.type === ':tmi.twitch.tv CAP * ACK :twitch.tv/tags\r\n') {
-  //           sendTwitchPSMessage(`PASS oauth:${accessToken}`);
-  //           sendTwitchPSMessage(`NICK ${broadcasterLogin}`);
-  //         } else if (message.type === 'PING :tmi.twitch.tv\r\n') {
-  //           sendTwitchPSMessage('PONG :tmi.twitch.tv');
-  //         }
-  //       } catch (error) {
-  //         //
-  //       }
-  //       // } else if (twitchPSMessage.type === 'PONG') {
-  //       //   clearTimeout(timeoutId);
-  //       //   setTimeoutId(setTimeout(handleTwitchPSPing, 5 * 60 * 1000));
-  //     }
-  //   }
-  // }, [twitchPSMessage]);
+            if (type === 'pin-message') {
+              handleResetUnpinTimeout({
+                pinId: data.id,
+                updatedAt: data.message.updated_at,
+                endsAt: data.message.ends_at,
+              });
+              dispatch(setChatPinId({ messageId: data.message.id, pinId: data.id }));
+            } else if (type === 'update-message') {
+              handleResetUnpinTimeout({ pinId: data.id, updatedAt: data.updated_at, endsAt: data.ends_at });
+            } else if (type === 'unpin-message') {
+              handleResetUnpinTimeout();
+              dispatch(removeChatPinId({ pinId: data.id }));
+            }
+          }
+        } catch (error) {
+          //
+        }
+      }
+    }
+  }, [dispatch, handleResetUnpinTimeout, twitchPSMessage]);
 
   // Handle twitch event sub messages
   useEffect(() => {

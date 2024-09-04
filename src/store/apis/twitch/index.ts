@@ -106,6 +106,30 @@ export type TwitchEventSubWelcomeMessage = TwitchEventSubSystemSessionMessage<'s
 export type TwitchEventSubKeepaliveMessage = TwitchEventSubSystemMessage<'session_keepalive', object>;
 export type TwitchEventSubReconnectMessage = TwitchEventSubSystemSessionMessage<'session_reconnect', 'reconnecting'>;
 
+export type TwitchPubSubBaseMessage<Type, Data> = {
+  type: Type;
+  data: Data;
+};
+export type TwitchPubSubPongMessage = TwitchPubSubBaseMessage<'PONG', undefined>;
+export type TwitchPubSubReconnectMessage = TwitchPubSubBaseMessage<'RECONNECT', undefined>;
+export type TwitchPubSubAuthRevokedMessage = TwitchPubSubBaseMessage<
+  'AUTH_REVOKED',
+  {
+    topics: string[];
+  }
+>;
+export type TwitchPubSubResponseMessage = TwitchPubSubBaseMessage<'RESPONSE', undefined> & {
+  nonce: string;
+  error: string;
+};
+export type TwitchPubSubMessageMessage = TwitchPubSubBaseMessage<
+  'MESSAGE',
+  {
+    topic: string;
+    message: string;
+  }
+>;
+
 export const twitchApi = createApi({
   baseQuery: fetchRefreshedBaseQuery,
   endpoints: () => ({}),

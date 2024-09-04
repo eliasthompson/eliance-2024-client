@@ -13,7 +13,10 @@ export const SparkleIcon = ({ colored, cssIcon: cssIconProvided, filled }: IconP
   // Render component
   return (
     <svg viewBox="0 0 20 20" css={cssSvg}>
-      <path d="M13.39 4.305 12 5l1.404.702a2 2 0 0 1 .894.894L15 8l.702-1.404a2 2 0 0 1 .894-.894L18 5l-1.418-.709a2 2 0 0 1-.881-.869L14.964 2l-.668 1.385a2 2 0 0 1-.907.92z" />
+      <path
+        fill={colored ? color : 'white'}
+        d="M13.39 4.305 12 5l1.404.702a2 2 0 0 1 .894.894L15 8l.702-1.404a2 2 0 0 1 .894-.894L18 5l-1.418-.709a2 2 0 0 1-.881-.869L14.964 2l-.668 1.385a2 2 0 0 1-.907.92z"
+      />
       <path
         fill={colored ? color : 'white'}
         fillRule={rule}
