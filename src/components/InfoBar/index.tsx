@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 import { ChatBox } from '@components/ChatBox';
 // import { EventBox } from '@components/EventBox';
 import { FlexContainer } from '@components/shared/FlexContainer';
-// import { PersonBox } from '@components/PersonBox';
+import { PersonBox } from '@components/PersonBox';
 import { useDispatch, useSelector } from '@store';
 import { useGetUserChatColorsQuery } from '@store/apis/twitch/getUserChatColors';
 import { useEffect } from 'react';
@@ -36,8 +36,7 @@ export const InfoBar = ({ cssBar: cssBarProvided }: InfoBarProps) => {
   // Render component
   return (
     <FlexContainer css={cssBar}>
-      {/* <PersonBox /> */}
-      <div style={{ flex: 3 }} />
+      <PersonBox />
       {/* <EventBox /> */}
       <div style={{ flex: 2 }} />
       <ChatBox />

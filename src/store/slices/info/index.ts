@@ -23,12 +23,12 @@ export interface InfoState {
   errors: ErrorMessageProps['error'][];
   goal: TwitchApiGetCreatorGoalsResponse['data'][number] | null;
   persons: (TwitchApiGetUsersResponse['data'][number] & {
-    active: boolean;
     color?: string;
-    isLive?: boolean;
-    isSharing?: boolean;
-    name?: string;
-    pronouns?: string;
+    isActive: boolean;
+    isLive: boolean;
+    // isSharing?: boolean;
+    // name?: string;
+    // pronouns?: string;
   })[];
 }
 
@@ -79,6 +79,9 @@ export const infoSlice = createSlice({
     },
     addError: (state, { payload }: PayloadAction<InfoState['errors'][number]>) => {
       state.errors.push(payload);
+    },
+    addPerson: (state, { payload }: PayloadAction<InfoState['persons'][number]>) => {
+      state.persons.push(payload);
     },
     clearChats: (state) => {
       state.chats.length = 0;
@@ -178,6 +181,9 @@ export const infoSlice = createSlice({
     setInfo: (state, { payload }: PayloadAction<Partial<InfoState>>) => {
       Object.assign(state, payload);
     },
+    setPersons: (state, { payload }: PayloadAction<InfoState['persons']>) => {
+      Object.assign(state.persons, payload);
+    },
   },
 });
 
@@ -185,6 +191,7 @@ export const {
   actions: {
     addChat,
     addError,
+    addPerson,
     clearChats,
     removeChatPinId,
     removeError,
@@ -192,5 +199,6 @@ export const {
     setChatPinId,
     setUserChatsDeletedTimestamp,
     setInfo,
+    setPersons,
   },
 } = infoSlice;

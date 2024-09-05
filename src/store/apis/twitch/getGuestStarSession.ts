@@ -25,7 +25,7 @@ export interface TwitchApiGetGuestStarSessionResponse {
   }[];
 }
 
-export const { useLazyGetGuestStarSessionQuery } = twitchApi
+export const { useGetGuestStarSessionQuery } = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['GUEST_START_SESSION_DATA'],
   })

@@ -135,7 +135,8 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
   const messageEmotes = fragments
     .filter(({ type }) => type === 'cheermote' || type === 'emote')
     .map(({ cheermote, emote }) => cheermote || emote);
-  const pronouns = ((pronounsData || []).find(({ name }) => name === (userData || [{}])[0].pronoun_id) || {}).display;
+  const pronouns = ((pronounsData || []).find(({ name }) => name === ((userData || [])[0] || {}).pronoun_id) || {})
+    .display;
   const badges = badgesData.reduce(
     (acc: TwitchChatBoxBadge[], { set_id: setId, versions }) => [
       ...acc,

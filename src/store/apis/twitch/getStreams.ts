@@ -12,7 +12,7 @@ export interface TwitchApiGetStreamsResponse {
     user_name: string;
     game_id: string;
     game_name: string;
-    type: 'live' | '';
+    type: 'live' | 'all';
     title: string;
     tags: string[];
     viewer_count: number;

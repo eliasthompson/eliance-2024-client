@@ -10,7 +10,6 @@ import { ChatMessage } from '@components/ChatMessage';
 import { EmoteIcon } from '@components/shared/svgs/EmoteIcon';
 import { FlexContainer } from '@components/shared/FlexContainer';
 import { FollowerIcon } from '@components/shared/svgs/FollowerIcon';
-// import { SubscriberIcon } from '@components/shared/svgs/SubscriberIcon';
 import {
   addChat,
   clearChats,
@@ -97,6 +96,26 @@ export const ChatBox = () => {
     // error: chatSettingsError,
     isLoading: isChatSettingsLoading,
   } = useGetChatSettingsQuery({ broadcasterId });
+  const [, setUnpinTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const handleResetUnpinTimeout = useCallback(
+    ({ pinId, updatedAt, endsAt }: { pinId?: string; updatedAt?: number; endsAt?: number } = {}) => {
+      setUnpinTimeoutId((state) => {
+        clearTimeout(state);
+
+        if (pinId && endsAt && updatedAt) {
+          return setTimeout(
+            () => {
+              dispatch(removeChatPinId({ pinId }));
+            },
+            (endsAt - updatedAt) * 1000,
+          );
+        }
+
+        return state;
+      });
+    },
+    [dispatch, setUnpinTimeoutId],
+  );
   const isLoading =
     isEventSubSubscriptionChannelChatClearLoading ||
     isEventSubSubscriptionChannelChatClearUserMessagesLoading ||
@@ -132,26 +151,6 @@ export const ChatBox = () => {
     line-height: calc((var(--bar-height) - (var(--padding) * 1.5)) / 3);
     padding: 0 0 var(--padding) var(--padding);
   `;
-  const [, setUnpinTimeoutId] = useState<NodeJS.Timeout | null>(null);
-  const handleResetUnpinTimeout = useCallback(
-    ({ pinId, updatedAt, endsAt }: { pinId?: string; updatedAt?: number; endsAt?: number } = {}) => {
-      setUnpinTimeoutId((state) => {
-        clearTimeout(state);
-
-        if (pinId && endsAt && updatedAt) {
-          return setTimeout(
-            () => {
-              dispatch(removeChatPinId({ pinId }));
-            },
-            (endsAt - updatedAt) * 1000,
-          );
-        }
-
-        return state;
-      });
-    },
-    [dispatch, setUnpinTimeoutId],
-  );
 
   // Subscribe to twitch pub sub pinned chat updates on first connection
   useEffect(() => {
@@ -270,7 +269,6 @@ export const ChatBox = () => {
             ${cssIconSettings.styles}
           `}
         />
-        {/* <SubscriberIcon colored={ chatSettingsData.data[0].subscriber_mode } filled={ chatSettingsData.data[0].subscriber_mode } cssIcon={ css`opacity:${(chatSettingsData.data[0].subscriber_mode) ? 1 : 0.5} ; ${cssIconSettings.styles}` } /> */}
         <EmoteIcon
           colored={chatSettingsData.data[0].emote_mode}
           filled={chatSettingsData.data[0].emote_mode}

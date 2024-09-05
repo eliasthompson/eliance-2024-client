@@ -6,10 +6,10 @@
   - [ ] rotate between persons
   - [ ] refocus to broadcaster and hide guests on big event
   - [ ] data for each person:
-    - [ ] profile pic (twitch profile pic)
-    - [ ] name (firebot name > twitch display name)
-    - [ ] pronouns (pronouns pronouns > firebot pronouns > null)
-    - [ ] twitch username (twitch login)
+    - [x] profile pic (twitch profile pic)
+    - [x] name (firebot name > twitch display name)
+    - [x] pronouns (pronouns pronouns > firebot pronouns > null)
+    - [ ] social (firebot social > twitch login)
     - [ ] local time(?) (firebot timezone > null)
     - [ ] upcoming schedule(?) (twitch schedule > null)
     - [ ] endpoints:

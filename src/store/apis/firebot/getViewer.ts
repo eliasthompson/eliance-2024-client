@@ -24,6 +24,7 @@ export interface FirebotApiGetViewerResponse {
     color?: string;
     isSharing?: boolean;
     name?: string;
+    pronouns?: string;
     [key: string]: unknown;
   };
   currency: object;
@@ -33,7 +34,7 @@ export interface FirebotApiGetViewerResponse {
   }[];
 }
 
-export const { useLazyGetViewerQuery } = firebotApi
+export const { useGetViewerQuery } = firebotApi
   .enhanceEndpoints({
     addTagTypes: ['VIEWER_DATA'],
   })

@@ -13,7 +13,7 @@ export interface TwitchApiGetUserChatColorsResponse {
   }[];
 }
 
-export const { useGetUserChatColorsQuery } = twitchApi
+export const { useGetUserChatColorsQuery, useLazyGetUserChatColorsQuery } = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['USER_CHAT_COLOR_DATA'],
   })

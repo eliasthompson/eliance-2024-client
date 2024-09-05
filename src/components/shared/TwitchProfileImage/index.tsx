@@ -5,14 +5,10 @@ import type { TwitchProfileImageProps } from '@components/shared/TwitchProfileIm
 export const TwitchProfileImage = ({ size, ...propsImg }: TwitchProfileImageProps) => {
   const cssImg = css`
     position: relative;
-    width: ${size};
-    height: ${size};
+    width: calc(${size});
+    height: calc(${size});
     border-radius: calc(${size} / 2);
-    filter: drop-shadow(0 0 calc(${size} / 10) #000000);
-
-    &:not(:last-child) {
-      margin-left: calc(${size} * -0.8);
-    }
+    filter: drop-shadow(#000000 0 0 calc(var(--padding) * 0.75));
   `;
 
   // Render component
