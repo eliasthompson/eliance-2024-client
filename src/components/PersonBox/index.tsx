@@ -37,6 +37,7 @@ export const PersonBox = () => {
     isCustomRoleLoading || isGuestStarSessionLoading || isStreamsLoading || isUserChatColorsLoading || isUsersLoading;
   const isRenderable = !!(guestStarSessionData && streamsData && userChatColorsData && usersData);
   const cssContainer = css`
+    position: relative;
     flex: 3;
   `;
 
@@ -80,7 +81,7 @@ export const PersonBox = () => {
         ? persons
             // .slice()
             // .reverse()
-            .map((person, i) => <PersonInfo key={person.id} person={person} index={i} />)
+            .map((person) => <PersonInfo key={person.id} person={person} />)
         : null}
     </FlexContainer>
   );

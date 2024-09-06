@@ -1,6 +1,7 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import path from 'path';
+import webpack from 'webpack';
 import { fileURLToPath } from 'url';
 
 export default {
@@ -23,6 +24,24 @@ export default {
     new HtmlWebpackPlugin({
       template: './public/index.html',
     }),
+    new webpack.ContextReplacementPlugin(
+      /[/\\]node_modules[/\\]timezonecomplete[/\\]/,
+      path.resolve('tz-database-context'),
+      {
+        tzdata: 'tzdata',
+        // 'tzdata-africa': 'tzdata-africa',
+        // 'tzdata-antarctica': 'tzdata-antarctica',
+        // 'tzdata-asia': 'tzdata-asia',
+        // 'tzdata-australasia': 'tzdata-australasia',
+        // 'tzdata-backward': 'tzdata-backward',
+        // 'tzdata-etcetera': 'tzdata-etcetera',
+        // 'tzdata-europe': 'tzdata-europe',
+        // 'tzdata-factory': 'tzdata-factory',
+        // 'tzdata-northamerica': 'tzdata-northamerica',
+        // 'tzdata-southamerica': 'tzdata-southamerica',
+        // 'tzdata-backward-utc': 'tzdata-backward-utc',
+      },
+    ),
   ],
   resolve: {
     modules: ['node_modules'],
@@ -32,6 +51,7 @@ export default {
         configFile: './tsconfig.json',
       }),
     ],
+    fallback: { util: false },
   },
   module: {
     rules: [

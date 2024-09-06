@@ -17,6 +17,7 @@ import { FlexContainer } from '@components/shared/FlexContainer';
 import { PinIcon } from '@components/shared/svgs/PinIcon';
 import { SparkleIcon } from '@components/shared/svgs/SparkleIcon';
 import { SubscriberIcon } from '@components/shared/svgs/SubscriberIcon';
+import { TwitchIcon } from '@components/shared/svgs/TwitchIcon';
 import { useGetChannelChatBadgesQuery } from '@store/apis/twitch/getChannelChatBadges';
 import { useGetGlobalChatBadgesQuery } from '@store/apis/twitch/getGlobalChatBadges';
 import { useGetGlobalEmotesQuery } from '@store/apis/twitch/getGlobalEmotes';
@@ -29,7 +30,7 @@ export const noticeTypes = {
   channel_points_highlighted: ChannelPointIcon,
   channel_points_sub_only: ChannelPointIcon,
   cheered: BitsIcon,
-  default: SparkleIcon, // TwitchIcon,
+  default: TwitchIcon,
   pinned: PinIcon,
   power_ups_gigantified_emote: BitsIcon,
   power_ups_message_effect: BitsIcon,

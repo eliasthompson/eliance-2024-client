@@ -25,6 +25,9 @@ export interface FirebotApiGetViewerResponse {
     isSharing?: boolean;
     name?: string;
     pronouns?: string;
+    socialPlatform?: string;
+    socialHandle?: string;
+    timeZone?: string;
     [key: string]: unknown;
   };
   currency: object;

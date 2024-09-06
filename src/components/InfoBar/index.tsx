@@ -37,8 +37,7 @@ export const InfoBar = ({ cssBar: cssBarProvided }: InfoBarProps) => {
   return (
     <FlexContainer css={cssBar}>
       <PersonBox />
-      {/* <EventBox /> */}
-      <div style={{ flex: 2 }} />
+      {/* <EventBox /> */} <div style={{ flex: 2 }} />
       <ChatBox />
     </FlexContainer>
   );

@@ -5,15 +5,27 @@
 - [ ] person box
   - [ ] rotate between persons
   - [ ] refocus to broadcaster and hide guests on big event
+  - [ ] sync guest star guests to firebot
   - [ ] data for each person:
     - [x] profile pic (twitch profile pic)
     - [x] name (firebot name > twitch display name)
     - [x] pronouns (pronouns pronouns > firebot pronouns > null)
-    - [ ] social (firebot social > twitch login)
-    - [ ] local time(?) (firebot timezone > null)
-    - [ ] upcoming schedule(?) (twitch schedule > null)
-    - [ ] endpoints:
-      - [ ]
+    - [x] social (firebot social > twitch login)
+    - [x] local time(?) (firebot timezone > null)
+    - [x] isLive dot (twitch stream islive > null)
+    - [x] upcoming schedule(?) (twitch schedule > null)
+    - [x] endpoints:
+      - [x] [`GET chat/color`](https://dev.twitch.tv/docs/api/reference/#get-user-chat-color)
+      - [x] [`GET customRoles/:customRoleId`](https://github.com/crowbartools/Firebot/blob/v5.63.0-beta3/src/server/api/v1/v1Router.js)
+      - [x] [`GET guest_star/session`](https://dev.twitch.tv/docs/api/reference/#get-guest-star-session)
+      - [x] [`GET schedule`](https://dev.twitch.tv/docs/api/reference/#get-channel-stream-schedule)
+      - [x] [`GET streams`](https://dev.twitch.tv/docs/api/reference/#get-streams)
+      - [x] [`GET users`](https://dev.twitch.tv/docs/api/reference/#get-users)
+      - [x] [`GET viewers/:userId`](https://github.com/crowbartools/Firebot/blob/v5.63.0-beta3/src/server/api/v1/v1Router.js)
+      - [x] [`GET pronouns`](https://pronouns.alejo.io/api/pronouns)
+      - [x] [`GET users/:login`](https://pronouns.alejo.io/api/users/eliasthompson)
+      - [x] [`POST customRoles/:customRoleId/viewers/:userId`](https://github.com/crowbartools/Firebot/blob/v5.63.0-beta3/src/server/api/v1/v1Router.js)
+      - [ ] [`DELETE customRoles/:customRoleId/viewers/:userId`](https://github.com/crowbartools/Firebot/blob/v5.63.0-beta3/src/server/api/v1/v1Router.js)
     - [ ] event subs:
       - [ ]
 - [ ] event box
@@ -139,7 +151,7 @@
   - when initial data is loaded, then:
     - [x] Twitch: `GET /guest_star/session` Get Guest Star Session - get all guest ids who are in guest star
     - if there are guests to add, then:
-      - [x] Firebot: `POST /customRoles/:customRoleId/viewers/:userId` Add Viewer To Custom Role - add guests to custom role
+      - [ ] Firebot: `POST /customRoles/:customRoleId/viewers/:userId` Add Viewer To Custom Role - add guests to custom role
     - get all person data:
       - [x] Twitch: `GET /chat/color` Get User Chat Color - get color data on all persons (color = firebotColor)
       - [x] Chat Pronouns: `GET /users/:login` Get User - get user pronoun data on all persons (pronouns)
