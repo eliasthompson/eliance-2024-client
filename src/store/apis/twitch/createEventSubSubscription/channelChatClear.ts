@@ -6,21 +6,25 @@ import type {
 
 import { twitchApi } from '@store/apis/twitch';
 
+const type = 'channel.chat.clear';
+const version = '1';
+const getCondition = (broadcasterId: string) => ({
+  broadcaster_user_id: broadcasterId,
+  user_id: broadcasterId,
+});
+
 export interface TwitchApiCreateEventSubSubscriptionChannelChatClearRequest {
   broadcasterId: string;
   sessionId: string;
 }
-export type TwitchEventSubChannelChatClearNotificationMessageSubscriptionType = 'channel.chat.clear';
-export type TwitchEventSubChannelChatClearNotificationMessageSubscriptionVersion = '1';
-export type TwitchEventSubChannelChatClearNotificationMessageSubscriptionCondition = {
-  broadcaster_user_id: string;
-  user_id: string;
-};
 export type TwitchEventSubChannelChatClearNotificationMessageEvent = {
   broadcaster_user_id: string;
   broadcaster_user_login: string;
   broadcaster_user_name: string;
 };
+export type TwitchEventSubChannelChatClearNotificationMessageSubscriptionType = typeof type;
+export type TwitchEventSubChannelChatClearNotificationMessageSubscriptionVersion = typeof version;
+export type TwitchEventSubChannelChatClearNotificationMessageSubscriptionCondition = ReturnType<typeof getCondition>;
 export type TwitchEventSubChannelChatClearNotificationMessage = TwitchEventSubNotificationMessage<
   TwitchEventSubChannelChatClearNotificationMessageSubscriptionType,
   TwitchEventSubChannelChatClearNotificationMessageSubscriptionVersion,
@@ -41,12 +45,9 @@ export const { useCreateEventSubSubscriptionChannelChatClearQuery } = twitchApi.
     >({
       query: ({ broadcasterId, sessionId }) => ({
         body: {
-          type: 'channel.chat.clear',
-          version: 1,
-          condition: {
-            broadcaster_user_id: broadcasterId,
-            user_id: broadcasterId,
-          },
+          type,
+          version,
+          condition: getCondition(broadcasterId),
           transport: {
             method: 'websocket',
             session_id: sessionId,

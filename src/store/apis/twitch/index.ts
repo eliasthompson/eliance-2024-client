@@ -137,4 +137,6 @@ export const twitchApi = createApi({
   tagTypes: ['UNAUTHORIZED'],
 });
 
-export const { util: twitchApiUtil } = twitchApi;
+export const {
+  util: { invalidateTags: invalidateTwitchApiTags },
+} = twitchApi;

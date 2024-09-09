@@ -18,12 +18,19 @@ import { useValidateTokenQuery } from '@src/store/apis/twitch/validateToken';
 
 export const Container = () => {
   const dispatch = useDispatch();
+  const { broadcasterId, broadcasterLogin, errors } = useSelector(({ info }) => info);
+  const { messageIds: firebotMessageIds } = useSelector(({ firebotEventSub }) => firebotEventSub);
+  const { messageIds: twitchMessageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
   const {
     lastJsonMessage: firebotMessage,
     readyState: firebotReadyState,
     sendJsonMessage: sendFirebotMessage,
   } = useWebSocket<FirebotEventSubMessage>('ws://localhost:7472', {
+    reconnectAttempts: 100,
+    reconnectInterval: (attempt = 0) => ~~((Math.random() + 0.4) * (300 << attempt)),
+    retryOnError: true,
     share: true,
+    shouldReconnect: () => true,
   });
   const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubMessage>('wss://eventsub.wss.twitch.tv/ws', {
     share: true,
@@ -34,9 +41,6 @@ export const Container = () => {
       share: true,
     },
   );
-  const { broadcasterId, broadcasterLogin, errors } = useSelector(({ info }) => info);
-  const { messageIds: firebotMessageIds } = useSelector(({ firebotEventSub }) => firebotEventSub);
-  const { messageIds: twitchMessageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
   const { data: tokenData, error: tokenError, isLoading: isTokenLoading } = useValidateTokenQuery();
   const [pingIntervalId, setPingIntervalId] = useState<NodeJS.Timeout | null>(null);
   const isAuthorized = !(tokenError && 'status' in tokenError && tokenError.status === 401);
@@ -77,8 +81,10 @@ export const Container = () => {
       const messageId = uuid.v5(JSON.stringify(firebotMessage), namespace);
       const { type, name } = firebotMessage;
 
-      if (!firebotMessageIds.includes(messageId) && type === 'response' && name === 'success') {
-        dispatch(addFirebotEventSubMessageId(messageId));
+      if (!firebotMessageIds.includes(messageId) && type === 'response') {
+        if (name === 'success') {
+          dispatch(addFirebotEventSubMessageId(messageId));
+        }
       }
     }
   }, [dispatch, firebotMessage, firebotMessageIds]);

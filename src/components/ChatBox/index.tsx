@@ -21,15 +21,18 @@ import {
 import { addTwitchEventSubMessageId } from '@store/slices/twitchEventSub';
 import { updateChatSettingsData, useGetChatSettingsQuery } from '@store/apis/twitch/getChatSettings';
 import { useDispatch, useSelector } from '@store';
-import { useCreateEventSubSubscriptionChannelChatClearQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatClear';
-import { useCreateEventSubSubscriptionChannelChatClearUserMessagesQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatClearUserMessages';
-import { useCreateEventSubSubscriptionChannelChatMessageQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatMessage';
-import { useCreateEventSubSubscriptionChannelChatMessageDeleteQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatMessageDelete';
-import { useCreateEventSubSubscriptionChannelChatNotificationQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatNotification';
-import { useCreateEventSubSubscriptionChannelChatSettingsUpdateQuery } from '@store/apis/twitch/createEventSubSubscriptionChannelChatSettingsUpdate';
+import { useCreateEventSubSubscriptionChannelChatClearQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatClear';
+import { useCreateEventSubSubscriptionChannelChatClearUserMessagesQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatClearUserMessages';
+import { useCreateEventSubSubscriptionChannelChatMessageQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatMessage';
+import { useCreateEventSubSubscriptionChannelChatMessageDeleteQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatMessageDelete';
+import { useCreateEventSubSubscriptionChannelChatNotificationQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatNotification';
+import { useCreateEventSubSubscriptionChannelChatSettingsUpdateQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatSettingsUpdate';
 
 export const ChatBox = () => {
   const dispatch = useDispatch();
+  const { accessToken } = useSelector(({ twitchAuth }) => twitchAuth);
+  const { broadcasterId, chats } = useSelector(({ info }) => info);
+  const { messageIds: twitchMessageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
   const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubMessage>('wss://eventsub.wss.twitch.tv/ws', {
     share: true,
   });
@@ -40,9 +43,6 @@ export const ChatBox = () => {
   } = useWebSocket<TwitchPubSubMessage>('wss://pubsub-edge.twitch.tv', {
     share: true,
   });
-  const { accessToken } = useSelector(({ twitchAuth }) => twitchAuth);
-  const { broadcasterId, chats } = useSelector(({ info }) => info);
-  const { messageIds: twitchMessageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
   const {
     data: eventSubSubscriptionChannelChatClearData,
     // error: eventSubSubscriptionChannelChatClearError,

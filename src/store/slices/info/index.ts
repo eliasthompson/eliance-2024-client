@@ -2,9 +2,8 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 
 import type { ErrorMessageProps } from '@components/shared/ErrorMessage/types';
 import type { TwitchApiGetCreatorGoalsResponse } from '@src/store/apis/twitch/getCreatorGoals';
-import type { TwitchApiGetUsersResponse } from '@store/apis/twitch/getUsers';
-import type { TwitchEventSubChannelChatMessageNotificationMessage } from '@store/apis/twitch/createEventSubSubscriptionChannelChatMessage';
-import type { TwitchEventSubChannelChatNotificationNotificationMessage } from '@store/apis/twitch/createEventSubSubscriptionChannelChatNotification';
+import type { TwitchEventSubChannelChatMessageNotificationMessage } from '@store/apis/twitch/createEventSubSubscription/channelChatMessage';
+import type { TwitchEventSubChannelChatNotificationNotificationMessage } from '@store/apis/twitch/createEventSubSubscription/channelChatNotification';
 
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -22,14 +21,19 @@ export interface InfoState {
   })[];
   errors: ErrorMessageProps['error'][];
   goal: TwitchApiGetCreatorGoalsResponse['data'][number] | null;
-  persons: (TwitchApiGetUsersResponse['data'][number] & {
-    color?: string;
+  persons: {
+    id: string;
+    login: string;
+    profileImageUrl: string;
+    name: string;
+    color: string;
     isActive: boolean;
     isLive: boolean;
-    // isSharing?: boolean;
-    // name?: string;
-    // pronouns?: string;
-  })[];
+    pronouns?: string;
+    socialHandle?: string;
+    socialPlatform?: string;
+    timeZone?: string;
+  }[];
 }
 
 export const getStoredRecentChats = (ex: number = 60 * 60 * 1000) => {
@@ -110,6 +114,18 @@ export const infoSlice = createSlice({
     removeError: (state, { payload }: PayloadAction<number>) => {
       state.errors.splice(payload, 1);
     },
+    rotatePersonisActive: (state) => {
+      const newPersons = [...state.persons];
+      const currentActiveIndex = newPersons.findIndex(({ isActive }) => isActive);
+      const nextActiveIndex = currentActiveIndex === newPersons.length - 1 ? 0 : currentActiveIndex + 1;
+
+      for (const i in newPersons) {
+        if (Number(i) === nextActiveIndex) newPersons[i].isActive = true;
+        else newPersons[i].isActive = false;
+      }
+
+      state.persons = newPersons;
+    },
     setChatDeletedTimestamp: (
       state,
       {
@@ -181,9 +197,6 @@ export const infoSlice = createSlice({
     setInfo: (state, { payload }: PayloadAction<Partial<InfoState>>) => {
       Object.assign(state, payload);
     },
-    setPersons: (state, { payload }: PayloadAction<InfoState['persons']>) => {
-      Object.assign(state.persons, payload);
-    },
   },
 });
 
@@ -195,10 +208,10 @@ export const {
     clearChats,
     removeChatPinId,
     removeError,
+    rotatePersonisActive,
     setChatDeletedTimestamp,
     setChatPinId,
     setUserChatsDeletedTimestamp,
     setInfo,
-    setPersons,
   },
 } = infoSlice;

@@ -1,19 +1,19 @@
 import { firebotApi } from '.';
 
-export interface FirebotApiAddViewerToCustomRolePayload {
+export interface FirebotApiRemoveViewerFromCustomRolePayload {
   customRoleId: string;
   userId: string;
 }
 
-export const { useAddViewerToCustomRoleMutation } = firebotApi
+export const { useRemoveViewerFromCustomRoleMutation } = firebotApi
   .enhanceEndpoints({
     addTagTypes: ['CUSTOM_ROLE_DATA'],
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      addViewerToCustomRole: build.mutation<void, FirebotApiAddViewerToCustomRolePayload>({
+      removeViewerFromCustomRole: build.mutation<void, FirebotApiRemoveViewerFromCustomRolePayload>({
         query: ({ customRoleId, userId }) => ({
-          method: 'POST',
+          method: 'DELETE',
           url: `/customRoles/${customRoleId}/viewer/${userId}`,
         }),
         invalidatesTags: (result, error, { customRoleId }) => {

@@ -25,9 +25,12 @@ export interface TwitchApiGetGuestStarSessionResponse {
   }[];
 }
 
-export const { useGetGuestStarSessionQuery } = twitchApi
+export const {
+  useGetGuestStarSessionQuery,
+  util: { invalidateTags: invalidateGuestStarSessionTags },
+} = twitchApi
   .enhanceEndpoints({
-    addTagTypes: ['GUEST_START_SESSION_DATA'],
+    addTagTypes: ['GUEST_STAR_SESSION_DATA'],
   })
   .injectEndpoints({
     endpoints: (build) => ({
@@ -37,7 +40,7 @@ export const { useGetGuestStarSessionQuery } = twitchApi
           url: `/guest_star/session?broadcaster_id=${broadcasterId}&moderator_id=${broadcasterId}`,
         }),
         providesTags: (result, error, { broadcasterId }) => {
-          if (result) return [{ type: 'GUEST_START_SESSION_DATA', id: broadcasterId }];
+          if (result) return [{ type: 'GUEST_STAR_SESSION_DATA', id: broadcasterId }];
           if (error?.status === 401) return ['UNAUTHORIZED'];
           return [];
         },

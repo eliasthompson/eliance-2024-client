@@ -6,16 +6,17 @@ import type {
 
 import { twitchApi } from '@store/apis/twitch';
 
+const type = 'channel.chat.message';
+const version = '1';
+const getCondition = (broadcasterId: string) => ({
+  broadcaster_user_id: broadcasterId,
+  user_id: broadcasterId,
+});
+
 export interface TwitchApiCreateEventSubSubscriptionChannelChatMessageRequest {
   broadcasterId: string;
   sessionId: string;
 }
-export type TwitchEventSubChannelChatMessageNotificationMessageSubscriptionType = 'channel.chat.message';
-export type TwitchEventSubChannelChatMessageNotificationMessageSubscriptionVersion = '1';
-export type TwitchEventSubChannelChatMessageNotificationMessageSubscriptionCondition = {
-  broadcaster_user_id: string;
-  user_id: string;
-};
 export type TwitchEventSubChannelChatMessageNotificationMessageEvent = {
   broadcaster_user_id: string;
   broadcaster_user_login: string;
@@ -77,6 +78,9 @@ export type TwitchEventSubChannelChatMessageNotificationMessageEvent = {
   channel_points_custom_reward_id: string | null;
   channel_points_animation_id: string | null;
 };
+export type TwitchEventSubChannelChatMessageNotificationMessageSubscriptionType = typeof type;
+export type TwitchEventSubChannelChatMessageNotificationMessageSubscriptionVersion = typeof version;
+export type TwitchEventSubChannelChatMessageNotificationMessageSubscriptionCondition = ReturnType<typeof getCondition>;
 export type TwitchEventSubChannelChatMessageNotificationMessage = TwitchEventSubNotificationMessage<
   TwitchEventSubChannelChatMessageNotificationMessageSubscriptionType,
   TwitchEventSubChannelChatMessageNotificationMessageSubscriptionVersion,
@@ -97,12 +101,9 @@ export const { useCreateEventSubSubscriptionChannelChatMessageQuery } = twitchAp
     >({
       query: ({ broadcasterId, sessionId }) => ({
         body: {
-          type: 'channel.chat.message',
-          version: 1,
-          condition: {
-            broadcaster_user_id: broadcasterId,
-            user_id: broadcasterId,
-          },
+          type,
+          version,
+          condition: getCondition(broadcasterId),
           transport: {
             method: 'websocket',
             session_id: sessionId,

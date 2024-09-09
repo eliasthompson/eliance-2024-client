@@ -3,7 +3,7 @@ import type { InfoBarProps } from '@components/InfoBar/types';
 import { css } from '@emotion/react';
 
 import { ChatBox } from '@components/ChatBox';
-// import { EventBox } from '@components/EventBox';
+import { EventBox } from '@components/EventBox';
 import { FlexContainer } from '@components/shared/FlexContainer';
 import { PersonBox } from '@components/PersonBox';
 import { useDispatch, useSelector } from '@store';
@@ -37,7 +37,7 @@ export const InfoBar = ({ cssBar: cssBarProvided }: InfoBarProps) => {
   return (
     <FlexContainer css={cssBar}>
       <PersonBox />
-      {/* <EventBox /> */} <div style={{ flex: 2 }} />
+      <EventBox />
       <ChatBox />
     </FlexContainer>
   );

@@ -6,16 +6,17 @@ import type {
 
 import { twitchApi } from '@store/apis/twitch';
 
+const type = 'channel.chat.message_delete';
+const version = '1';
+const getCondition = (broadcasterId: string) => ({
+  broadcaster_user_id: broadcasterId,
+  user_id: broadcasterId,
+});
+
 export interface TwitchApiCreateEventSubSubscriptionChannelChatMessageDeleteRequest {
   broadcasterId: string;
   sessionId: string;
 }
-export type TwitchEventSubChannelChatMessageDeleteNotificationMessageSubscriptionType = 'channel.chat.message_delete';
-export type TwitchEventSubChannelChatMessageDeleteNotificationMessageSubscriptionVersion = '1';
-export type TwitchEventSubChannelChatMessageDeleteNotificationMessageSubscriptionCondition = {
-  broadcaster_user_id: string;
-  user_id: string;
-};
 export type TwitchEventSubChannelChatMessageDeleteNotificationMessageEvent = {
   broadcaster_user_id: string;
   broadcaster_user_login: string;
@@ -25,6 +26,11 @@ export type TwitchEventSubChannelChatMessageDeleteNotificationMessageEvent = {
   target_user_name: string;
   message_id: string;
 };
+export type TwitchEventSubChannelChatMessageDeleteNotificationMessageSubscriptionType = typeof type;
+export type TwitchEventSubChannelChatMessageDeleteNotificationMessageSubscriptionVersion = typeof version;
+export type TwitchEventSubChannelChatMessageDeleteNotificationMessageSubscriptionCondition = ReturnType<
+  typeof getCondition
+>;
 export type TwitchEventSubChannelChatMessageDeleteNotificationMessage = TwitchEventSubNotificationMessage<
   TwitchEventSubChannelChatMessageDeleteNotificationMessageSubscriptionType,
   TwitchEventSubChannelChatMessageDeleteNotificationMessageSubscriptionVersion,
@@ -45,12 +51,9 @@ export const { useCreateEventSubSubscriptionChannelChatMessageDeleteQuery } = tw
     >({
       query: ({ broadcasterId, sessionId }) => ({
         body: {
-          type: 'channel.chat.message_delete',
-          version: 1,
-          condition: {
-            broadcaster_user_id: broadcasterId,
-            user_id: broadcasterId,
-          },
+          type,
+          version,
+          condition: getCondition(broadcasterId),
           transport: {
             method: 'websocket',
             session_id: sessionId,

@@ -9,7 +9,7 @@ import { TwitchButton } from '@components/shared/TwitchButton';
 import { TwitchInput } from '@components/shared/TwitchInput';
 import { clientId, scopes } from '@config';
 import { setTwitchAuth } from '@store/slices/twitchAuth';
-import { twitchApiUtil } from '@store/apis/twitch';
+import { invalidateTwitchApiTags } from '@store/apis/twitch';
 import { useCreateTokenMutation } from '@store/apis/twitch/createToken';
 import { useDispatch } from '@store';
 import { useGetDeviceCodeQuery } from '@store/apis/twitch/getDeviceCode';
@@ -36,7 +36,7 @@ export const AuthenticationBar = ({ cssBar: cssBarProvided }: AuthenticationBarP
           refreshToken: tokenData.refresh_token,
         }),
       );
-      dispatch(twitchApiUtil.invalidateTags(['UNAUTHORIZED']));
+      dispatch(invalidateTwitchApiTags(['UNAUTHORIZED']));
     }
   }, [deviceCodeData, createTokenMutation]);
   const handleCopyClick = useCallback(() => {

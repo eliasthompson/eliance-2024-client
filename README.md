@@ -3,16 +3,21 @@
 ## Todo
 
 - [ ] person box
-  - [ ] rotate between persons
+  - [ ] BUG: interval desync of schedule slideshow
+  - [ ] BUG: proper timeout for clocks needed
   - [ ] refocus to broadcaster and hide guests on big event
-  - [ ] sync guest star guests to firebot
-  - [ ] data for each person:
+  - [x] automatic retry of firebot connection
+  - [x] guest star works for non-hosted sessions
+  - [x] rotate between persons
+  - [x] rotate between info and schedule
+  - [x] sync guest star guests to firebot
+  - [x] data for each person:
     - [x] profile pic (twitch profile pic)
     - [x] name (firebot name > twitch display name)
     - [x] pronouns (pronouns pronouns > firebot pronouns > null)
     - [x] social (firebot social > twitch login)
     - [x] local time(?) (firebot timezone > null)
-    - [x] isLive dot (twitch stream islive > null)
+    - [x] isLive dot (twitch stream islive)
     - [x] upcoming schedule(?) (twitch schedule > null)
     - [x] endpoints:
       - [x] [`GET chat/color`](https://dev.twitch.tv/docs/api/reference/#get-user-chat-color)
@@ -21,13 +26,21 @@
       - [x] [`GET schedule`](https://dev.twitch.tv/docs/api/reference/#get-channel-stream-schedule)
       - [x] [`GET streams`](https://dev.twitch.tv/docs/api/reference/#get-streams)
       - [x] [`GET users`](https://dev.twitch.tv/docs/api/reference/#get-users)
-      - [x] [`GET viewers/:userId`](https://github.com/crowbartools/Firebot/blob/v5.63.0-beta3/src/server/api/v1/v1Router.js)
+      - [x] [`GET viewers/export`](https://github.com/crowbartools/Firebot/blob/v5.63.0-beta3/src/server/api/v1/v1Router.js)
       - [x] [`GET pronouns`](https://pronouns.alejo.io/api/pronouns)
       - [x] [`GET users/:login`](https://pronouns.alejo.io/api/users/eliasthompson)
       - [x] [`POST customRoles/:customRoleId/viewers/:userId`](https://github.com/crowbartools/Firebot/blob/v5.63.0-beta3/src/server/api/v1/v1Router.js)
-      - [ ] [`DELETE customRoles/:customRoleId/viewers/:userId`](https://github.com/crowbartools/Firebot/blob/v5.63.0-beta3/src/server/api/v1/v1Router.js)
-    - [ ] event subs:
-      - [ ]
+    - [x] event subs:
+      - [x] `custom-role:updated`
+      - [x] `viewer-metadata:created`
+      - [x] `viewer-metadata:updated`
+      - [x] `viewer-metadata:deleted`
+      - [x] `channel.guest_star_guest.update`
+      - [x] `channel.guest_star_session.begin`
+      - [x] `channel.guest_star_session.end`
+      - [x] `channel.guest_star_session.end`
+      - [?] `stream.online`
+      - [?] `stream.offline`
 - [ ] event box
   - [ ] small events, social actions, and goals stay in box, big event expand the box to near full width
   - [ ] big events (event queue):
@@ -76,6 +89,7 @@
     - [ ]
 - [ ] chat box
   - [ ] hide on big event
+  - [ ] combined chat support
   - [x] handle:
     - [x] messages
     - [x] notifications
@@ -141,28 +155,3 @@
 - [ ] error display and handling
 - [ ] design
 - [ ] animations
-
-### Guest/User Data Flow
-
-- on load:
-  - [x] Twitch: `GET /validate` Validate Token - get broadcaster id and do an auth check
-  - [x] Chat Pronouns: `GET /pronouns` Get Pronouns - get pronoun data for reference
-  - [x] Firebot: `GET /customRoles/:customRoleId` Get Custom Role - get all existing guest ids
-  - when initial data is loaded, then:
-    - [x] Twitch: `GET /guest_star/session` Get Guest Star Session - get all guest ids who are in guest star
-    - if there are guests to add, then:
-      - [ ] Firebot: `POST /customRoles/:customRoleId/viewers/:userId` Add Viewer To Custom Role - add guests to custom role
-    - get all person data:
-      - [x] Twitch: `GET /chat/color` Get User Chat Color - get color data on all persons (color = firebotColor)
-      - [x] Chat Pronouns: `GET /users/:login` Get User - get user pronoun data on all persons (pronouns)
-      - [x] Firebot: `GET /viewers/:userId` Get Viewer - get viewer data on all persons (color = defaultColor, name = displayName, pronouns = apiPronouns)
-      - [x] Twitch: `GET /users` Get Users - get user data on all persons (display_name, profile_image_url, login)
-      - [x] Twitch: `GET /streams` Get Streams - get stream data on all persons (isLive)
-      - if viewer has no metadata, then:
-        - [ ] Firebot: `POST /viewers/:userId` Add Metadata To View - add metadata to viewer (only iscontent, )
-    - combine & show data
-- [ ] on event:
-  - [ ] on guest star guest update:
-    - [ ] fix guest list and refetch stuff if needed
-  - [ ] on firebot custom role update
-    - [ ] fix guest list and refetch stuff if needed

@@ -6,17 +6,17 @@ import type {
 
 import { twitchApi } from '@store/apis/twitch';
 
+const type = 'channel.chat.clear_user_messages';
+const version = '1';
+const getCondition = (broadcasterId: string) => ({
+  broadcaster_user_id: broadcasterId,
+  user_id: broadcasterId,
+});
+
 export interface TwitchApiCreateEventSubSubscriptionChannelChatClearUserMessagesRequest {
   broadcasterId: string;
   sessionId: string;
 }
-export type TwitchEventSubChannelChatClearUserMessagesNotificationMessageSubscriptionType =
-  'channel.chat.clear_user_messages';
-export type TwitchEventSubChannelChatClearUserMessagesNotificationMessageSubscriptionVersion = '1';
-export type TwitchEventSubChannelChatClearUserMessagesNotificationMessageSubscriptionCondition = {
-  broadcaster_user_id: string;
-  user_id: string;
-};
 export type TwitchEventSubChannelChatClearUserMessagesNotificationMessageEvent = {
   broadcaster_user_id: string;
   broadcaster_user_login: string;
@@ -25,6 +25,11 @@ export type TwitchEventSubChannelChatClearUserMessagesNotificationMessageEvent =
   target_user_login: string;
   target_user_name: string;
 };
+export type TwitchEventSubChannelChatClearUserMessagesNotificationMessageSubscriptionType = typeof type;
+export type TwitchEventSubChannelChatClearUserMessagesNotificationMessageSubscriptionVersion = typeof version;
+export type TwitchEventSubChannelChatClearUserMessagesNotificationMessageSubscriptionCondition = ReturnType<
+  typeof getCondition
+>;
 export type TwitchEventSubChannelChatClearUserMessagesNotificationMessage = TwitchEventSubNotificationMessage<
   TwitchEventSubChannelChatClearUserMessagesNotificationMessageSubscriptionType,
   TwitchEventSubChannelChatClearUserMessagesNotificationMessageSubscriptionVersion,
@@ -45,12 +50,9 @@ export const { useCreateEventSubSubscriptionChannelChatClearUserMessagesQuery } 
     >({
       query: ({ broadcasterId, sessionId }) => ({
         body: {
-          type: 'channel.chat.clear_user_messages',
-          version: 1,
-          condition: {
-            broadcaster_user_id: broadcasterId,
-            user_id: broadcasterId,
-          },
+          type,
+          version,
+          condition: getCondition(broadcasterId),
           transport: {
             method: 'websocket',
             session_id: sessionId,

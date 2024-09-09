@@ -1,11 +1,11 @@
 import type {
   TwitchEventSubChannelChatMessageNotificationMessage,
   TwitchEventSubChannelChatMessageRevocationMessage,
-} from '@store/apis/twitch/createEventSubSubscriptionChannelChatMessage';
+} from '@store/apis/twitch/createEventSubSubscription/channelChatMessage';
 import type {
   TwitchEventSubChannelChatNotificationNotificationMessage,
   TwitchEventSubChannelChatNotificationRevocationMessage,
-} from '@store/apis/twitch/createEventSubSubscriptionChannelChatNotification';
+} from '@store/apis/twitch/createEventSubSubscription/channelChatNotification';
 import type {
   TwitchEventSubKeepaliveMessage,
   TwitchEventSubReconnectMessage,
@@ -19,19 +19,39 @@ import type {
 import {
   TwitchEventSubChannelChatSettingsUpdateNotificationMessage,
   TwitchEventSubChannelChatSettingsUpdateRevocationMessage,
-} from '@store/apis/twitch/createEventSubSubscriptionChannelChatSettingsUpdate';
+} from '@store/apis/twitch/createEventSubSubscription/channelChatSettingsUpdate';
 import {
   TwitchEventSubChannelChatClearNotificationMessage,
   TwitchEventSubChannelChatClearRevocationMessage,
-} from '@store/apis/twitch/createEventSubSubscriptionChannelChatClear';
+} from '@store/apis/twitch/createEventSubSubscription/channelChatClear';
 import {
   TwitchEventSubChannelChatClearUserMessagesNotificationMessage,
   TwitchEventSubChannelChatClearUserMessagesRevocationMessage,
-} from '@store/apis/twitch/createEventSubSubscriptionChannelChatClearUserMessages';
+} from '@store/apis/twitch/createEventSubSubscription/channelChatClearUserMessages';
 import {
   TwitchEventSubChannelChatMessageDeleteNotificationMessage,
   TwitchEventSubChannelChatMessageDeleteRevocationMessage,
-} from '@store/apis/twitch/createEventSubSubscriptionChannelChatMessageDelete';
+} from '@store/apis/twitch/createEventSubSubscription/channelChatMessageDelete';
+import {
+  TwitchEventSubChannelGuestStarSessionBeginNotificationMessage,
+  TwitchEventSubChannelGuestStarSessionBeginRevocationMessage,
+} from '@store/apis/twitch/createEventSubSubscription/channelGuestStarSessionBegin';
+import {
+  TwitchEventSubChannelGuestStarSessionEndNotificationMessage,
+  TwitchEventSubChannelGuestStarSessionEndRevocationMessage,
+} from '@store/apis/twitch/createEventSubSubscription/channelGuestStarSessionEnd';
+import {
+  TwitchEventSubChannelGuestStarGuestUpdateNotificationMessage,
+  TwitchEventSubChannelGuestStarGuestUpdateRevocationMessage,
+} from '@store/apis/twitch/createEventSubSubscription/channelGuestStarGuestUpdate';
+import {
+  TwitchEventSubStreamOnlineNotificationMessage,
+  TwitchEventSubStreamOnlineRevocationMessage,
+} from '@store/apis/twitch/createEventSubSubscription/streamOnline';
+import {
+  TwitchEventSubStreamOfflineNotificationMessage,
+  TwitchEventSubStreamOfflineRevocationMessage,
+} from '@store/apis/twitch/createEventSubSubscription/streamOffline';
 
 export type TwitchEventSubMessage =
   | TwitchEventSubWelcomeMessage
@@ -48,7 +68,17 @@ export type TwitchEventSubMessage =
   | TwitchEventSubChannelChatNotificationNotificationMessage
   | TwitchEventSubChannelChatNotificationRevocationMessage
   | TwitchEventSubChannelChatSettingsUpdateNotificationMessage
-  | TwitchEventSubChannelChatSettingsUpdateRevocationMessage;
+  | TwitchEventSubChannelChatSettingsUpdateRevocationMessage
+  | TwitchEventSubChannelGuestStarSessionBeginNotificationMessage
+  | TwitchEventSubChannelGuestStarSessionBeginRevocationMessage
+  | TwitchEventSubChannelGuestStarSessionEndNotificationMessage
+  | TwitchEventSubChannelGuestStarSessionEndRevocationMessage
+  | TwitchEventSubChannelGuestStarGuestUpdateNotificationMessage
+  | TwitchEventSubChannelGuestStarGuestUpdateRevocationMessage
+  | TwitchEventSubStreamOfflineNotificationMessage
+  | TwitchEventSubStreamOfflineRevocationMessage
+  | TwitchEventSubStreamOnlineNotificationMessage
+  | TwitchEventSubStreamOnlineRevocationMessage;
 
 export type TwitchPubSubMessage =
   | TwitchPubSubPongMessage
