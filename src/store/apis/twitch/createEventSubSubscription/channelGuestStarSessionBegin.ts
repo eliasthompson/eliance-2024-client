@@ -41,7 +41,10 @@ export type TwitchEventSubChannelGuestStarSessionBeginRevocationMessage = Twitch
   TwitchEventSubChannelGuestStarSessionBeginNotificationMessageSubscriptionCondition
 >;
 
-export const { useCreateEventSubSubscriptionChannelGuestStarSessionBeginQuery } = twitchApi.injectEndpoints({
+export const {
+  useCreateEventSubSubscriptionChannelGuestStarSessionBeginQuery,
+  useLazyCreateEventSubSubscriptionChannelGuestStarSessionBeginQuery,
+} = twitchApi.injectEndpoints({
   endpoints: (build) => ({
     createEventSubSubscriptionChannelGuestStarSessionBegin: build.query<
       TwitchApiCreateEventSubSubscriptionResponse,

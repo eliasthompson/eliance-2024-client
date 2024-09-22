@@ -1,6 +1,6 @@
+import type { InfoState } from '@store/slices/info';
 import type { TwitchApiGetChannelChatBadgesResponse } from '@store/apis/twitch/getChannelChatBadges';
 import type { TwitchApiGetGlobalChatBadgesResponse } from '@store/apis/twitch/getGlobalChatBadges';
-import { InfoState } from '@store/slices/info';
 
 export interface ChatMessageProps {
   event: InfoState['chats'][number];

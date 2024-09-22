@@ -14,7 +14,7 @@ export interface FirebotApiGetCustomRoleResponse {
   }[];
 }
 
-export const { useGetCustomRoleQuery } = firebotApi
+export const { useGetCustomRoleQuery, useLazyGetCustomRoleQuery } = firebotApi
   .enhanceEndpoints({
     addTagTypes: ['CUSTOM_ROLE_DATA'],
   })

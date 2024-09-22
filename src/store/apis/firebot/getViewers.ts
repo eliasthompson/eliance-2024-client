@@ -33,7 +33,7 @@ export interface FirebotApiGetViewersResponse {
   }[];
 }
 
-export const { useLazyGetViewersQuery } = firebotApi
+export const { useGetViewersQuery, useLazyGetViewersQuery } = firebotApi
   .enhanceEndpoints({
     addTagTypes: ['VIEWERS_DATA'],
   })

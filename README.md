@@ -2,6 +2,7 @@
 
 ## Todo
 
+- [ ] BUG: Config import
 - [ ] person box
   - [ ] BUG: interval desync of schedule slideshow
   - [ ] BUG: proper timeout for clocks needed
@@ -45,51 +46,101 @@
   - [ ] small events, social actions, and goals stay in box, big event expand the box to near full width
   - [ ] big events (event queue):
     - [ ] hype train created
+      - [ ] [`channel.hype_train.begin`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelhype_trainbegin)
+    - [ ] hype train level up
+      - [ ] [`channel.hype_train.progress`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelhype_trainprogress)
     - [ ] hype train success
+      - [ ] [`channel.hype_train.end`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelhype_trainend)
     - [ ] poll created
+      - [ ] [`channel.poll.begin`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelpollbegin)
     - [ ] prediction created
+      - [ ] [`channel.prediction.begin`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelpredictionbegin)
     - [ ] prediction results
-    - [ ] shoutout
-    - [ ] announcement
-    - [ ] raid
-    - [ ] sub
-    - [ ] resub
-    - [ ] gift sub
-    - [ ] community gift subs
-    - [ ] prime sub
-    - [ ] cheer
-    - [ ] pyonchi cam
-    - [ ] pyonchi treat
-    - [ ] ring fit break
-    - [ ] add quote
-    - [ ] add one ice cube to water
-    - [ ] [any cameo redemption]
-    - [ ] backlog wheel selection
-    - [ ] become vip
-    - [ ] add custom layout element
+      - [ ] [`channel.prediction.end`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelpredictionend)
     - [ ] channel goal created
+      - [ ] [`channel.goal.begin`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelgoalbegin)
     - [ ] channel goal met
+      - [ ] [`channel.goal.end`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelgoalend)
     - [ ] charity donation
+      - [ ] [`channel.chat.notification` `notice_type.charity_donation`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
     - [ ] donation goal met
+      - [ ] [`channel.charity_campaign.progress`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelcharity_campaignprogress)
+    - [ ] shoutout
+      - [ ] [`channel.shoutout.create`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelshoutoutcreate)
+    - [ ] announcement
+      - [ ] [`channel.chat.notification` `notice_type.announcement`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
+    - [ ] raid
+      - [ ] [`channel.chat.notification` `notice_type.raid`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
+    - [ ] sub
+      - [ ] [`channel.chat.notification` `notice_type.sub`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
+    - [ ] resub
+      - [ ] [`channel.chat.notification` `notice_type.resub`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
+    - [ ] gift sub
+      - [ ] [`channel.chat.notification` `notice_type.sub_gift`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
+    - [ ] community gift sub
+      - [ ] [`channel.chat.notification` `notice_type.community_sub_gift`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
+    - [ ] cheer
+      - [ ] [`channel.cheer`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelcheer)
+    - [ ] pyonchi cam
+      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [ ] pyonchi treat
+      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [ ] ring fit break
+      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [ ] add quote
+      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [ ] add one ice cube to water
+      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [ ] [any cameo redemption]
+      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [ ] backlog wheel selection
+      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [ ] become vip
+      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [ ] add custom layout element
+      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
   - [ ] small events (event queue - always shown after big events):
     - [ ] poll results
-    - [ ] hype train failure
+      - [ ] [`channel.poll.end`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelpollend)
     - [ ] new follower
+      - [ ] [`channel.follow`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelfollow)
     - [ ] hydrate
+      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
     - [ ] give mary a cookie
+      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
   - [ ] social actions (on until over):
     - [ ] poll AND hype train (rotate)
-    - [ ] predicitons AND pinned chat (rotate)
+      - [ ] [`GET hypetrain/events`](https://dev.twitch.tv/docs/api/reference/#get-hype-train-events)
+      - [ ] [`channel.hype_train.begin`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelhype_trainbegin)
+      - [ ] [`channel.hype_train.progress`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelhype_trainprogress)
+      - [ ] [`channel.hype_train.end`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelhype_trainend)
+      - [ ] [`GET polls`](https://dev.twitch.tv/docs/api/reference/#get-polls)
+      - [ ] [`channel.poll.begin`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelpollbegin)
+      - [ ] [`channel.poll.progress`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelpollprogress)
+      - [ ] [`channel.poll.end`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelpollend)
+    - [ ] predictions AND pinned chat (rotate)
+      - [ ] [`GET predictions`](https://dev.twitch.tv/docs/api/reference/#get-predictions)
+      - [ ] [`channel.prediction.begin`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelpredictionbegin)
+      - [ ] [`channel.prediction.progress`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelpredictionprogress)
+      - [ ] [`channel.prediction.lock`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelpredictionlock)
+      - [ ] [`channel.prediction.end`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelpredictionend)
+      - [ ] `pinned-chat-updates-v1.${broadcasterId}` `pin-message`
+      - [ ] `pinned-chat-updates-v1.${broadcasterId}` `update-message`
+      - [ ] `pinned-chat-updates-v1.${broadcasterId}` `unpin-message`
   - [ ] goals:
-    - [ ] channel goals loop
     - [ ] donation goals
-  - [ ] endpoints:
-    - [ ]
-  - [ ] event subs:
-    - [ ]
+      - [ ] [`GET charity/campaigns`](https://dev.twitch.tv/docs/api/reference/#get-charity-campaign)
+      - [ ] [`channel.charity_campaign.start`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelcharity_campaignstart)
+      - [ ] [`channel.charity_campaign.progress`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelcharity_campaignprogress)
+      - [ ] [`channel.charity_campaign.end`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelcharity_campaignstop)
+    - [ ] channel goals loop
+      - [x] [`GET goals`](https://dev.twitch.tv/docs/api/reference/#get-creator-goals)
+      - [ ] [`channel.goal.begin`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelgoalbegin)
+      - [ ] [`channel.goal.progress`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelgoalprogress)
+      - [ ] [`channel.goal.end`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelgoalend)
 - [ ] chat box
   - [ ] hide on big event
-  - [ ] combined chat support
+  - [-] combined chat support
   - [x] handle:
     - [x] messages
     - [x] notifications

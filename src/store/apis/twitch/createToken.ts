@@ -1,6 +1,6 @@
 import type { scopes } from '@config';
 
-import { twitchApi } from '.';
+import { twitchApi } from '@store/apis/twitch';
 
 export interface TwitchApiCreateTokenRequest {
   clientId: string;

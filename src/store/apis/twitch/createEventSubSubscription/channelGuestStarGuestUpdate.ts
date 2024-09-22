@@ -54,7 +54,10 @@ export type TwitchEventSubChannelGuestStarGuestUpdateRevocationMessage = TwitchE
   TwitchEventSubChannelGuestStarGuestUpdateNotificationMessageSubscriptionCondition
 >;
 
-export const { useCreateEventSubSubscriptionChannelGuestStarGuestUpdateQuery } = twitchApi.injectEndpoints({
+export const {
+  useCreateEventSubSubscriptionChannelGuestStarGuestUpdateQuery,
+  useLazyCreateEventSubSubscriptionChannelGuestStarGuestUpdateQuery,
+} = twitchApi.injectEndpoints({
   endpoints: (build) => ({
     createEventSubSubscriptionChannelGuestStarGuestUpdate: build.query<
       TwitchApiCreateEventSubSubscriptionResponse,

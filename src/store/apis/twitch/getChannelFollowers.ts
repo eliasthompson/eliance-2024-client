@@ -1,4 +1,4 @@
-import { twitchApi } from '.';
+import { twitchApi } from '@store/apis/twitch';
 
 export interface TwitchApiGetChannelFollowersRequest {
   broadcasterId: string;
@@ -8,7 +8,11 @@ export interface TwitchApiGetChannelFollowersResponse {
   total: number;
 }
 
-export const twitchApiGetChannelFollowers = twitchApi
+export const {
+  useGetChannelFollowersQuery,
+  useLazyGetChannelFollowersQuery,
+  util: { invalidateTags: invalidateChannelFollowersTags, updateQueryData: updateChannelFollowersData },
+} = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['CHANNEL_FOLLOWER_DATA'],
   })

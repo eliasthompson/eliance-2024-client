@@ -1,4 +1,4 @@
-import { twitchApi } from '.';
+import { twitchApi } from '@store/apis/twitch';
 
 export interface TwitchApiGetChannelStreamScheduleRequest {
   broadcasterId: string;
@@ -31,7 +31,11 @@ export interface TwitchApiGetChannelStreamScheduleResponse {
   };
 }
 
-export const { useGetChannelStreamScheduleQuery } = twitchApi
+export const {
+  useGetChannelStreamScheduleQuery,
+  useLazyGetChannelStreamScheduleQuery,
+  util: { invalidateTags: invalidateChannelStreamScheduleTags, updateQueryData: updateChannelStreamScheduleData },
+} = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['CHANNEL_STREAM_SCHEDULE_DATA'],
   })

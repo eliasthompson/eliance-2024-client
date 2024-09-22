@@ -1,4 +1,4 @@
-import { twitchApi } from '.';
+import { twitchApi } from '@store/apis/twitch';
 
 export interface TwitchApiGetEmoteSetsRequest {
   emoteSetIds: string[];
@@ -37,7 +37,11 @@ export interface TwitchApiGetEmoteSetsResponse {
   template: string;
 }
 
-export const { useGetEmoteSetsQuery } = twitchApi
+export const {
+  useGetEmoteSetsQuery,
+  useLazyGetEmoteSetsQuery,
+  util: { invalidateTags: invalidateEmoteSetsTags, updateQueryData: updateEmoteSetsData },
+} = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['EMOTE_SET_DATA'],
   })

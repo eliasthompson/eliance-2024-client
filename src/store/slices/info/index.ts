@@ -21,6 +21,7 @@ export interface InfoState {
   })[];
   errors: ErrorMessageProps['error'][];
   goal: TwitchApiGetCreatorGoalsResponse['data'][number] | null;
+  personIds: string[];
   persons: {
     id: string;
     login: string;
@@ -63,6 +64,7 @@ export const initialInfoState: InfoState = {
   chats: getStoredRecentChats(),
   errors: [],
   goal: null,
+  personIds: [],
   persons: [],
 };
 

@@ -156,7 +156,10 @@ export type TwitchEventSubChannelChatNotificationRevocationMessage = TwitchEvent
   TwitchEventSubChannelChatNotificationNotificationMessageSubscriptionCondition
 >;
 
-export const { useCreateEventSubSubscriptionChannelChatNotificationQuery } = twitchApi.injectEndpoints({
+export const {
+  useCreateEventSubSubscriptionChannelChatNotificationQuery,
+  useLazyCreateEventSubSubscriptionChannelChatNotificationQuery,
+} = twitchApi.injectEndpoints({
   endpoints: (build) => ({
     createEventSubSubscriptionChannelChatNotification: build.query<
       TwitchApiCreateEventSubSubscriptionResponse,

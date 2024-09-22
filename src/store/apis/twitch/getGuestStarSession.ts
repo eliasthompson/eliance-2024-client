@@ -1,4 +1,4 @@
-import { twitchApi } from '.';
+import { twitchApi } from '@store/apis/twitch';
 
 export interface TwitchApiGetGuestStarSessionRequest {
   broadcasterId: string;
@@ -27,7 +27,8 @@ export interface TwitchApiGetGuestStarSessionResponse {
 
 export const {
   useGetGuestStarSessionQuery,
-  util: { invalidateTags: invalidateGuestStarSessionTags },
+  useLazyGetGuestStarSessionQuery,
+  util: { invalidateTags: invalidateGuestStarSessionTags, updateQueryData: updateGuestStarSessionData },
 } = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['GUEST_STAR_SESSION_DATA'],

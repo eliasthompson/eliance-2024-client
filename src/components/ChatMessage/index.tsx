@@ -294,7 +294,7 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
   `;
 
   // Render nothing if data is loading or required data is incomplete
-  if (isLoading || !isRenderable) return null;
+  if (isLoading || !isRenderable) return false;
 
   // Render component
   return (

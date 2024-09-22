@@ -1,7 +1,7 @@
 import RelativeTime from '@yaireo/relative-time';
 import { DateTime, TimeZone } from 'timezonecomplete';
 import { css } from '@emotion/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { PersonInfoProps } from './types';
 
@@ -10,15 +10,14 @@ import { LinkIcon } from '@components/shared/svgs/LinkIcon';
 import { TwitchIcon } from '@components/shared/svgs/TwitchIcon';
 import { XIcon } from '@components/shared/svgs/XIcon';
 import { TwitchProfileImage } from '@components/shared/TwitchProfileImage';
-import { useCreateEventSubSubscriptionStreamOfflineQuery } from '@store/apis/twitch/createEventSubSubscription/streamOffline';
-import { useCreateEventSubSubscriptionStreamOnlineQuery } from '@store/apis/twitch/createEventSubSubscription/streamOnline';
 import { useGetChannelStreamScheduleQuery } from '@store/apis/twitch/getChannelStreamSchedule';
 import { useGetPronounsQuery } from '@store/apis/chatPronouns/getPronouns';
 import { useGetUserQuery } from '@store/apis/chatPronouns/getUser';
+import { useLazyCreateEventSubSubscriptionStreamOfflineQuery } from '@store/apis/twitch/createEventSubSubscription/streamOffline';
+import { useLazyCreateEventSubSubscriptionStreamOnlineQuery } from '@store/apis/twitch/createEventSubSubscription/streamOnline';
 import { useSelector } from '@store';
 
 export const socialPlatforms = {
-  default: TwitchIcon,
   // facebook: FacebookIcon,
   generic: LinkIcon,
   // instagram: InstagramIcon,
@@ -33,26 +32,32 @@ export const socialPlatforms = {
 export const PersonInfo = ({ person }: PersonInfoProps) => {
   const { persons } = useSelector(({ info }) => info);
   const { sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
+  const [
+    createEventSubSubscriptionStreamOffline,
+    {
+      data: eventSubSubscriptionStreamOfflineData,
+      // error: eventSubSubscriptionStreamOfflineError,
+      isLoading: isEventSubSubscriptionStreamOffline,
+    },
+  ] = useLazyCreateEventSubSubscriptionStreamOfflineQuery();
+  const [
+    createEventSubSubscriptionStreamOnline,
+    {
+      data: eventSubSubscriptionStreamOnlineData,
+      // error: eventSubSubscriptionStreamOnlineError,
+      isLoading: isEventSubSubscriptionStreamOnline,
+    },
+  ] = useLazyCreateEventSubSubscriptionStreamOnlineQuery();
   const {
     data: channelStreamScheduleData,
     error: channelStreamScheduleError,
     isLoading: isChannelStreamScheduleLoading,
   } = useGetChannelStreamScheduleQuery({ broadcasterId: person.id });
-  const {
-    data: eventSubSubscriptionStreamOfflineData,
-    /* error: eventSubSubscriptionStreamOfflineError, */
-    isLoading: isEventSubSubscriptionStreamOffline,
-  } = useCreateEventSubSubscriptionStreamOfflineQuery({ broadcasterId: person.id, sessionId });
-  const {
-    data: eventSubSubscriptionStreamOnlineData,
-    /* error: eventSubSubscriptionStreamOnlineError, */
-    isLoading: isEventSubSubscriptionStreamOnline,
-  } = useCreateEventSubSubscriptionStreamOnlineQuery({ broadcasterId: person.id, sessionId });
   const { data: pronounsData, /* error: pronounsError, */ isLoading: isPronounsLoading } = useGetPronounsQuery();
   const { data: userData, /* error: userError, */ isLoading: isUserLoading } = useGetUserQuery({ login: person.login });
   const [nextStream, setNextStream] = useState<{ title: string; startTime: string }>(null);
   const [personInfo, setPersonInfo] = useState<string>('primaryInfo');
-  const [personInfoIntervalId, setPersonInfoIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const personInfoIntervalIdRef = useRef<NodeJS.Timeout | null>(null);
   const isLoading =
     isChannelStreamScheduleLoading ||
     isEventSubSubscriptionStreamOffline ||
@@ -74,7 +79,7 @@ export const PersonInfo = ({ person }: PersonInfoProps) => {
     .display;
   const pronouns = apiPronouns || person.pronouns;
   const timeZone = personIndex === 0 ? Intl.DateTimeFormat().resolvedOptions().timeZone : person.timeZone;
-  let SocialIcon = socialPlatforms.default;
+  let SocialIcon = socialPlatforms.twitch;
   let socialHandlePrefix = '@';
   let socialHandle = person.login;
 
@@ -170,6 +175,14 @@ export const PersonInfo = ({ person }: PersonInfoProps) => {
     filter: brightness(67%);
   `;
 
+  // Subscribe to twitch event sub events id sessionId is set
+  useEffect(() => {
+    if (person.id && sessionId) {
+      createEventSubSubscriptionStreamOffline({ broadcasterId: person.id, sessionId });
+      createEventSubSubscriptionStreamOnline({ broadcasterId: person.id, sessionId });
+    }
+  }, [person.id, sessionId]);
+
   // Set next stream data
   useEffect(() => {
     if (channelStreamScheduleData && channelStreamScheduleData.data.segments) {
@@ -185,17 +198,18 @@ export const PersonInfo = ({ person }: PersonInfoProps) => {
   // Set person info interval
   useEffect(() => {
     if (nextStream) {
-      clearInterval(personInfoIntervalId);
-      setPersonInfoIntervalId(
-        setInterval(() => setPersonInfo((state) => (state === 'primaryInfo' ? 'schedule' : 'primaryInfo')), 15 * 1000),
+      clearInterval(personInfoIntervalIdRef.current);
+      personInfoIntervalIdRef.current = setInterval(
+        () => setPersonInfo((state) => (state === 'primaryInfo' ? 'schedule' : 'primaryInfo')),
+        15 * 1000,
       );
 
-      return () => clearInterval(personInfoIntervalId);
+      return () => clearInterval(personInfoIntervalIdRef.current);
     }
-  }, [nextStream, setPersonInfoIntervalId, setPersonInfo]);
+  }, [nextStream, personInfoIntervalIdRef, setPersonInfo]);
 
   // Render nothing if data is loading or required data is incomplete
-  if (isLoading || !isRenderable) return null;
+  if (isLoading || !isRenderable) return false;
 
   // Render component
   return (

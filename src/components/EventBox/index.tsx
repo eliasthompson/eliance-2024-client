@@ -1,171 +1,117 @@
-import useWebSocket from 'react-use-websocket';
-import { useEffect } from 'react';
 import { css } from '@emotion/react';
-// import * as uuid from 'uuid';
+import { useEffect, useState } from 'react';
 
-// import type { FirebotEventSubMessage } from '@store/apis/firebot';
-import type { TwitchEventSubMessage } from '@components/types';
-
+import { CharityIcon } from '@components/shared/svgs/CharityIcon';
 import { FlexContainer } from '@components/shared/FlexContainer';
-// import { addFirebotEventSubMessageId } from '@store/slices/firebotEventSub';
-import { addTwitchEventSubMessageId } from '@store/slices/twitchEventSub';
-import { firebotGuestRoleId } from '@config';
-import { useAddViewerToCustomRoleMutation } from '@store/apis/firebot/addViewerToCustomRole';
-import { useCreateEventSubSubscriptionChannelGuestStarGuestUpdateQuery } from '@store/apis/twitch/createEventSubSubscription/channelGuestStarGuestUpdate';
-import { useCreateEventSubSubscriptionChannelGuestStarSessionBeginQuery } from '@store/apis/twitch/createEventSubSubscription/channelGuestStarSessionBegin';
-import { useCreateEventSubSubscriptionChannelGuestStarSessionEndQuery } from '@store/apis/twitch/createEventSubSubscription/channelGuestStarSessionEnd';
-import { useDispatch, useSelector } from '@store';
-import { useGetCustomRoleQuery } from '@store/apis/firebot/getCustomRole';
-import { useGetGuestStarSessionQuery } from '@store/apis/twitch/getGuestStarSession';
-import { useLazyGetStreamsQuery } from '@store/apis/twitch/getStreams';
-import { useLazyGetUserChatColorsQuery } from '@store/apis/twitch/getUserChatColors';
-import { useLazyGetUsersQuery } from '@store/apis/twitch/getUsers';
-import { useLazyGetViewersQuery } from '@store/apis/firebot/getViewers';
+import { FollowerIcon } from '@components/shared/svgs/FollowerIcon';
+import { GoalInfo } from '@components/GoalInfo';
+import { GoalInfoProps } from '@components/GoalInfo/types';
+import { SubscriberIcon } from '@components/shared/svgs/SubscriberIcon';
+import { TwitchIcon } from '@components/shared/svgs/TwitchIcon';
+import { useGetCharityCampaignQuery } from '@store/apis/twitch/getCharityCampaign';
+import { useGetCreatorGoalsQuery } from '@store/apis/twitch/getCreatorGoals';
+import { useSelector } from '@store';
+
+export const goalTypeIcons = {
+  follower: FollowerIcon,
+  default: TwitchIcon,
+  new_subscription: SubscriberIcon,
+  new_subscription_count: SubscriberIcon,
+  subscription: SubscriberIcon,
+  subscription_count: SubscriberIcon,
+} as const;
+
+export const goalTypeLabels = {
+  follower: 'Followers',
+  default: '',
+  new_subscription: 'New Subscriber Points',
+  new_subscription_count: 'New Subscribers',
+  subscription: 'Subscriber Points',
+  subscription_count: 'Subscribers',
+} as const;
 
 export const EventBox = () => {
-  const dispatch = useDispatch();
   const { broadcasterId } = useSelector(({ info }) => info);
-  // const { messageIds: firebotMessageIds } = useSelector(({ firebotEventSub }) => firebotEventSub);
-  const { messageIds: twitchMessageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
-  // const { lastJsonMessage: firebotMessage } = useWebSocket<FirebotEventSubMessage>('ws://localhost:7472', {
-  //   share: true,
-  // });
-  const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubMessage>('wss://eventsub.wss.twitch.tv/ws', {
-    share: true,
-  });
   const {
-    data: customRoleData,
-    error: customRoleError,
-    isLoading: isCustomRoleLoading,
-    // refetch: refetchCustomRole,
-  } = useGetCustomRoleQuery({ customRoleId: firebotGuestRoleId });
+    data: charityCampaignData,
+    // error: charityCampaignError,
+    isLoading: isCharityCampaignLoading,
+  } = useGetCharityCampaignQuery({ broadcasterId });
   const {
-    data: eventSubSubscriptionChannelGuestStarGuestUpdateData,
-    // error: eventSubSubscriptionChannelGuestStarGuestUpdateError,
-    isLoading: isEventSubSubscriptionChannelGuestStarGuestUpdateLoading,
-  } = useCreateEventSubSubscriptionChannelGuestStarGuestUpdateQuery({
-    broadcasterId,
-    sessionId,
-  });
-  const {
-    data: eventSubSubscriptionChannelGuestStarSessionBeginData,
-    // error: eventSubSubscriptionChannelGuestStarSessionBeginError,
-    isLoading: isEventSubSubscriptionChannelGuestStarSessionBeginLoading,
-  } = useCreateEventSubSubscriptionChannelGuestStarSessionBeginQuery({
-    broadcasterId,
-    sessionId,
-  });
-  const {
-    data: eventSubSubscriptionChannelGuestStarSessionEndData,
-    // error: eventSubSubscriptionChannelGuestStarSessionEndError,
-    isLoading: isEventSubSubscriptionChannelGuestStarSessionEndLoading,
-  } = useCreateEventSubSubscriptionChannelGuestStarSessionEndQuery({
-    broadcasterId,
-    sessionId,
-  });
-  const {
-    data: guestStarSessionData,
-    // error: guestStarSessionError,
-    isLoading: isGuestStarSessionLoading,
-    refetch: refetchGuestStarSession,
-  } = useGetGuestStarSessionQuery({ broadcasterId });
-  const [getStreams, { data: streamsData, /* error: streamsError, */ isLoading: isStreamsLoading }] =
-    useLazyGetStreamsQuery();
-  const [
-    getUserChatColors,
-    { data: userChatColorsData, /* error: userChatColorsError, */ isLoading: isUserChatColorsLoading },
-  ] = useLazyGetUserChatColorsQuery();
-  const [getUsers, { data: usersData, /* error: usersError, */ isLoading: isUsersLoading }] = useLazyGetUsersQuery();
-  const [getViewers, { data: viewersData, error: viewersError, isLoading: isViewersLoading }] =
-    useLazyGetViewersQuery();
-  const [addViewerToCustomRole] = useAddViewerToCustomRoleMutation();
-  const isLoading =
-    isCustomRoleLoading ||
-    isEventSubSubscriptionChannelGuestStarGuestUpdateLoading ||
-    isEventSubSubscriptionChannelGuestStarSessionBeginLoading ||
-    isEventSubSubscriptionChannelGuestStarSessionEndLoading ||
-    isGuestStarSessionLoading ||
-    isStreamsLoading ||
-    isUserChatColorsLoading ||
-    isUsersLoading ||
-    isViewersLoading;
-  const isRenderable = !!(
-    eventSubSubscriptionChannelGuestStarGuestUpdateData &&
-    eventSubSubscriptionChannelGuestStarSessionBeginData &&
-    eventSubSubscriptionChannelGuestStarSessionEndData &&
-    guestStarSessionData &&
-    streamsData &&
-    userChatColorsData &&
-    usersData &&
-    (viewersData || viewersError)
-  );
+    data: creatorGoalsData,
+    // error: creatorGoalsError,
+    isLoading: isCreatorGoalsLoading,
+  } = useGetCreatorGoalsQuery({ broadcasterId });
+  const [goals, setGoals] = useState<GoalInfoProps['goal'][]>([]);
+  const isLoading = isCharityCampaignLoading || isCreatorGoalsLoading;
+  const isRenderable = !!(charityCampaignData && creatorGoalsData);
+
+  useEffect(() => {
+    if (charityCampaignData && charityCampaignData.data.length) {
+      setGoals([
+        {
+          icon: CharityIcon,
+          label: charityCampaignData.data[0].charity_name,
+          logo: charityCampaignData.data[0].charity_logo,
+          currentAmount:
+            charityCampaignData.data[0].current_amount.value /
+            10 ** charityCampaignData.data[0].current_amount.decimal_places,
+          currentAmountCurrency: charityCampaignData.data[0].current_amount.currency,
+          targetAmount:
+            charityCampaignData.data[0].target_amount.value /
+            10 ** charityCampaignData.data[0].target_amount.decimal_places,
+          targetAmountCurrency: charityCampaignData.data[0].target_amount.currency,
+        },
+      ]);
+    } else if (creatorGoalsData) {
+      setGoals(
+        creatorGoalsData.data.map((creatorGoalData) => ({
+          icon: goalTypeIcons[creatorGoalData.type] || goalTypeIcons.default,
+          label: goalTypeLabels[creatorGoalData.type] || goalTypeLabels.default,
+          currentAmount: creatorGoalData.current_amount,
+          targetAmount: creatorGoalData.target_amount,
+        })),
+      );
+    }
+  }, [charityCampaignData, creatorGoalsData, setGoals]);
+
+  // const opacityFlexGoalLabel = true ? '0' : '1';
+  // const opacitySpanGoalLabel = true ? '0' : '1';
+  const opacityFlexGoalLabel = '1';
+  const opacitySpanGoalLabel = '1';
+
   const cssContainer = css`
     flex: 2;
     position: relative;
     display: flex;
-    align-items: center;
     justify-content: center;
     filter: drop-shadow(#000000 0 0 calc(var(--padding) * 0.75));
+    background-color: rgba(255, 255, 255, 0.025);
+  `;
+  const cssContainerGoals = css`
+    flex: 1;
+    transition: flex 0.5s;
+    background-color: rgba(255, 255, 255, 0.025);
+
+    span.goal-label {
+      flex: ${opacityFlexGoalLabel};
+      opacity: ${opacitySpanGoalLabel};
+    }
   `;
 
-  // Get supporting person data
-  useEffect(() => {
-    if (broadcasterId && (customRoleData || customRoleError) && guestStarSessionData) {
-      const guestStarGuests = guestStarSessionData.data.map(({ guests }) => guests);
-      const guestStarIds = guestStarGuests.length ? guestStarGuests[0].map(({ user_id: userId }) => userId) : [];
-      const viewerIds = customRoleData ? customRoleData.viewers.map(({ id }) => id) : [];
-      const allIds = [...new Set([broadcasterId, ...guestStarIds, ...viewerIds])];
-
-      if (guestStarIds.length && customRoleData) {
-        const missingViewerIds = guestStarIds.filter(
-          (guestStarId) => !viewerIds.includes(guestStarId) && guestStarId !== broadcasterId,
-        );
-
-        missingViewerIds.forEach((missingViewerId) =>
-          addViewerToCustomRole({ customRoleId: firebotGuestRoleId, userId: missingViewerId }),
-        );
-      }
-
-      getStreams({ userIds: allIds });
-      getUserChatColors({ userIds: allIds });
-      getUsers({ ids: allIds });
-      getViewers();
-    }
-  }, [
-    broadcasterId,
-    customRoleData,
-    customRoleError,
-    getStreams,
-    getUserChatColors,
-    getUsers,
-    getViewers,
-    guestStarSessionData,
-  ]);
-
-  // Handle twitch event sub messages
-  useEffect(() => {
-    if (twitchMessage) {
-      const { metadata, payload } = twitchMessage;
-      const { message_id: messageId, message_type: messageType } = metadata;
-
-      if (!twitchMessageIds.includes(messageId) && messageType === 'notification' && 'event' in payload) {
-        const { subscription_type: subscriptionType } = metadata;
-
-        if (
-          subscriptionType === 'channel.guest_star_guest.update' ||
-          subscriptionType === 'channel.guest_star_session.begin' ||
-          subscriptionType === 'channel.guest_star_session.end'
-        ) {
-          refetchGuestStarSession();
-          dispatch(addTwitchEventSubMessageId(messageId));
-        }
-      }
-    }
-  }, [broadcasterId, dispatch, twitchMessage, twitchMessageIds]);
-
   // Render nothing if data is loading or required data is incomplete
-  if (isLoading || !isRenderable) return null;
+  if (isLoading || !isRenderable) return false;
 
   // Render component
-  return <FlexContainer cssContainer={cssContainer}>sup</FlexContainer>;
+  return (
+    <FlexContainer cssContainer={cssContainer}>
+      <div style={{ flex: 2, transition: 'flex 0.5s' }}></div>
+
+      <FlexContainer cssContainer={cssContainerGoals}>
+        {goals.map((goal) => (
+          <GoalInfo goal={goal} isSmall={true} />
+        ))}
+      </FlexContainer>
+    </FlexContainer>
+  );
 };

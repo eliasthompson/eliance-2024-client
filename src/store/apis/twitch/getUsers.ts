@@ -1,4 +1,4 @@
-import { twitchApi } from '.';
+import { twitchApi } from '@store/apis/twitch';
 
 export interface TwitchApiGetUsersRequest {
   ids: string[];
@@ -19,7 +19,11 @@ export interface TwitchApiGetUsersResponse {
   }[];
 }
 
-export const { useLazyGetUsersQuery } = twitchApi
+export const {
+  useGetUsersQuery,
+  useLazyGetUsersQuery,
+  util: { invalidateTags: invalidateUsersTags, updateQueryData: updateUsersData },
+} = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['USER_DATA'],
   })

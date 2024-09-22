@@ -1,4 +1,4 @@
-import { twitchApi } from '.';
+import { twitchApi } from '@store/apis/twitch';
 
 export interface TwitchApiGetUserChatColorsRequest {
   userIds: string[];
@@ -13,7 +13,11 @@ export interface TwitchApiGetUserChatColorsResponse {
   }[];
 }
 
-export const { useGetUserChatColorsQuery, useLazyGetUserChatColorsQuery } = twitchApi
+export const {
+  useGetUserChatColorsQuery,
+  useLazyGetUserChatColorsQuery,
+  util: { invalidateTags: invalidateUserChatColorsTags, updateQueryData: updateUserChatColorsData },
+} = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['USER_CHAT_COLOR_DATA'],
   })

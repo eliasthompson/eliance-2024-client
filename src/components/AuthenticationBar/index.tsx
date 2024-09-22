@@ -8,8 +8,8 @@ import { FlexContainer } from '@components/shared/FlexContainer';
 import { TwitchButton } from '@components/shared/TwitchButton';
 import { TwitchInput } from '@components/shared/TwitchInput';
 import { clientId, scopes } from '@config';
-import { setTwitchAuth } from '@store/slices/twitchAuth';
 import { invalidateTwitchApiTags } from '@store/apis/twitch';
+import { setTwitchAuth } from '@store/slices/twitchAuth';
 import { useCreateTokenMutation } from '@store/apis/twitch/createToken';
 import { useDispatch } from '@store';
 import { useGetDeviceCodeQuery } from '@store/apis/twitch/getDeviceCode';
@@ -18,10 +18,20 @@ export const AuthenticationBar = ({ cssBar: cssBarProvided }: AuthenticationBarP
   const dispatch = useDispatch();
   const {
     data: deviceCodeData,
-    error: deviceCodeError,
+    // error: deviceCodeError,
     isLoading: isDeviceCodeLoading,
   } = useGetDeviceCodeQuery({ clientId, scopes });
   const [createTokenMutation] = useCreateTokenMutation();
+  const isRenderable = !!deviceCodeData;
+
+  const cssBar = css`
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    ${cssBarProvided?.styles}
+  `;
+
+  // Handle authenticate click
   const handleAuthenticateClick = useCallback(async () => {
     const { data: tokenData } = await createTokenMutation({
       clientId,
@@ -39,6 +49,8 @@ export const AuthenticationBar = ({ cssBar: cssBarProvided }: AuthenticationBarP
       dispatch(invalidateTwitchApiTags(['UNAUTHORIZED']));
     }
   }, [deviceCodeData, createTokenMutation]);
+
+  // Handle copy click
   const handleCopyClick = useCallback(() => {
     const inputElement = document.getElementById('verification-url-input');
 
@@ -50,41 +62,27 @@ export const AuthenticationBar = ({ cssBar: cssBarProvided }: AuthenticationBarP
       document.execCommand('copy');
     }
   }, []);
-  const isRenderable = !isDeviceCodeLoading && !deviceCodeError && deviceCodeData;
-  const cssBar = css`
-    gap: 1rem;
-    align-items: center;
-    justify-content: center;
-    ${cssBarProvided?.styles}
-  `;
 
-  // Render nothing if data is loading or errors unexpectedly
-  if (!isRenderable) return null;
-
-  // Prep render of grant button
-  let verifyActions = (
-    <TwitchButton as="a" href={deviceCodeData.verification_uri} target="_blank" variant="secondary">
-      Grant&nbsp;
-      <MdOpenInNew />
-    </TwitchButton>
-  );
-
-  // Prep render of input and copy button if we're in obs
-  if (window.obsstudio) {
-    verifyActions = (
-      <FlexContainer>
-        <TwitchInput id="verification-url-input" attach="right" readOnly value={deviceCodeData.verification_uri} />
-        <TwitchButton onClick={handleCopyClick} attach="left" variant="secondary">
-          <MdContentCopy />
-        </TwitchButton>
-      </FlexContainer>
-    );
-  }
+  // Render nothing if data is loading or required data is incomplete
+  if (isDeviceCodeLoading || !isRenderable) return false;
 
   // Render component
   return (
     <FlexContainer cssContainer={cssBar}>
-      {verifyActions}
+      {window.obsstudio ? (
+        <FlexContainer>
+          <TwitchInput id="verification-url-input" attach="right" readOnly value={deviceCodeData.verification_uri} />
+          <TwitchButton onClick={handleCopyClick} attach="left" variant="secondary">
+            <MdContentCopy />
+          </TwitchButton>
+        </FlexContainer>
+      ) : (
+        <TwitchButton as="a" href={deviceCodeData.verification_uri} target="_blank" variant="secondary">
+          Grant&nbsp;
+          <MdOpenInNew />
+        </TwitchButton>
+      )}
+
       <TwitchButton onClick={handleAuthenticateClick}>Authenticate</TwitchButton>
     </FlexContainer>
   );

@@ -1,4 +1,4 @@
-import { twitchApi } from '.';
+import { twitchApi } from '@store/apis/twitch';
 
 export interface TwitchApiGetSubscriptionsRequest {
   broadcasterId: string;
@@ -9,7 +9,11 @@ export interface TwitchApiGetSubscriptionsResponse {
   total: number;
 }
 
-export const { useGetSubscriptionsQuery } = twitchApi
+export const {
+  useGetSubscriptionsQuery,
+  useLazyGetSubscriptionsQuery,
+  util: { invalidateTags: invalidateSubscriptionsTags, updateQueryData: updateSubscriptionsData },
+} = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['SUBSCRIPTION_DATA'],
   })

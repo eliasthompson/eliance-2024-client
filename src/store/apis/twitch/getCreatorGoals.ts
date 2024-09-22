@@ -1,4 +1,4 @@
-import { twitchApi } from '.';
+import { twitchApi } from '@store/apis/twitch';
 
 export interface TwitchApiGetCreatorGoalsRequest {
   broadcasterId: string;
@@ -10,7 +10,7 @@ export interface TwitchApiGetCreatorGoalsResponse {
     broadcaster_id: string;
     broadcaster_name: string;
     broadcaster_login: string;
-    type: string;
+    type: 'follower' | 'subscription' | 'subscription_count' | 'new_subscription' | 'new_subscription_count';
     description: string;
     current_amount: number;
     target_amount: number;
@@ -18,7 +18,11 @@ export interface TwitchApiGetCreatorGoalsResponse {
   }[];
 }
 
-export const { useLazyGetCreatorGoalsQuery } = twitchApi
+export const {
+  useGetCreatorGoalsQuery,
+  useLazyGetCreatorGoalsQuery,
+  util: { invalidateTags: invalidateCreatorGoalsTags, updateQueryData: updateCreatorGoalsData },
+} = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['CREATOR_GOAL_DATA'],
   })

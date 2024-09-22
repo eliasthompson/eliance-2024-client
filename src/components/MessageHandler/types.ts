@@ -1,4 +1,4 @@
-import { TwitchPubSubBaseMessage } from '@store/apis/twitch';
+import type { TwitchPubSubBaseMessage } from '@store/apis/twitch';
 
 export type TwitchPubSubPinMessagePinnedChatUpdatesMessageMessage = TwitchPubSubBaseMessage<
   'pin-message',

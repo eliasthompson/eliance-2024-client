@@ -36,25 +36,26 @@ export type TwitchEventSubStreamOfflineRevocationMessage = TwitchEventSubRevocat
   TwitchEventSubStreamOfflineNotificationMessageSubscriptionCondition
 >;
 
-export const { useCreateEventSubSubscriptionStreamOfflineQuery } = twitchApi.injectEndpoints({
-  endpoints: (build) => ({
-    createEventSubSubscriptionStreamOffline: build.query<
-      TwitchApiCreateEventSubSubscriptionResponse,
-      TwitchApiCreateEventSubSubscriptionStreamOfflineRequest
-    >({
-      query: ({ broadcasterId, sessionId }) => ({
-        body: {
-          type,
-          version,
-          condition: getCondition(broadcasterId),
-          transport: {
-            method: 'websocket',
-            session_id: sessionId,
+export const { useCreateEventSubSubscriptionStreamOfflineQuery, useLazyCreateEventSubSubscriptionStreamOfflineQuery } =
+  twitchApi.injectEndpoints({
+    endpoints: (build) => ({
+      createEventSubSubscriptionStreamOffline: build.query<
+        TwitchApiCreateEventSubSubscriptionResponse,
+        TwitchApiCreateEventSubSubscriptionStreamOfflineRequest
+      >({
+        query: ({ broadcasterId, sessionId }) => ({
+          body: {
+            type,
+            version,
+            condition: getCondition(broadcasterId),
+            transport: {
+              method: 'websocket',
+              session_id: sessionId,
+            },
           },
-        },
-        method: 'POST',
-        url: '/eventsub/subscriptions',
+          method: 'POST',
+          url: '/eventsub/subscriptions',
+        }),
       }),
     }),
-  }),
-});
+  });

@@ -1,4 +1,4 @@
-import { twitchApi } from '.';
+import { twitchApi } from '@store/apis/twitch';
 
 export interface TwitchApiGetChannelChatBadgesRequest {
   broadcasterId: string;
@@ -20,7 +20,11 @@ export interface TwitchApiGetChannelChatBadgesResponse {
   }[];
 }
 
-export const { useGetChannelChatBadgesQuery } = twitchApi
+export const {
+  useGetChannelChatBadgesQuery,
+  useLazyGetChannelChatBadgesQuery,
+  util: { invalidateTags: invalidateChannelChatBadgesTags, updateQueryData: updateChannelChatBadgesData },
+} = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['CHANNEL_CHAT_BADGE_DATA'],
   })

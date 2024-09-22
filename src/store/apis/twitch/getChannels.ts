@@ -1,4 +1,4 @@
-import { twitchApi } from '.';
+import { twitchApi } from '@store/apis/twitch';
 
 export interface TwitchApiGetChannelsRequest {
   broadcasterIds: string[];
@@ -10,7 +10,11 @@ export interface TwitchApiGetChannelsResponse {
   }[];
 }
 
-export const { useGetChannelsQuery } = twitchApi
+export const {
+  useGetChannelsQuery,
+  useLazyGetChannelsQuery,
+  util: { invalidateTags: invalidateChannelsTags, updateQueryData: updateChannelsData },
+} = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['CHANNEL_DATA'],
   })

@@ -1,4 +1,4 @@
-import { twitchApi } from '.';
+import { twitchApi } from '@store/apis/twitch';
 
 export interface TwitchApiGetGlobalChatBadgesResponse {
   data: {
@@ -16,7 +16,11 @@ export interface TwitchApiGetGlobalChatBadgesResponse {
   }[];
 }
 
-export const { useGetGlobalChatBadgesQuery } = twitchApi
+export const {
+  useGetGlobalChatBadgesQuery,
+  useLazyGetGlobalChatBadgesQuery,
+  util: { invalidateTags: invalidateGlobalChatBadgesTags, updateQueryData: updateGlobalChatBadgesData },
+} = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['GLOBAL_CHAT_BADGE_DATA'],
   })

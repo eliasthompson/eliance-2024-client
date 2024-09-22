@@ -5,6 +5,7 @@ import { css } from '@emotion/react';
 import { ChatBox } from '@components/ChatBox';
 import { EventBox } from '@components/EventBox';
 import { FlexContainer } from '@components/shared/FlexContainer';
+import { MessageHandler } from '@components/MessageHandler';
 import { PersonBox } from '@components/PersonBox';
 import { useDispatch, useSelector } from '@store';
 import { useGetUserChatColorsQuery } from '@store/apis/twitch/getUserChatColors';
@@ -20,6 +21,7 @@ export const InfoBar = ({ cssBar: cssBarProvided }: InfoBarProps) => {
     isLoading: isUserChatColorsLoading,
   } = useGetUserChatColorsQuery({ userIds: [broadcasterId] });
   const isRenderable = !!(broadcasterId && broadcasterColor !== null);
+
   const cssBar = css`
     overflow: hidden;
     ${cssBarProvided?.styles}
@@ -31,11 +33,12 @@ export const InfoBar = ({ cssBar: cssBarProvided }: InfoBarProps) => {
   }, [dispatch, userChatColorsData]);
 
   // Render nothing if data is loading or required data is incomplete
-  if (isUserChatColorsLoading || !isRenderable) return null;
+  if (isUserChatColorsLoading || !isRenderable) return false;
 
   // Render component
   return (
     <FlexContainer css={cssBar}>
+      <MessageHandler />
       <PersonBox />
       <EventBox />
       <ChatBox />

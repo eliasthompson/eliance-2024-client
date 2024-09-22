@@ -8,6 +8,7 @@ import { infoSlice } from '@store/slices/info';
 import { twitchApi } from '@store/apis/twitch';
 import { twitchAuthSlice } from '@store/slices/twitchAuth';
 import { twitchEventSubSlice } from '@store/slices/twitchEventSub';
+import { twitchPubSubSlice } from '@store/slices/twitchPubSub';
 
 export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
@@ -23,6 +24,7 @@ export const store = configureStore({
     [twitchApi.reducerPath]: twitchApi.reducer,
     [twitchAuthSlice.reducerPath]: twitchAuthSlice.reducer,
     [twitchEventSubSlice.reducerPath]: twitchEventSubSlice.reducer,
+    [twitchPubSubSlice.reducerPath]: twitchPubSubSlice.reducer,
   },
 });
 

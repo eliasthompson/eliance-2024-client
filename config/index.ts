@@ -1,9 +1,14 @@
 import * as uuid from 'uuid';
 
-export const urlParams = new URLSearchParams(window.location.search);
-export const clientId = urlParams.get('clientId') || null;
-export const firebotGuestRoleId = urlParams.get('firebotGuestRoleId') || null;
-export const namespace = urlParams.get('namespace') || uuid.v4();
+import {
+  clientId as clientIdSecret,
+  firebotGuestRoleId as firebotGuestRoleIdSecret,
+  namespace as namespaceSecret,
+} from './secrets'; // ???
+
+export const clientId = clientIdSecret || null;
+export const firebotGuestRoleId = firebotGuestRoleIdSecret || null;
+export const namespace = namespaceSecret || uuid.v4();
 export const scopes = [
   'bits:read',
   'channel:bot',
@@ -18,6 +23,7 @@ export const scopes = [
   'channel:read:redemptions',
   'channel:read:subscriptions',
   'channel:read:vips',
+  'chat:read',
   'moderation:read',
   'moderator:read:automod_settings',
   'moderator:read:chat_messages',
@@ -37,6 +43,5 @@ export const scopes = [
   'user:read:moderated_channels',
   'user:read:subscriptions',
   'user:read:whispers',
-  'chat:read',
   'whispers:read',
 ];

@@ -22,7 +22,8 @@ export interface TwitchApiGetChatSettingsResponse {
 
 export const {
   useGetChatSettingsQuery,
-  util: { updateQueryData: updateChatSettingsData },
+  useLazyGetChatSettingsQuery,
+  util: { invalidateTags: invalidateChatSettingsTags, updateQueryData: updateChatSettingsData },
 } = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['CHAT_SETTINGS_DATA'],

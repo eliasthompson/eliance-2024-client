@@ -1,4 +1,4 @@
-import { twitchApi } from '.';
+import { twitchApi } from '@store/apis/twitch';
 
 export interface TwitchApiGetChannelEmotesRequest {
   broadcasterId: string;
@@ -38,7 +38,11 @@ export interface TwitchApiGetChannelEmotesResponse {
   template: string;
 }
 
-export const { useGetChannelEmotesQuery } = twitchApi
+export const {
+  useGetChannelEmotesQuery,
+  useLazyGetChannelEmotesQuery,
+  util: { invalidateTags: invalidateChannelEmotesTags, updateQueryData: updateChannelEmotesData },
+} = twitchApi
   .enhanceEndpoints({
     addTagTypes: ['CHANNEL_EMOTE_DATA'],
   })
