@@ -1,12 +1,30 @@
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-import type { ErrorMessageProps } from '@components/shared/ErrorMessage/types';
-import type { TwitchApiGetCreatorGoalsResponse } from '@src/store/apis/twitch/getCreatorGoals';
+import type { FirebotApiErrorResponse } from '@store/apis/firebot';
+import type { TwitchApiErrorResponse } from '@store/apis/twitch';
 import type { TwitchEventSubChannelChatMessageNotificationMessage } from '@store/apis/twitch/createEventSubSubscription/channelChatMessage';
 import type { TwitchEventSubChannelChatNotificationNotificationMessage } from '@store/apis/twitch/createEventSubSubscription/channelChatNotification';
 
 import { createSlice } from '@reduxjs/toolkit';
 
+export interface ApiError {
+  status: number;
+  data: FirebotApiErrorResponse | TwitchApiErrorResponse;
+}
+export interface Person {
+  id: string;
+  login: string;
+  profileImageUrl: string;
+  name: string;
+  color: string;
+  isActive: boolean;
+  isLive: boolean;
+  pronouns?: string;
+  socialHandle?: string;
+  socialPlatform?: string;
+  timeZone?: string;
+}
 export interface InfoState {
   broadcasterId: string | null;
   broadcasterLogin: string | null;
@@ -19,22 +37,24 @@ export interface InfoState {
     messageTimestamp: string;
     pinId?: string;
   })[];
-  errors: ErrorMessageProps['error'][];
-  goal: TwitchApiGetCreatorGoalsResponse['data'][number] | null;
-  personIds: string[];
-  persons: {
-    id: string;
-    login: string;
-    profileImageUrl: string;
-    name: string;
-    color: string;
-    isActive: boolean;
-    isLive: boolean;
-    pronouns?: string;
-    socialHandle?: string;
-    socialPlatform?: string;
-    timeZone?: string;
+  errors: (Error | FetchBaseQueryError)[];
+  events: {
+    color?: string;
+    imageUrl?: string;
+    isMinor: boolean;
+    isQueued: boolean;
+    message: {
+      text: TwitchEventSubChannelChatMessageNotificationMessage['payload']['event']['message']['text'];
+      fragments?: TwitchEventSubChannelChatMessageNotificationMessage['payload']['event']['message']['fragments'];
+    };
+    timestamp: string;
+    type: 'announcement' | 'channelPointRedemption' | 'cheer' | 'sub';
+    userName: string;
   }[];
+  isMuted: boolean;
+  isPaused: boolean;
+  personIds: Person['id'][];
+  persons: Person[];
 }
 
 export const getStoredRecentChats = (ex: number = 60 * 60 * 1000) => {
@@ -63,7 +83,9 @@ export const initialInfoState: InfoState = {
   broadcasterColor: null,
   chats: getStoredRecentChats(),
   errors: [],
-  goal: null,
+  events: [],
+  isMuted: false,
+  isPaused: false,
   personIds: [],
   persons: [],
 };
@@ -85,6 +107,9 @@ export const infoSlice = createSlice({
     },
     addError: (state, { payload }: PayloadAction<InfoState['errors'][number]>) => {
       state.errors.push(payload);
+    },
+    addEvent: (state, { payload }: PayloadAction<InfoState['events'][number]>) => {
+      state.events.push(payload);
     },
     addPerson: (state, { payload }: PayloadAction<InfoState['persons'][number]>) => {
       state.persons.push(payload);
@@ -206,6 +231,7 @@ export const {
   actions: {
     addChat,
     addError,
+    addEvent,
     addPerson,
     clearChats,
     removeChatPinId,

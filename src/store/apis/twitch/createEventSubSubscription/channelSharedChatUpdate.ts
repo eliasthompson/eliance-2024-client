@@ -7,7 +7,7 @@ import type {
 import { twitchApi } from '@store/apis/twitch';
 
 const type = 'channel.shared_chat.update';
-const version = 'beta';
+const version = '1';
 const getCondition = (broadcasterId: string) => ({
   broadcaster_user_id: broadcasterId,
 });

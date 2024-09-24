@@ -8,6 +8,7 @@ import type { TwitchPubSubPinnedChatUpdatesMessageMessage } from '@components/Me
 
 import {
   addChat,
+  addEvent,
   clearChats,
   removeChatPinId,
   setChatDeletedTimestamp,
@@ -20,6 +21,7 @@ import { addTwitchPubSubMessageId } from '@store/slices/twitchPubSub';
 import { firebotGuestRoleId, namespace } from '@config';
 import { updateChatSettingsData } from '@store/apis/twitch/getChatSettings';
 import { useDispatch, useSelector } from '@store';
+import { useLazyCreateEventSubSubscriptionChannelChannelPointsCustomRewardRedemptionAddQuery } from '@store/apis/twitch/createEventSubSubscription/channelChannelPointsCustomRewardRedemptionAdd';
 import { useLazyCreateEventSubSubscriptionChannelChatClearQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatClear';
 import { useLazyCreateEventSubSubscriptionChannelChatClearUserMessagesQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatClearUserMessages';
 import { useLazyCreateEventSubSubscriptionChannelChatMessageDeleteQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatMessageDelete';
@@ -33,15 +35,22 @@ import { useLazyCreateEventSubSubscriptionChannelSharedChatBeginQuery } from '@s
 import { useLazyCreateEventSubSubscriptionChannelSharedChatEndQuery } from '@store/apis/twitch/createEventSubSubscription/channelSharedChatEnd';
 import { useLazyCreateEventSubSubscriptionChannelSharedChatUpdateQuery } from '@store/apis/twitch/createEventSubSubscription/channelSharedChatUpdate';
 import { useLazyGetCustomRoleQuery } from '@store/apis/firebot/getCustomRole';
-import { useLazyGetSharedChatSessionQuery } from '@store/apis/twitch/getSharedChatSession';
-import { useLazyGetViewersQuery } from '@store/apis/firebot/getViewers';
 import { useLazyGetGuestStarSessionQuery } from '@store/apis/twitch/getGuestStarSession';
+import { useLazyGetSharedChatSessionQuery } from '@store/apis/twitch/getSharedChatSession';
 import { useLazyGetStreamsQuery } from '@store/apis/twitch/getStreams';
+import { useLazyGetViewersQuery } from '@store/apis/firebot/getViewers';
+
+export const announcementColors = {
+  BLUE: 'linear-gradient(#00d6d6, #9146ff)',
+  GREEN: 'linear-gradient(#00db84, #57bee6)',
+  ORANGE: 'linear-gradient(#ffb31a, #e0e000)',
+  PURPLE: 'linear-gradient(#9146ff, #ff75e6)',
+} as const;
 
 export const MessageHandler = () => {
   const dispatch = useDispatch();
   const { accessToken } = useSelector(({ twitchAuth }) => twitchAuth);
-  const { broadcasterId, personIds } = useSelector(({ info }) => info);
+  const { broadcasterColor, broadcasterId, personIds } = useSelector(({ info }) => info);
   const { messageIds: firebotMessageIds } = useSelector(({ firebotEventSub }) => firebotEventSub);
   const { messageIds: twitchMessageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
   const { messageIds: twitchPSMessageIds } = useSelector(({ twitchPubSub }) => twitchPubSub);
@@ -66,6 +75,10 @@ export const MessageHandler = () => {
   } = useWebSocket<TwitchPubSubMessage>('wss://pubsub-edge.twitch.tv', {
     share: true,
   });
+  const [
+    createEventSubSubscriptionChannelChannelPointsCustomRewardRedemptionAdd,
+    // { error: eventSubSubscriptionChannelChatClearUserMessagesError },
+  ] = useLazyCreateEventSubSubscriptionChannelChannelPointsCustomRewardRedemptionAddQuery();
   const [createEventSubSubscriptionChannelChatClear /* , { error: eventSubSubscriptionChannelChatClearError } */] =
     useLazyCreateEventSubSubscriptionChannelChatClearQuery();
   const [
@@ -176,6 +189,7 @@ export const MessageHandler = () => {
   // Subscribe to twitch event sub events on first connection
   useEffect(() => {
     if (broadcasterId && sessionId) {
+      createEventSubSubscriptionChannelChannelPointsCustomRewardRedemptionAdd({ broadcasterId, sessionId });
       createEventSubSubscriptionChannelChatClear({ broadcasterId, sessionId });
       createEventSubSubscriptionChannelChatClearUserMessages({ broadcasterId, sessionId });
       createEventSubSubscriptionChannelChatMessage({ broadcasterId, sessionId });
@@ -200,14 +214,31 @@ export const MessageHandler = () => {
       if (!twitchMessageIds.includes(messageId)) {
         if (messageType === 'session_welcome' && 'session' in payload) {
           dispatch(setTwitchEventSub({ sessionId: payload.session.id }));
-          dispatch(addTwitchEventSubMessageId(messageId));
         } else if (messageType === 'notification' && 'event' in payload) {
           const { subscription_type: subscriptionType } = metadata;
           const { event } = payload;
 
-          if (subscriptionType === 'channel.chat.clear') {
+          if (subscriptionType === 'channel.channel_points_custom_reward_redemption.add') {
+            if ('reward' in event) {
+              let text = `${event.user_name} has redeemed ${event.reward.title}!`;
+
+              if (event.user_input) text = `${event.user_name} has redeemed ${event.reward.title}: ${event.user_input}`;
+
+              dispatch(
+                addEvent({
+                  // color: event,
+                  // imageUrl: event,
+                  isMinor: event.reward.cost === 1,
+                  isQueued: true,
+                  message: { text },
+                  timestamp: event.redeemed_at,
+                  type: 'channelPointRedemption',
+                  userName: event.user_name,
+                }),
+              );
+            }
+          } else if (subscriptionType === 'channel.chat.clear') {
             dispatch(clearChats());
-            dispatch(addTwitchEventSubMessageId(messageId));
           } else if (subscriptionType === 'channel.chat.clear_user_messages') {
             if ('target_user_id' in event) {
               dispatch(
@@ -216,14 +247,32 @@ export const MessageHandler = () => {
                   deletedTimestamp: metadata.message_timestamp,
                 }),
               );
-              dispatch(addTwitchEventSubMessageId(messageId));
             }
           } else if (subscriptionType === 'channel.chat.message' || subscriptionType === 'channel.chat.notification') {
             if ('message' in event && event.message.text) {
               const { message_timestamp: messageTimestamp } = metadata;
 
               dispatch(addChat({ ...event, messageTimestamp }));
-              dispatch(addTwitchEventSubMessageId(messageId));
+            }
+
+            if (subscriptionType === 'channel.chat.notification' && 'notice_type' in event) {
+              if (event.notice_type === 'announcement') {
+                dispatch(
+                  addEvent({
+                    color:
+                      event.announcement.color !== 'PRIMARY'
+                        ? announcementColors[event.announcement.color]
+                        : broadcasterColor,
+                    // imageUrl: event,
+                    isMinor: false,
+                    isQueued: true,
+                    message: event.message,
+                    timestamp: new Date().toISOString(),
+                    type: 'announcement',
+                    userName: event.chatter_user_name,
+                  }),
+                );
+              }
             }
           } else if (subscriptionType === 'channel.chat.message_delete') {
             if ('message_id' in event) {
@@ -239,26 +288,24 @@ export const MessageHandler = () => {
                 if (state) Object.assign(state.data[0], eventData);
               }),
             );
-            dispatch(addTwitchEventSubMessageId(messageId));
           } else if (
             subscriptionType === 'channel.guest_star_session.begin' ||
             subscriptionType === 'channel.guest_star_session.end' ||
             subscriptionType === 'channel.guest_star_guest.update'
           ) {
             getGuestStarSession({ broadcasterId });
-            dispatch(addTwitchEventSubMessageId(messageId));
           } else if (
             subscriptionType === 'channel.shared_chat.begin' ||
             subscriptionType === 'channel.shared_chat.end' ||
             subscriptionType === 'channel.shared_chat.update'
           ) {
             getSharedChatSession({ broadcasterId });
-            dispatch(addTwitchEventSubMessageId(messageId));
           } else if (subscriptionType === 'stream.online' || subscriptionType === 'stream.offline') {
             getStreams({ userIds: personIds });
-            dispatch(addTwitchEventSubMessageId(messageId));
           }
         }
+
+        dispatch(addTwitchEventSubMessageId(messageId));
       }
     }
   }, [broadcasterId, dispatch, personIds, twitchMessage, twitchMessageIds]);

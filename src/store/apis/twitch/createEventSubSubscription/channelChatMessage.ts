@@ -17,6 +17,11 @@ export interface TwitchApiCreateEventSubSubscriptionChannelChatMessageRequest {
   broadcasterId: string;
   sessionId: string;
 }
+export type TwitchEventSubChannelChatMessageBadge = {
+  set_id: string;
+  id: string;
+  info: string;
+};
 export type TwitchEventSubChannelChatMessageNotificationMessageEvent = {
   broadcaster_user_id: string;
   broadcaster_user_login: string;
@@ -55,11 +60,7 @@ export type TwitchEventSubChannelChatMessageNotificationMessageEvent = {
     | 'user_intro'
     | 'power_ups_message_effect'
     | 'power_ups_gigantified_emote';
-  badges: {
-    set_id: string;
-    id: string;
-    info: string;
-  }[];
+  badges: TwitchEventSubChannelChatMessageBadge[];
   cheer: {
     bits: number;
   } | null;
@@ -77,6 +78,11 @@ export type TwitchEventSubChannelChatMessageNotificationMessageEvent = {
   } | null;
   channel_points_custom_reward_id: string | null;
   channel_points_animation_id: string | null;
+  source_broadcaster_user_id: string | null;
+  source_broadcaster_user_name: string | null;
+  source_broadcaster_user_login: string | null;
+  source_message_id: string | null;
+  source_badges: TwitchEventSubChannelChatMessageBadge[] | null;
 };
 export type TwitchEventSubChannelChatMessageNotificationMessageSubscriptionType = typeof type;
 export type TwitchEventSubChannelChatMessageNotificationMessageSubscriptionVersion = typeof version;

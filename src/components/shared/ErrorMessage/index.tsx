@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 
-import type { ApiError, ErrorMessageProps } from '@components/shared/ErrorMessage/types';
+import type { ApiError } from '@store/slices/info';
+import type { ErrorMessageProps } from '@components/shared/ErrorMessage/types';
 
 export const isApiError = (error: unknown): error is ApiError => {
   return (

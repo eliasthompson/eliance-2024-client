@@ -8,6 +8,10 @@ import type {
   TwitchPubSubReconnectMessage,
   TwitchPubSubResponseMessage,
 } from '@store/apis/twitch';
+import {
+  TwitchEventSubChannelChannelPointsCustomRewardRedemptionAddNotificationMessage,
+  TwitchEventSubChannelChannelPointsCustomRewardRedemptionAddRevocationMessage,
+} from '@store/apis/twitch/createEventSubSubscription/channelChannelPointsCustomRewardRedemptionAdd';
 import type {
   TwitchEventSubChannelChatClearNotificationMessage,
   TwitchEventSubChannelChatClearRevocationMessage,
@@ -69,6 +73,8 @@ export type TwitchEventSubMessage =
   | TwitchEventSubWelcomeMessage
   | TwitchEventSubKeepaliveMessage
   | TwitchEventSubReconnectMessage
+  | TwitchEventSubChannelChannelPointsCustomRewardRedemptionAddNotificationMessage
+  | TwitchEventSubChannelChannelPointsCustomRewardRedemptionAddRevocationMessage
   | TwitchEventSubChannelChatClearNotificationMessage
   | TwitchEventSubChannelChatClearRevocationMessage
   | TwitchEventSubChannelChatClearUserMessagesNotificationMessage

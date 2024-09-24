@@ -174,8 +174,8 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
   const animationDivMessageEffectBefore = isSimmer ? 'none' : 'rotate 4s linear infinite';
   const backgroundColorSpanFragments = isHighlightMessage ? '#755ebc' : 'transparent';
   const backgroundDivMarker =
-    'notice_type' in event && event.notice_type === 'announcement' && event.announcement?.color !== 'PRIMARY'
-      ? announcementColors[event.announcement?.color]
+    'notice_type' in event && event.notice_type === 'announcement' && event.announcement.color !== 'PRIMARY'
+      ? announcementColors[event.announcement.color]
       : broadcasterColor;
   const backgroundImageDivMessageEffectBefore = isSimmer
     ? 'linear-gradient(90deg, #3866dd, #ff4c5b)'

@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 import { CharityIcon } from '@components/shared/svgs/CharityIcon';
 import { FlexContainer } from '@components/shared/FlexContainer';
@@ -31,7 +31,7 @@ export const goalTypeLabels = {
 } as const;
 
 export const EventBox = () => {
-  const { broadcasterId } = useSelector(({ info }) => info);
+  const { broadcasterId /* events, isMuted, isPaused */ } = useSelector(({ info }) => info);
   const {
     data: charityCampaignData,
     // error: charityCampaignError,
@@ -42,6 +42,7 @@ export const EventBox = () => {
     // error: creatorGoalsError,
     isLoading: isCreatorGoalsLoading,
   } = useGetCreatorGoalsQuery({ broadcasterId });
+  // const [isEventActive, setIsEventActive] = useState<boolean>(false);
   const [goals, setGoals] = useState<GoalInfoProps['goal'][]>([]);
   const isLoading = isCharityCampaignLoading || isCreatorGoalsLoading;
   const isRenderable = !!(charityCampaignData && creatorGoalsData);
@@ -105,13 +106,15 @@ export const EventBox = () => {
   // Render component
   return (
     <FlexContainer cssContainer={cssContainer}>
-      <div style={{ flex: 2, transition: 'flex 0.5s' }}></div>
+      <Fragment>
+        {/* <div style={{ flex: 2, transition: 'flex 0.5s' }}></div> */}
 
-      <FlexContainer cssContainer={cssContainerGoals}>
-        {goals.map((goal) => (
-          <GoalInfo goal={goal} isSmall={true} />
-        ))}
-      </FlexContainer>
+        <FlexContainer cssContainer={cssContainerGoals}>
+          {goals.map((goal, i) => (
+            <GoalInfo key={i} goal={goal} isSmall={true} />
+          ))}
+        </FlexContainer>
+      </Fragment>
     </FlexContainer>
   );
 };

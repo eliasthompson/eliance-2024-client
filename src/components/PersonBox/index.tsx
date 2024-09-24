@@ -100,7 +100,7 @@ export const PersonBox = () => {
             const user = usersData.data.find(({ id }) => id === personId);
             let metadata = null;
 
-            if (viewersData) ({ metadata } = viewersData.find(({ _id: id }) => id === personId)) || {};
+            if (viewersData) ({ metadata } = viewersData.find(({ _id: id }) => id === personId) || {});
 
             return {
               id: user?.id,
