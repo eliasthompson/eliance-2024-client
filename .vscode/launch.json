@@ -5,7 +5,7 @@
       "name": "Launch via Chrome",
       "request": "launch",
       "type": "chrome",
-      "url": "http://localhost:8080",
+      "url": "http://localhost:8080/#/global-info",
       "webRoot": "${workspaceFolder}",
       "preLaunchTask": "npm start",
       "postDebugTask": "npm stop",

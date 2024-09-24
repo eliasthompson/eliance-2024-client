@@ -87,12 +87,12 @@ export const EventBox = () => {
     display: flex;
     justify-content: center;
     filter: drop-shadow(#000000 0 0 calc(var(--padding) * 0.75));
-    background-color: rgba(255, 255, 255, 0.025);
+    /* background-color: rgba(255, 255, 255, 0.025); */
   `;
   const cssContainerGoals = css`
     flex: 1;
     transition: flex 0.5s;
-    background-color: rgba(255, 255, 255, 0.025);
+    /* background-color: rgba(255, 255, 255, 0.025); */
 
     span.goal-label {
       flex: ${opacityFlexGoalLabel};
