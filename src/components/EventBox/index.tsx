@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { CharityIcon } from '@components/shared/svgs/CharityIcon';
 import { FlexContainer } from '@components/shared/FlexContainer';
@@ -31,7 +31,7 @@ export const goalTypeLabels = {
 } as const;
 
 export const EventBox = () => {
-  const { broadcasterId /* events, isMuted, isPaused */ } = useSelector(({ info }) => info);
+  const { broadcasterId /* , events, isMuted, isPaused */ } = useSelector(({ info }) => info);
   const {
     data: charityCampaignData,
     // error: charityCampaignError,
@@ -42,7 +42,8 @@ export const EventBox = () => {
     // error: creatorGoalsError,
     isLoading: isCreatorGoalsLoading,
   } = useGetCreatorGoalsQuery({ broadcasterId });
-  // const [isEventActive, setIsEventActive] = useState<boolean>(false);
+  // const [isAlertActive, setIsAlertActive] = useState<boolean>(false);
+  // const [alert, setAlert] = useState<(typeof events)[number]>(null);
   const [goals, setGoals] = useState<GoalInfoProps['goal'][]>([]);
   const isLoading = isCharityCampaignLoading || isCreatorGoalsLoading;
   const isRenderable = !!(charityCampaignData && creatorGoalsData);
@@ -76,6 +77,21 @@ export const EventBox = () => {
     }
   }, [charityCampaignData, creatorGoalsData, setGoals]);
 
+  // useEffect(() => {
+  //   if (!alert) {
+  //     const foundAlert = events.findLast(({ isQueued }) => isQueued);
+  //     if (foundAlert) {
+  //       setAlert(foundAlert);
+  //     }
+  //   }
+  // }, [events, !alert]);
+
+  // useEffect(() => {
+  //   if (alert) {
+  //     setTimeout(() => {}, 10000);
+  //   }
+  // }, [alert]);
+
   // const opacityFlexGoalLabel = true ? '0' : '1';
   // const opacitySpanGoalLabel = true ? '0' : '1';
   const opacityFlexGoalLabel = '1';
@@ -88,6 +104,15 @@ export const EventBox = () => {
     justify-content: center;
     filter: drop-shadow(#000000 0 0 calc(var(--padding) * 0.75));
     /* background-color: rgba(255, 255, 255, 0.025); */
+  `;
+  const cssContainerAlerts = css`
+    flex: 1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
   `;
   const cssContainerGoals = css`
     flex: 1;
@@ -106,15 +131,15 @@ export const EventBox = () => {
   // Render component
   return (
     <FlexContainer cssContainer={cssContainer}>
-      <Fragment>
-        {/* <div style={{ flex: 2, transition: 'flex 0.5s' }}></div> */}
+      <FlexContainer cssContainer={cssContainerAlerts}></FlexContainer>
 
-        <FlexContainer cssContainer={cssContainerGoals}>
-          {goals.map((goal, i) => (
-            <GoalInfo key={i} goal={goal} isSmall={true} />
-          ))}
-        </FlexContainer>
-      </Fragment>
+      {/* <div style={{ flex: 2, transition: 'flex 0.5s' }}></div> */}
+
+      <FlexContainer cssContainer={cssContainerGoals}>
+        {goals.map((goal, i) => (
+          <GoalInfo key={i} goal={goal} isSmall={true} />
+        ))}
+      </FlexContainer>
     </FlexContainer>
   );
 };
