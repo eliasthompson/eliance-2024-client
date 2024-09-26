@@ -8,7 +8,7 @@ import type { TwitchPubSubPinnedChatUpdatesMessageMessage } from '@components/Me
 
 import {
   addChat,
-  addEvent,
+  addAlert,
   clearChats,
   removeChatPinId,
   setChatDeletedTimestamp,
@@ -217,6 +217,7 @@ export const MessageHandler = () => {
         } else if (messageType === 'notification' && 'event' in payload) {
           const { subscription_type: subscriptionType } = metadata;
           const { event } = payload;
+          const id = uuid.v5(JSON.stringify(event), namespace);
 
           if (subscriptionType === 'channel.channel_points_custom_reward_redemption.add') {
             if ('reward' in event) {
@@ -225,7 +226,8 @@ export const MessageHandler = () => {
               if (event.user_input) text = `${event.user_name} has redeemed ${event.reward.title}: ${event.user_input}`;
 
               dispatch(
-                addEvent({
+                addAlert({
+                  id,
                   // color: event,
                   // imageUrl: event,
                   isMinor: event.reward.cost === 1,
@@ -258,7 +260,8 @@ export const MessageHandler = () => {
             if (subscriptionType === 'channel.chat.notification' && 'notice_type' in event) {
               if (event.notice_type === 'announcement') {
                 dispatch(
-                  addEvent({
+                  addAlert({
+                    id,
                     color:
                       event.announcement.color !== 'PRIMARY'
                         ? announcementColors[event.announcement.color]

@@ -3,11 +3,24 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 
 import type { FirebotApiErrorResponse } from '@store/apis/firebot';
 import type { TwitchApiErrorResponse } from '@store/apis/twitch';
-import type { TwitchEventSubChannelChatMessageNotificationMessage } from '@store/apis/twitch/createEventSubSubscription/channelChatMessage';
-import type { TwitchEventSubChannelChatNotificationNotificationMessage } from '@store/apis/twitch/createEventSubSubscription/channelChatNotification';
+import type { TwitchEventSubChannelChatMessageNotificationMessageEvent } from '@store/apis/twitch/createEventSubSubscription/channelChatMessage';
+import type { TwitchEventSubChannelChatNotificationNotificationMessageEvent } from '@store/apis/twitch/createEventSubSubscription/channelChatNotification';
 
 import { createSlice } from '@reduxjs/toolkit';
 
+export interface Alert {
+  id: string;
+  color?: string;
+  imageUrl?: string;
+  isMinor: boolean;
+  isQueued: boolean;
+  message: Omit<TwitchEventSubChannelChatNotificationNotificationMessageEvent['message'], 'fragments'> & {
+    fragments?: TwitchEventSubChannelChatNotificationNotificationMessageEvent['message']['fragments'];
+  };
+  timestamp: string;
+  type: 'announcement' | 'channelPointRedemption' | 'cheer' | 'sub';
+  userName: string;
+}
 export interface ApiError {
   status: number;
   data: FirebotApiErrorResponse | TwitchApiErrorResponse;
@@ -26,33 +39,21 @@ export interface Person {
   timeZone?: string;
 }
 export interface InfoState {
+  activeAlert: Alert | null;
+  alerts: Alert[];
   broadcasterId: string | null;
   broadcasterLogin: string | null;
   broadcasterColor: string | null;
   chats: ((
-    | TwitchEventSubChannelChatMessageNotificationMessage['payload']['event']
-    | TwitchEventSubChannelChatNotificationNotificationMessage['payload']['event']
+    | TwitchEventSubChannelChatMessageNotificationMessageEvent
+    | TwitchEventSubChannelChatNotificationNotificationMessageEvent
   ) & {
     deletedTimestamp?: string;
     messageTimestamp: string;
     pinId?: string;
   })[];
   errors: (Error | FetchBaseQueryError)[];
-  events: {
-    color?: string;
-    imageUrl?: string;
-    isMinor: boolean;
-    isQueued: boolean;
-    message: {
-      text: TwitchEventSubChannelChatMessageNotificationMessage['payload']['event']['message']['text'];
-      fragments?: TwitchEventSubChannelChatMessageNotificationMessage['payload']['event']['message']['fragments'];
-    };
-    timestamp: string;
-    type: 'announcement' | 'channelPointRedemption' | 'cheer' | 'sub';
-    userName: string;
-  }[];
-  isMuted: boolean;
-  isPaused: boolean;
+  isAlertsPaused: boolean;
   personIds: Person['id'][];
   persons: Person[];
 }
@@ -78,14 +79,14 @@ export const getStoredRecentChats = (ex: number = 60 * 60 * 1000) => {
 };
 
 export const initialInfoState: InfoState = {
+  activeAlert: null,
+  alerts: [],
   broadcasterId: null,
   broadcasterLogin: null,
   broadcasterColor: null,
   chats: getStoredRecentChats(),
   errors: [],
-  events: [],
-  isMuted: false,
-  isPaused: false,
+  isAlertsPaused: false,
   personIds: [],
   persons: [],
 };
@@ -94,6 +95,9 @@ export const infoSlice = createSlice({
   initialState: initialInfoState,
   name: 'info',
   reducers: {
+    addAlert: (state, { payload }: PayloadAction<InfoState['alerts'][number]>) => {
+      state.alerts.push(payload);
+    },
     addChat: (state, { payload }: PayloadAction<InfoState['chats'][number]>) => {
       state.chats.push(payload);
       if (state.chats.length > 150) state.chats.shift();
@@ -108,11 +112,17 @@ export const infoSlice = createSlice({
     addError: (state, { payload }: PayloadAction<InfoState['errors'][number]>) => {
       state.errors.push(payload);
     },
-    addEvent: (state, { payload }: PayloadAction<InfoState['events'][number]>) => {
-      state.events.push(payload);
-    },
     addPerson: (state, { payload }: PayloadAction<InfoState['persons'][number]>) => {
       state.persons.push(payload);
+    },
+    changeAlert: (
+      state,
+      { payload }: PayloadAction<Partial<InfoState['alerts'][number]> & { id: InfoState['alerts'][number]['id'] }>,
+    ) => {
+      const { id: alertId, ...alert } = payload;
+      const alertIndex = state.alerts.findIndex(({ id }) => id === alertId);
+
+      if (alertIndex !== -1) Object.assign(state.alerts[alertIndex], alert);
     },
     clearChats: (state) => {
       state.chats.length = 0;
@@ -231,8 +241,9 @@ export const {
   actions: {
     addChat,
     addError,
-    addEvent,
+    addAlert,
     addPerson,
+    changeAlert,
     clearChats,
     removeChatPinId,
     removeError,

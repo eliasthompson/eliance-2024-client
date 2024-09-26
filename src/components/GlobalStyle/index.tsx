@@ -5,9 +5,9 @@ import robotoRegularFont from '@assets/fonts/Roboto-Regular.ttf';
 import robotoMediumFont from '@assets/fonts/Roboto-Medium.ttf';
 
 export const GlobalStyle = () => {
-  const backgroundColorBody = window.obsstudio ? 'transparent' : '#121212';
-  const backgroundColorRoot = window.obsstudio ? 'transparent' : '#226600';
-  const backgroundImageRoot = window.obsstudio
+  const bodyBackgroundColor = window.obsstudio ? 'transparent' : '#121212';
+  const rootBackgroundColor = window.obsstudio ? 'transparent' : '#226600';
+  const rootBackgroundImage = window.obsstudio
     ? 'none'
     : 'url("https://static-cdn.jtvnw.net/jtv_user_pictures/d31cb115-0b49-4966-a6eb-3749a5e83908-profile_banner-480.png")';
 
@@ -85,7 +85,7 @@ export const GlobalStyle = () => {
 
     body {
       font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
-      background-color: ${backgroundColorBody};
+      background-color: ${bodyBackgroundColor};
       color: #ffffff;
       font-size: var(--font-size);
       font-weight: 400;
@@ -94,8 +94,8 @@ export const GlobalStyle = () => {
     #root {
       align-items: center;
       justify-content: center;
-      background-color: ${backgroundColorRoot};
-      background-image: ${backgroundImageRoot};
+      background-color: ${rootBackgroundColor};
+      background-image: ${rootBackgroundImage};
       background-size: cover;
     }
   `;

@@ -1,16 +1,32 @@
-import { css } from '@emotion/react';
-import { useEffect, useState } from 'react';
+import type { IconProps } from '@components/shared/svgs/types';
 
+import { css } from '@emotion/react';
+import { Fragment, FunctionComponent, useEffect, useRef, useState } from 'react';
+
+import { AnnouncementIcon } from '@components/shared/svgs/AnnouncementIcon';
+import { BitsIcon } from '@components/shared/svgs/BitsIcon';
+import { ChannelPointIcon } from '@components/shared/svgs/ChannelPointIcon';
 import { CharityIcon } from '@components/shared/svgs/CharityIcon';
+import { EmptyComponent } from '@components/shared/EmptyComponent';
 import { FlexContainer } from '@components/shared/FlexContainer';
 import { FollowerIcon } from '@components/shared/svgs/FollowerIcon';
 import { GoalInfo } from '@components/GoalInfo';
 import { GoalInfoProps } from '@components/GoalInfo/types';
+import { Message } from '@components/shared/Message';
 import { SubscriberIcon } from '@components/shared/svgs/SubscriberIcon';
 import { TwitchIcon } from '@components/shared/svgs/TwitchIcon';
+import { changeAlert, setInfo } from '@store/slices/info';
 import { useGetCharityCampaignQuery } from '@store/apis/twitch/getCharityCampaign';
 import { useGetCreatorGoalsQuery } from '@store/apis/twitch/getCreatorGoals';
-import { useSelector } from '@store';
+import { useDispatch, useSelector } from '@store';
+
+export const alertTypeIcons = {
+  announcement: AnnouncementIcon,
+  channelPointRedemption: ChannelPointIcon,
+  cheer: BitsIcon,
+  default: EmptyComponent,
+  follower: FollowerIcon,
+} as const;
 
 export const goalTypeIcons = {
   follower: FollowerIcon,
@@ -30,8 +46,11 @@ export const goalTypeLabels = {
   subscription_count: 'Subscribers',
 } as const;
 
+export const initialAlertIcon = () => alertTypeIcons.default;
+
 export const EventBox = () => {
-  const { broadcasterId /* , events, isMuted, isPaused */ } = useSelector(({ info }) => info);
+  const dispatch = useDispatch();
+  const { activeAlert, alerts, broadcasterId /* , isAlertsPaused */ } = useSelector(({ info }) => info);
   const {
     data: charityCampaignData,
     // error: charityCampaignError,
@@ -42,9 +61,9 @@ export const EventBox = () => {
     // error: creatorGoalsError,
     isLoading: isCreatorGoalsLoading,
   } = useGetCreatorGoalsQuery({ broadcasterId });
-  // const [isAlertActive, setIsAlertActive] = useState<boolean>(false);
-  // const [alert, setAlert] = useState<(typeof events)[number]>(null);
+  const [AlertIcon, setAlertIcon] = useState<FunctionComponent<IconProps>>(initialAlertIcon);
   const [goals, setGoals] = useState<GoalInfoProps['goal'][]>([]);
+  const activeAlertTimeoutIdRef = useRef<NodeJS.Timeout>(null);
   const isLoading = isCharityCampaignLoading || isCreatorGoalsLoading;
   const isRenderable = !!(charityCampaignData && creatorGoalsData);
 
@@ -77,35 +96,44 @@ export const EventBox = () => {
     }
   }, [charityCampaignData, creatorGoalsData, setGoals]);
 
-  // useEffect(() => {
-  //   if (!alert) {
-  //     const foundAlert = events.findLast(({ isQueued }) => isQueued);
-  //     if (foundAlert) {
-  //       setAlert(foundAlert);
-  //     }
-  //   }
-  // }, [events, !alert]);
+  // Set active alert
+  useEffect(() => {
+    dispatch(setInfo({ activeAlert: alerts.findLast(({ isQueued }) => isQueued) || null }));
+  }, [alerts, dispatch]);
 
-  // useEffect(() => {
-  //   if (alert) {
-  //     setTimeout(() => {}, 10000);
-  //   }
-  // }, [alert]);
+  // Set active alert icon
+  useEffect(() => {
+    if (activeAlert) setAlertIcon(() => alertTypeIcons[activeAlert.type]);
+    else setAlertIcon(initialAlertIcon);
+  }, [activeAlert, setAlertIcon]);
 
-  // const opacityFlexGoalLabel = true ? '0' : '1';
-  // const opacitySpanGoalLabel = true ? '0' : '1';
-  const opacityFlexGoalLabel = '1';
-  const opacitySpanGoalLabel = '1';
+  // Set active alert timeout to unqueue it
+  useEffect(() => {
+    if (activeAlert) {
+      clearTimeout(activeAlertTimeoutIdRef.current);
 
-  const cssContainer = css`
+      activeAlertTimeoutIdRef.current = setTimeout(() => {
+        dispatch(changeAlert({ id: activeAlert.id, isQueued: false }));
+      }, 10000);
+    }
+
+    return () => clearTimeout(activeAlertTimeoutIdRef.current);
+  }, [activeAlert, activeAlertTimeoutIdRef, dispatch]);
+
+  const containerAlertOpacity = activeAlert ? '1' : '0';
+  const containerGoalsOpacity = activeAlert ? '0' : '1';
+  const spanGoalLabelFlex = '1';
+  const spanGoalLabelOpacity = '1';
+
+  const containerCss = css`
     flex: 2;
     position: relative;
     display: flex;
     justify-content: center;
     filter: drop-shadow(#000000 0 0 calc(var(--padding) * 0.75));
-    /* background-color: rgba(255, 255, 255, 0.025); */
   `;
-  const cssContainerAlerts = css`
+  const containerAlertCss = css`
+    align-self: center;
     flex: 1;
     position: absolute;
     top: 0;
@@ -113,15 +141,27 @@ export const EventBox = () => {
     left: 0;
     right: 0;
     z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: ${containerAlertOpacity};
+    font-size: calc(var(--font-size) * 1.25);
+    transition: opacity 0.5s;
   `;
-  const cssContainerGoals = css`
+  const iconAlertCss = css`
+    min-width: calc(var(--line-height) * 1.25);
+    min-height: calc(var(--line-height) * 1.25);
+  `;
+  const containerGoalsCss = css`
     flex: 1;
-    transition: flex 0.5s;
-    /* background-color: rgba(255, 255, 255, 0.025); */
+    opacity: ${containerGoalsOpacity};
+    transition:
+      flex 0.5s,
+      opacity 0.5s;
 
     span.goal-label {
-      flex: ${opacityFlexGoalLabel};
-      opacity: ${opacitySpanGoalLabel};
+      flex: ${spanGoalLabelFlex};
+      opacity: ${spanGoalLabelOpacity};
     }
   `;
 
@@ -130,12 +170,20 @@ export const EventBox = () => {
 
   // Render component
   return (
-    <FlexContainer cssContainer={cssContainer}>
-      <FlexContainer cssContainer={cssContainerAlerts}></FlexContainer>
+    <FlexContainer cssContainer={containerCss}>
+      <FlexContainer cssContainer={containerAlertCss}>
+        {!!activeAlert && (
+          <Fragment>
+            <AlertIcon cssIcon={iconAlertCss} colored={true} filled={true} />
+            &nbsp;
+            <Message message={activeAlert?.message} />
+          </Fragment>
+        )}
+      </FlexContainer>
 
       {/* <div style={{ flex: 2, transition: 'flex 0.5s' }}></div> */}
 
-      <FlexContainer cssContainer={cssContainerGoals}>
+      <FlexContainer cssContainer={containerGoalsCss}>
         {goals.map((goal, i) => (
           <GoalInfo key={i} goal={goal} isSmall={true} />
         ))}

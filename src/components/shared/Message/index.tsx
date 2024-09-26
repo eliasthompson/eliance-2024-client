@@ -41,7 +41,7 @@ export const cheermotes = {
 } as const;
 
 export const Message = ({
-  message,
+  message = {},
   isAction = false,
   isDeleted = false,
   isGigantifiedEmote = false,
@@ -49,7 +49,7 @@ export const Message = ({
 }: MessageProps) => {
   const { data: globalEmotesData /* , error: globalEmotesError */ } = useGetGlobalEmotesQuery();
 
-  const { fragments = [], text } = message;
+  const { fragments = [], text = '' } = message;
   const { template = '' } = globalEmotesData || {};
   const messageEmotes = fragments
     .filter(({ type }) => type === 'cheermote' || type === 'emote')

@@ -124,9 +124,9 @@ export const PersonBox = () => {
 
       clearInterval(activePersonIntervalIdRef.current);
       activePersonIntervalIdRef.current = setInterval(() => dispatch(rotatePersonisActive()), 30 * 1000);
-
-      return () => clearInterval(activePersonIntervalIdRef.current);
     }
+
+    return () => clearInterval(activePersonIntervalIdRef.current);
   }, [activePersonIntervalIdRef, dispatch, personIds, streamsData, userChatColorsData, usersData, viewersData]);
 
   // Render nothing if data is loading or required data is incomplete

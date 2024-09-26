@@ -47,7 +47,7 @@ export const GoalInfo = ({ goal }: GoalInfoProps) => {
     width: 100%;
     height: calc(var(--padding) * 0.75);
     margin-top: var(--padding);
-    background-color: rgba(0, 0, 0, 33%);
+    background-color: #404040;
   `;
   const cssHrProgress = css`
     position: absolute;

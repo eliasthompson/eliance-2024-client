@@ -67,7 +67,7 @@
       - [ ] [`channel.charity_campaign.progress`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelcharity_campaignprogress)
     - [ ] shoutout
       - [ ] [`channel.shoutout.create`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelshoutoutcreate)
-    - [ ] announcement
+    - [x] announcement
       - [ ] [`channel.chat.notification` `notice_type.announcement`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
     - [ ] raid
       - [ ] [`channel.chat.notification` `notice_type.raid`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
@@ -140,7 +140,7 @@
       - [ ] [`channel.goal.end`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelgoalend)
 - [ ] chat box
   - [ ] hide on big event
-  - [-] combined chat support
+  - [-] shared chat support
   - [x] handle:
     - [x] messages
     - [x] notifications

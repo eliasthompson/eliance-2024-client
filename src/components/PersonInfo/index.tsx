@@ -193,7 +193,7 @@ export const PersonInfo = ({ person }: PersonInfoProps) => {
 
       if (startTime) setNextStream({ title, startTime });
     }
-  }, [channelStreamScheduleData]);
+  }, [channelStreamScheduleData, setNextStream]);
 
   // Set person info interval
   useEffect(() => {
@@ -203,9 +203,9 @@ export const PersonInfo = ({ person }: PersonInfoProps) => {
         () => setPersonInfo((state) => (state === 'primaryInfo' ? 'schedule' : 'primaryInfo')),
         15 * 1000,
       );
-
-      return () => clearInterval(personInfoIntervalIdRef.current);
     }
+
+    return () => clearInterval(personInfoIntervalIdRef.current);
   }, [nextStream, personInfoIntervalIdRef, setPersonInfo]);
 
   // Render nothing if data is loading or required data is incomplete
@@ -265,7 +265,9 @@ export const PersonInfo = ({ person }: PersonInfoProps) => {
               {nextStream?.startTime ? (
                 <span css={cssSpanStreamStartTime}>
                   &nbsp;&#8226;&nbsp;
-                  {new RelativeTime({ options: { numeric: 'always' } }).from(new Date(nextStream.startTime))}
+                  {new Date(nextStream.startTime) >= new Date()
+                    ? new RelativeTime({ options: { numeric: 'always' } }).from(new Date(nextStream.startTime))
+                    : 'now'}
                 </span>
               ) : null}
             </span>
