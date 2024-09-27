@@ -61,8 +61,6 @@
       - [ ] [`channel.goal.begin`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelgoalbegin)
     - [ ] channel goal met
       - [ ] [`channel.goal.end`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelgoalend)
-    - [ ] charity donation
-      - [ ] [`channel.chat.notification` `notice_type.charity_donation`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
     - [ ] donation goal met
       - [ ] [`channel.charity_campaign.progress`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelcharity_campaignprogress)
     - [ ] shoutout
@@ -71,6 +69,8 @@
       - [ ] [`channel.cheer`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelcheer)
     - [x] announcement
       - [x] [`channel.chat.notification` `notice_type.announcement`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
+    - [ ] charity donation
+      - [ ] [`channel.chat.notification` `notice_type.charity_donation`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
     - [x] raid
       - [x] [`channel.chat.notification` `notice_type.raid`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
     - [x] sub
