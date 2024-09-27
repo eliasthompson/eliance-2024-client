@@ -66,7 +66,9 @@ export const Message = ({
         .replace('{{theme_mode}}', 'dark')
         .replace('{{scale}}', '3.0');
     } else {
-      ({ color, url } = cheermotes[emote.prefix][emote.tier]);
+      const cheermote = cheermotes[emote.prefix];
+
+      ({ color, url } = cheermote ? cheermote[emote.tier] : cheermotes.cheer[emote.tier]);
     }
 
     return { ...emote, color, url };

@@ -218,6 +218,7 @@ export const MessageHandler = () => {
           const { subscription_type: subscriptionType } = metadata;
           const { event } = payload;
           const id = uuid.v5(JSON.stringify(event), namespace);
+          const timestamp = new Date().toISOString();
 
           if (subscriptionType === 'channel.channel_points_custom_reward_redemption.add') {
             if ('reward' in event) {
@@ -231,10 +232,9 @@ export const MessageHandler = () => {
                   // color: event,
                   // imageUrl: event,
                   isMinor: event.reward.cost === 1,
-                  isQueued: true,
                   message: { text },
                   timestamp: event.redeemed_at,
-                  type: 'channelPointRedemption',
+                  type: 'channel_point_redemption',
                   userName: event.user_name,
                 }),
               );
@@ -268,10 +268,76 @@ export const MessageHandler = () => {
                         : broadcasterColor,
                     // imageUrl: event,
                     isMinor: false,
-                    isQueued: true,
                     message: event.message,
-                    timestamp: new Date().toISOString(),
-                    type: 'announcement',
+                    timestamp,
+                    type: event.notice_type,
+                    userName: event.chatter_user_name,
+                  }),
+                );
+              } else if (event.notice_type === 'raid') {
+                dispatch(
+                  addAlert({
+                    id,
+                    // color: event,
+                    imageUrl: event.raid.profile_image_url,
+                    isMinor: false,
+                    message: { text: `${event.raid.user_name} is raiding!` },
+                    timestamp,
+                    type: event.notice_type,
+                    userName: event.raid.user_name,
+                  }),
+                );
+              } else if (event.notice_type === 'sub') {
+                dispatch(
+                  addAlert({
+                    id,
+                    // color: event,
+                    // imageUrl: event,
+                    isMinor: false,
+                    message: { text: `${event.raid.user_name} subscribed!` },
+                    timestamp,
+                    type: event.notice_type,
+                    userName: event.chatter_user_name,
+                  }),
+                );
+              } else if (event.notice_type === 'resub' && !event.resub.is_gift) {
+                dispatch(
+                  addAlert({
+                    id,
+                    // color: event,
+                    // imageUrl: event,
+                    isMinor: false,
+                    message: { text: `${event.chatter_user_name} resubscribed!` },
+                    timestamp,
+                    type: event.notice_type,
+                    userName: event.chatter_user_name,
+                  }),
+                );
+              } else if (event.notice_type === 'sub_gift') {
+                dispatch(
+                  addAlert({
+                    id,
+                    // color: event,
+                    // imageUrl: event,
+                    isMinor: false,
+                    message: {
+                      text: `${event.chatter_user_name} gifted ${event.sub_gift.recipient_user_name} a subscription!`,
+                    },
+                    timestamp,
+                    type: event.notice_type,
+                    userName: event.chatter_user_name,
+                  }),
+                );
+              } else if (event.notice_type === 'community_sub_gift') {
+                dispatch(
+                  addAlert({
+                    id,
+                    // color: event,
+                    // imageUrl: event,
+                    isMinor: false,
+                    message: { text: `${event.chatter_user_name} gifted subscriptions!` },
+                    timestamp,
+                    type: event.notice_type,
                     userName: event.chatter_user_name,
                   }),
                 );

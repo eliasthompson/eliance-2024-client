@@ -67,47 +67,47 @@
       - [ ] [`channel.charity_campaign.progress`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelcharity_campaignprogress)
     - [ ] shoutout
       - [ ] [`channel.shoutout.create`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelshoutoutcreate)
-    - [x] announcement
-      - [ ] [`channel.chat.notification` `notice_type.announcement`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
-    - [ ] raid
-      - [ ] [`channel.chat.notification` `notice_type.raid`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
-    - [ ] sub
-      - [ ] [`channel.chat.notification` `notice_type.sub`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
-    - [ ] resub
-      - [ ] [`channel.chat.notification` `notice_type.resub`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
-    - [ ] gift sub
-      - [ ] [`channel.chat.notification` `notice_type.sub_gift`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
-    - [ ] community gift sub
-      - [ ] [`channel.chat.notification` `notice_type.community_sub_gift`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
     - [ ] cheer
       - [ ] [`channel.cheer`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelcheer)
-    - [ ] pyonchi cam
-      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
-    - [ ] pyonchi treat
-      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
-    - [ ] ring fit break
-      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
-    - [ ] add quote
-      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
-    - [ ] add one ice cube to water
-      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
-    - [ ] [any cameo redemption]
-      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
-    - [ ] backlog wheel selection
-      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
-    - [ ] become vip
-      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
-    - [ ] add custom layout element
-      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [x] announcement
+      - [x] [`channel.chat.notification` `notice_type.announcement`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
+    - [x] raid
+      - [x] [`channel.chat.notification` `notice_type.raid`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
+    - [x] sub
+      - [x] [`channel.chat.notification` `notice_type.sub`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
+    - [x] resub
+      - [x] [`channel.chat.notification` `notice_type.resub`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
+    - [x] gift sub
+      - [x] [`channel.chat.notification` `notice_type.sub_gift`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
+    - [x] community gift sub
+      - [x] [`channel.chat.notification` `notice_type.community_sub_gift`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchatnotification)
+    - [x] pyonchi cam
+      - [x] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [x] pyonchi treat
+      - [x] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [x] ring fit break
+      - [x] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [x] add quote
+      - [x] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [x] add one ice cube to water
+      - [x] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [x] [any cameo redemption]
+      - [x] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [x] backlog wheel selection
+      - [x] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [x] become vip
+      - [x] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [x] add custom layout element
+      - [x] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
   - [ ] small events (event queue - always shown after big events):
     - [ ] poll results
       - [ ] [`channel.poll.end`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelpollend)
     - [ ] new follower
       - [ ] [`channel.follow`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelfollow)
-    - [ ] hydrate
-      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
-    - [ ] give mary a cookie
-      - [ ] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [x] hydrate
+      - [x] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
+    - [x] give mary a cookie
+      - [x] [`channel.channel_points_custom_reward_redemption.add`](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#channelchannel_points_custom_reward_redemptionadd)
   - [ ] social actions (on until over):
     - [ ] poll AND hype train (rotate)
       - [ ] [`GET hypetrain/events`](https://dev.twitch.tv/docs/api/reference/#get-hype-train-events)

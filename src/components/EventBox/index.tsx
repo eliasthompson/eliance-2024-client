@@ -13,6 +13,7 @@ import { FollowerIcon } from '@components/shared/svgs/FollowerIcon';
 import { GoalInfo } from '@components/GoalInfo';
 import { GoalInfoProps } from '@components/GoalInfo/types';
 import { Message } from '@components/shared/Message';
+import { RaidIcon } from '@components/shared/svgs/RaidIcon';
 import { SubscriberIcon } from '@components/shared/svgs/SubscriberIcon';
 import { TwitchIcon } from '@components/shared/svgs/TwitchIcon';
 import { changeAlert, setInfo } from '@store/slices/info';
@@ -22,10 +23,15 @@ import { useDispatch, useSelector } from '@store';
 
 export const alertTypeIcons = {
   announcement: AnnouncementIcon,
-  channelPointRedemption: ChannelPointIcon,
+  channel_point_redemption: ChannelPointIcon,
   cheer: BitsIcon,
+  community_sub_gift: SubscriberIcon,
   default: EmptyComponent,
   follower: FollowerIcon,
+  raid: RaidIcon,
+  resub: SubscriberIcon,
+  sub: SubscriberIcon,
+  sub_gift: SubscriberIcon,
 } as const;
 
 export const goalTypeIcons = {

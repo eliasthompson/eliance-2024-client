@@ -18,7 +18,15 @@ export interface Alert {
     fragments?: TwitchEventSubChannelChatNotificationNotificationMessageEvent['message']['fragments'];
   };
   timestamp: string;
-  type: 'announcement' | 'channelPointRedemption' | 'cheer' | 'sub';
+  type:
+    | 'announcement'
+    | 'channel_point_redemption'
+    | 'cheer'
+    | 'community_sub_gift'
+    | 'sub'
+    | 'sub_gift'
+    | 'raid'
+    | 'resub';
   userName: string;
 }
 export interface ApiError {
@@ -95,8 +103,8 @@ export const infoSlice = createSlice({
   initialState: initialInfoState,
   name: 'info',
   reducers: {
-    addAlert: (state, { payload }: PayloadAction<InfoState['alerts'][number]>) => {
-      state.alerts.push(payload);
+    addAlert: (state, { payload }: PayloadAction<Omit<InfoState['alerts'][number], 'isQueued'>>) => {
+      state.alerts.push({ ...payload, isQueued: true });
     },
     addChat: (state, { payload }: PayloadAction<InfoState['chats'][number]>) => {
       state.chats.push(payload);
