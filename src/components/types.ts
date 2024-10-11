@@ -36,6 +36,14 @@ import type {
   TwitchEventSubChannelChatSettingsUpdateNotificationMessage,
   TwitchEventSubChannelChatSettingsUpdateRevocationMessage,
 } from '@store/apis/twitch/createEventSubSubscription/channelChatSettingsUpdate';
+import {
+  TwitchEventSubChannelCheerNotificationMessage,
+  TwitchEventSubChannelCheerRevocationMessage,
+} from '@store/apis/twitch/createEventSubSubscription/channelCheer';
+import {
+  TwitchEventSubChannelFollowNotificationMessage,
+  TwitchEventSubChannelFollowRevocationMessage,
+} from '@store/apis/twitch/createEventSubSubscription/channelFollow';
 import type {
   TwitchEventSubChannelGuestStarGuestUpdateNotificationMessage,
   TwitchEventSubChannelGuestStarGuestUpdateRevocationMessage,
@@ -87,6 +95,10 @@ export type TwitchEventSubMessage =
   | TwitchEventSubChannelChatNotificationRevocationMessage
   | TwitchEventSubChannelChatSettingsUpdateNotificationMessage
   | TwitchEventSubChannelChatSettingsUpdateRevocationMessage
+  | TwitchEventSubChannelCheerNotificationMessage
+  | TwitchEventSubChannelCheerRevocationMessage
+  | TwitchEventSubChannelFollowNotificationMessage
+  | TwitchEventSubChannelFollowRevocationMessage
   | TwitchEventSubChannelGuestStarSessionBeginNotificationMessage
   | TwitchEventSubChannelGuestStarSessionBeginRevocationMessage
   | TwitchEventSubChannelGuestStarSessionEndNotificationMessage

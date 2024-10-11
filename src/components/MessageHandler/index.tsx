@@ -28,6 +28,8 @@ import { useLazyCreateEventSubSubscriptionChannelChatMessageDeleteQuery } from '
 import { useLazyCreateEventSubSubscriptionChannelChatMessageQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatMessage';
 import { useLazyCreateEventSubSubscriptionChannelChatNotificationQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatNotification';
 import { useLazyCreateEventSubSubscriptionChannelChatSettingsUpdateQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatSettingsUpdate';
+import { useLazyCreateEventSubSubscriptionChannelCheerQuery } from '@store/apis/twitch/createEventSubSubscription/channelCheer';
+import { useLazyCreateEventSubSubscriptionChannelFollowQuery } from '@store/apis/twitch/createEventSubSubscription/channelFollow';
 import { useLazyCreateEventSubSubscriptionChannelGuestStarGuestUpdateQuery } from '@store/apis/twitch/createEventSubSubscription/channelGuestStarGuestUpdate';
 import { useLazyCreateEventSubSubscriptionChannelGuestStarSessionBeginQuery } from '@store/apis/twitch/createEventSubSubscription/channelGuestStarSessionBegin';
 import { useLazyCreateEventSubSubscriptionChannelGuestStarSessionEndQuery } from '@store/apis/twitch/createEventSubSubscription/channelGuestStarSessionEnd';
@@ -99,6 +101,14 @@ export const MessageHandler = () => {
     createEventSubSubscriptionChannelChatSettingsUpdate,
     // { error: eventSubSubscriptionChannelChatSettingsUpdateError },
   ] = useLazyCreateEventSubSubscriptionChannelChatSettingsUpdateQuery();
+  const [
+    createEventSubSubscriptionChannelCheer,
+    // { error: eventSubSubscriptionChannelCheerError },
+  ] = useLazyCreateEventSubSubscriptionChannelCheerQuery();
+  const [
+    createEventSubSubscriptionChannelFollow,
+    // { error: eventSubSubscriptionChannelFollowError },
+  ] = useLazyCreateEventSubSubscriptionChannelFollowQuery();
   const [
     createEventSubSubscriptionChannelGuestStarGuestUpdate,
     // { error: eventSubSubscriptionChannelGuestStarGuestUpdateError },
@@ -196,6 +206,8 @@ export const MessageHandler = () => {
       createEventSubSubscriptionChannelChatMessageDelete({ broadcasterId, sessionId });
       createEventSubSubscriptionChannelChatNotification({ broadcasterId, sessionId });
       createEventSubSubscriptionChannelChatSettingsUpdate({ broadcasterId, sessionId });
+      createEventSubSubscriptionChannelCheer({ broadcasterId, sessionId });
+      createEventSubSubscriptionChannelFollow({ broadcasterId, sessionId });
       createEventSubSubscriptionChannelGuestStarGuestUpdate({ broadcasterId, sessionId });
       createEventSubSubscriptionChannelGuestStarSessionBegin({ broadcasterId, sessionId });
       createEventSubSubscriptionChannelGuestStarSessionEnd({ broadcasterId, sessionId });
@@ -212,10 +224,12 @@ export const MessageHandler = () => {
       const { message_id: messageId, message_type: messageType } = metadata;
 
       if (!twitchMessageIds.includes(messageId)) {
+        // const { payload } = twitchMessage;
+
         if (messageType === 'session_welcome' && 'session' in payload) {
           dispatch(setTwitchEventSub({ sessionId: payload.session.id }));
         } else if (messageType === 'notification' && 'event' in payload) {
-          const { subscription_type: subscriptionType } = metadata;
+          const { type: subscriptionType } = payload.subscription;
           const { event } = payload;
           const id = uuid.v5(JSON.stringify(event), namespace);
           const timestamp = new Date().toISOString();
@@ -251,13 +265,15 @@ export const MessageHandler = () => {
               );
             }
           } else if (subscriptionType === 'channel.chat.message' || subscriptionType === 'channel.chat.notification') {
-            if ('message' in event && event.message.text) {
+            if ('message' in event && !('bits' in event) && 'text' in event.message && event.message.text) {
               const { message_timestamp: messageTimestamp } = metadata;
 
-              dispatch(addChat({ ...event, messageTimestamp }));
+              if (typeof event.message === 'object') dispatch(addChat({ ...event, messageTimestamp }));
             }
 
             if (subscriptionType === 'channel.chat.notification' && 'notice_type' in event) {
+              const name = event.chatter_is_anonymous ? 'Someone' : event.chatter_user_name;
+
               if (event.notice_type === 'announcement') {
                 dispatch(
                   addAlert({
@@ -294,20 +310,23 @@ export const MessageHandler = () => {
                     // color: event,
                     // imageUrl: event,
                     isMinor: false,
-                    message: { text: `${event.raid.user_name} subscribed!` },
+                    message: { text: `${name} subscribed!` },
                     timestamp,
                     type: event.notice_type,
                     userName: event.chatter_user_name,
                   }),
                 );
-              } else if (event.notice_type === 'resub' && !event.resub.is_gift) {
+              } else if (event.notice_type === 'resub') {
+                const gifterName = event.resub.gifter_is_anonymous ? 'someone' : event.resub.gifter_user_name;
+                const giftMessagePart = ` thanks to ${gifterName}`;
+
                 dispatch(
                   addAlert({
                     id,
                     // color: event,
                     // imageUrl: event,
                     isMinor: false,
-                    message: { text: `${event.chatter_user_name} resubscribed!` },
+                    message: { text: `${name} resubscribed${giftMessagePart}!` },
                     timestamp,
                     type: event.notice_type,
                     userName: event.chatter_user_name,
@@ -321,7 +340,7 @@ export const MessageHandler = () => {
                     // imageUrl: event,
                     isMinor: false,
                     message: {
-                      text: `${event.chatter_user_name} gifted ${event.sub_gift.recipient_user_name} a subscription!`,
+                      text: `${name} gifted a subscription!`,
                     },
                     timestamp,
                     type: event.notice_type,
@@ -335,7 +354,7 @@ export const MessageHandler = () => {
                     // color: event,
                     // imageUrl: event,
                     isMinor: false,
-                    message: { text: `${event.chatter_user_name} gifted subscriptions!` },
+                    message: { text: `${name} gifted subscriptions!` },
                     timestamp,
                     type: event.notice_type,
                     userName: event.chatter_user_name,
@@ -357,6 +376,38 @@ export const MessageHandler = () => {
                 if (state) Object.assign(state.data[0], eventData);
               }),
             );
+          } else if (subscriptionType === 'channel.cheer') {
+            let name = 'Someone';
+
+            if ('is_anonymous' in event && 'user_name' in event && !event.is_anonymous) name = event.user_name;
+
+            dispatch(
+              addAlert({
+                id,
+                // color: event,
+                // imageUrl: event,
+                isMinor: false,
+                message: { text: `${name} has cheered!` },
+                timestamp,
+                type: 'cheer',
+                userName: 'user_name' in event ? event.user_name : null,
+              }),
+            );
+          } else if (subscriptionType === 'channel.follow') {
+            if ('followed_at' in event) {
+              dispatch(
+                addAlert({
+                  id,
+                  // color: event,
+                  // imageUrl: event,
+                  isMinor: false,
+                  message: { text: 'Someone has followed!' },
+                  timestamp: event.followed_at,
+                  type: 'follow',
+                  userName: event.user_name,
+                }),
+              );
+            }
           } else if (
             subscriptionType === 'channel.guest_star_session.begin' ||
             subscriptionType === 'channel.guest_star_session.end' ||

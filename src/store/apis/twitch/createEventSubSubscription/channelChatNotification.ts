@@ -83,9 +83,9 @@ export type TwitchEventSubChannelChatNotificationNotificationMessageEvent = {
   broadcaster_user_id: string;
   broadcaster_user_login: string;
   broadcaster_user_name: string;
-  chatter_user_id: string;
-  chatter_user_login: string;
-  chatter_user_name: string;
+  chatter_user_id: string | null;
+  chatter_user_login: string | null;
+  chatter_user_name: string | null;
   chatter_is_anonymous: boolean;
   color: string;
   badges: TwitchEventSubChannelChatNotificationBadge[];

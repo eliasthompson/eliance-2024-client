@@ -27,7 +27,7 @@ export const alertTypeIcons = {
   cheer: BitsIcon,
   community_sub_gift: SubscriberIcon,
   default: EmptyComponent,
-  follower: FollowerIcon,
+  follow: FollowerIcon,
   raid: RaidIcon,
   resub: SubscriberIcon,
   sub: SubscriberIcon,

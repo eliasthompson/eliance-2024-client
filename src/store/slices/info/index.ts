@@ -23,6 +23,7 @@ export interface Alert {
     | 'channel_point_redemption'
     | 'cheer'
     | 'community_sub_gift'
+    | 'follow'
     | 'sub'
     | 'sub_gift'
     | 'raid'
