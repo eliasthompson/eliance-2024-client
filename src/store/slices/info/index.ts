@@ -28,7 +28,7 @@ export interface Alert {
     | 'sub_gift'
     | 'raid'
     | 'resub';
-  userName: string;
+  userName: string | null;
 }
 export interface ApiError {
   status: number;
@@ -75,7 +75,7 @@ export const getStoredRecentChats = (ex: number = 60 * 60 * 1000) => {
 
     if (localStoredChatsItem !== null) localStoredChats = JSON.parse(localStoredChatsItem);
     else localStorage.setItem('recentChats', JSON.stringify([]));
-  } catch (error) {
+  } catch {
     //
   }
 
@@ -181,15 +181,15 @@ export const infoSlice = createSlice({
         deletedTimestamp: InfoState['chats'][number]['deletedTimestamp'];
       }>,
     ) => {
-      const findChatIndex = ({ message_id: messageId }) => messageId === payload.messageId;
+      const findChatIndex = ({ message_id: messageId }: InfoState['chats'][number]) => messageId === payload.messageId;
       const chatIndex = state.chats.findIndex(findChatIndex);
 
-      state.chats[chatIndex].deletedTimestamp = payload.deletedTimestamp;
+      if (chatIndex !== -1) state.chats[chatIndex].deletedTimestamp = payload.deletedTimestamp;
 
       const storedRecentChats = getStoredRecentChats();
       const storedChatIndex = storedRecentChats.findIndex(findChatIndex);
 
-      storedRecentChats[storedChatIndex].deletedTimestamp = payload.deletedTimestamp;
+      if (storedChatIndex !== -1) storedRecentChats[storedChatIndex].deletedTimestamp = payload.deletedTimestamp;
 
       localStorage.setItem('recentChats', JSON.stringify(storedRecentChats));
     },
@@ -202,11 +202,11 @@ export const infoSlice = createSlice({
         pinId: InfoState['chats'][number]['pinId'];
       }>,
     ) => {
-      for (const [i, chat] of Object.entries(state.chats)) {
-        if (chat.pinId) state.chats[i].pinId = undefined;
+      for (const chat of state.chats) {
+        if (chat.pinId) chat.pinId = undefined;
       }
 
-      const findChatIndex = ({ message_id: messageId }) => messageId === payload.messageId;
+      const findChatIndex = ({ message_id: messageId }: InfoState['chats'][number]) => messageId === payload.messageId;
       const chatIndex = state.chats.findIndex(findChatIndex);
 
       if (chatIndex !== -1) state.chats[chatIndex].pinId = payload.pinId;
@@ -227,15 +227,14 @@ export const infoSlice = createSlice({
         deletedTimestamp: InfoState['chats'][number]['deletedTimestamp'];
       }>,
     ) => {
-      for (const [i, chat] of Object.entries(state.chats)) {
-        if (chat.chatter_user_id === payload.chatterUserId) state.chats[i].deletedTimestamp = payload.deletedTimestamp;
+      for (const chat of state.chats) {
+        if (chat.chatter_user_id === payload.chatterUserId) chat.deletedTimestamp = payload.deletedTimestamp;
       }
 
       const storedRecentChats = getStoredRecentChats();
 
-      for (const [i, chat] of Object.entries(storedRecentChats)) {
-        if (chat.chatter_user_id === payload.chatterUserId)
-          storedRecentChats[i].deletedTimestamp = payload.deletedTimestamp;
+      for (const chat of storedRecentChats) {
+        if (chat.chatter_user_id === payload.chatterUserId) chat.deletedTimestamp = payload.deletedTimestamp;
       }
 
       localStorage.setItem('recentChats', JSON.stringify(storedRecentChats));

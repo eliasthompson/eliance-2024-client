@@ -33,20 +33,22 @@ export const AuthenticationBar = ({ cssBar: cssBarProvided }: AuthenticationBarP
 
   // Handle authenticate click
   const handleAuthenticateClick = useCallback(async () => {
-    const { data: tokenData } = await createTokenMutation({
-      clientId,
-      deviceCode: deviceCodeData.device_code,
-      scopes,
-    });
+    if (deviceCodeData) {
+      const { data: tokenData } = await createTokenMutation({
+        clientId,
+        deviceCode: deviceCodeData.device_code,
+        scopes,
+      });
 
-    if (tokenData) {
-      dispatch(
-        setTwitchAuth({
-          accessToken: tokenData.access_token,
-          refreshToken: tokenData.refresh_token,
-        }),
-      );
-      dispatch(invalidateTwitchApiTags(['UNAUTHORIZED']));
+      if (tokenData) {
+        dispatch(
+          setTwitchAuth({
+            accessToken: tokenData.access_token,
+            refreshToken: tokenData.refresh_token,
+          }),
+        );
+        dispatch(invalidateTwitchApiTags(['UNAUTHORIZED']));
+      }
     }
   }, [deviceCodeData, createTokenMutation]);
 
@@ -56,9 +58,11 @@ export const AuthenticationBar = ({ cssBar: cssBarProvided }: AuthenticationBarP
 
     if (inputElement) {
       const range = document.createRange();
+      const selection = window.getSelection();
+
       range.selectNode(inputElement);
-      window.getSelection().removeAllRanges();
-      window.getSelection().addRange(range);
+      selection?.removeAllRanges();
+      selection?.addRange(range);
       document.execCommand('copy');
     }
   }, []);

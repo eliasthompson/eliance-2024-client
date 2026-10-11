@@ -1,5 +1,6 @@
 import type {
   TwitchApiCreateEventSubSubscriptionResponse,
+  TwitchCheermoteTier,
   TwitchEventSubNotificationMessage,
   TwitchEventSubRevocationMessage,
 } from '@store/apis/twitch';
@@ -38,7 +39,7 @@ export type TwitchEventSubChannelChatMessageNotificationMessageEvent = {
       cheermote: {
         prefix: string;
         bits: number;
-        tier: number;
+        tier: TwitchCheermoteTier;
       } | null;
       emote: {
         id: string;

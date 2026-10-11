@@ -1,29 +1,25 @@
 import { Fragment } from 'react';
 import { css } from '@emotion/react';
+import { skipToken } from '@reduxjs/toolkit/query';
 
 import type { ChatMessageProps, TwitchChatBoxBadge } from '@components/ChatMessage/types';
 
-import cheer1Image from '@assets/images/cheer1.gif';
-import cheer100Image from '@assets/images/cheer100.gif';
-import cheer1000Image from '@assets/images/cheer1000.gif';
-import cheer5000Image from '@assets/images/cheer5000.gif';
-import cheer10000Image from '@assets/images/cheer10000.gif';
-import cheer100000Image from '@assets/images/cheer100000.gif';
 import cosmicAbyssTallVideo from '@assets/videos/cosmic-abyss-tall.mp4';
 import { AnnouncementIcon } from '@components/shared/svgs/AnnouncementIcon';
 import { BitsIcon } from '@components/shared/svgs/BitsIcon';
 import { ChannelPointIcon } from '@components/shared/svgs/ChannelPointIcon';
 import { FlexContainer } from '@components/shared/FlexContainer';
+import { Message } from '@components/shared/Message';
 import { PinIcon } from '@components/shared/svgs/PinIcon';
 import { SparkleIcon } from '@components/shared/svgs/SparkleIcon';
 import { SubscriberIcon } from '@components/shared/svgs/SubscriberIcon';
 import { TwitchIcon } from '@components/shared/svgs/TwitchIcon';
+import { hasKey } from '@lib/hasKey';
 import { useGetChannelChatBadgesQuery } from '@store/apis/twitch/getChannelChatBadges';
 import { useGetGlobalChatBadgesQuery } from '@store/apis/twitch/getGlobalChatBadges';
 import { useGetPronounsQuery } from '@store/apis/chatPronouns/getPronouns';
 import { useGetUserQuery } from '@store/apis/chatPronouns/getUser';
 import { useSelector } from '@store';
-import { Message } from '@components/shared/Message';
 
 export const noticeTypes = {
   announcement: AnnouncementIcon,
@@ -45,42 +41,13 @@ export const announcementColors = {
   PURPLE: 'linear-gradient(#9146ff, #ff75e6)',
 } as const;
 
-export const cheermotes = {
-  cheer: {
-    '1': {
-      color: 'rgb(151, 151, 151)',
-      url: cheer1Image,
-    },
-    '100': {
-      color: 'rgb(156, 62, 232)',
-      url: cheer100Image,
-    },
-    '1000': {
-      color: 'rgb(29, 178, 165)',
-      url: cheer1000Image,
-    },
-    '5000': {
-      color: 'rgb(0, 153, 254)',
-      url: cheer5000Image,
-    },
-    '10000': {
-      color: 'rgb(244, 48, 33)',
-      url: cheer10000Image,
-    },
-    '100000': {
-      color: 'rgb(243, 167, 26)',
-      url: cheer100000Image,
-    },
-  },
-} as const;
-
 export const ChatMessage = ({ event }: ChatMessageProps) => {
   const { broadcasterId, broadcasterColor } = useSelector(({ info }) => info);
   const {
     data: channelChatBadgesData,
     // error: channelChatBadgesError,
     isLoading: isChannelChatBadgesLoading,
-  } = useGetChannelChatBadgesQuery({ broadcasterId });
+  } = useGetChannelChatBadgesQuery(broadcasterId ? { broadcasterId } : skipToken);
   const {
     data: globalChatBadgesData,
     // error: globalChatBadgesError,
@@ -91,9 +58,14 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
     data: userData,
     // error: userError,
     isLoading: isUserLoading,
-  } = useGetUserQuery({ login: event.chatter_user_login });
+  } = useGetUserQuery(event.chatter_user_login ? { login: event.chatter_user_login } : skipToken);
   const isLoading = isChannelChatBadgesLoading || isGlobalChatBadgesLoading || isPronounsLoading || isUserLoading;
-  const isRenderable = !!(channelChatBadgesData && globalChatBadgesData && pronounsData && userData);
+  const isRenderable = !!(
+    channelChatBadgesData &&
+    globalChatBadgesData &&
+    pronounsData &&
+    (userData || !event.chatter_user_login)
+  );
   const isAction = event.message.text.startsWith('\u0001ACTION');
   const isCosmicAbyss = 'message_type' in event && event.channel_points_animation_id === 'cosmic-abyss';
   const isDeleted = !!event.deletedTimestamp;
@@ -128,12 +100,15 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
       IconComponent = noticeTypes.channel_points_highlighted;
     else if ('message_type' in event && event.cheer) IconComponent = noticeTypes.cheered;
     else if (event.pinId) IconComponent = noticeTypes.pinned;
-    else IconComponent = noticeTypes[specialType] || noticeTypes.default;
+    else IconComponent = hasKey(noticeTypes, specialType) ? noticeTypes[specialType] : noticeTypes.default;
   }
 
   const animationDivMessageEffectBefore = isSimmer ? 'none' : 'rotate 4s linear infinite';
   const backgroundDivMarker =
-    'notice_type' in event && event.notice_type === 'announcement' && event.announcement.color !== 'PRIMARY'
+    'notice_type' in event &&
+    event.notice_type === 'announcement' &&
+    event.announcement &&
+    event.announcement.color !== 'PRIMARY'
       ? announcementColors[event.announcement.color]
       : broadcasterColor;
   const backgroundImageDivMessageEffectBefore = isSimmer

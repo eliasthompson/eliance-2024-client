@@ -1,5 +1,6 @@
 import type {
   TwitchApiCreateEventSubSubscriptionResponse,
+  TwitchCheermoteTier,
   TwitchEventSubNotificationMessage,
   TwitchEventSubRevocationMessage,
 } from '@store/apis/twitch';
@@ -77,7 +78,7 @@ export type TwitchEventSubChannelChatNotificationPayItForward = {
   gifter_user_login: string | null;
 };
 export type TwitchEventSubChannelChatNotificationAnnouncement = {
-  color: string;
+  color: 'BLUE' | 'GREEN' | 'ORANGE' | 'PURPLE' | 'PRIMARY';
 };
 export type TwitchEventSubChannelChatNotificationNotificationMessageEvent = {
   broadcaster_user_id: string;
@@ -99,7 +100,7 @@ export type TwitchEventSubChannelChatNotificationNotificationMessageEvent = {
       cheermote: {
         prefix: string;
         bits: number;
-        tier: number;
+        tier: TwitchCheermoteTier;
       } | null;
       emote: {
         id: string;

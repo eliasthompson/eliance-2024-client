@@ -138,8 +138,8 @@ export const MessageHandler = () => {
   const [getSharedChatSession /* , { error: sharedChatSessionError } */] = useLazyGetSharedChatSessionQuery();
   const [getStreams /* , { error: sharedChatSessionError } */] = useLazyGetStreamsQuery();
   const [getViewers /* , { error: viewersError } */] = useLazyGetViewersQuery();
-  const pingIntervalIdRef = useRef<NodeJS.Timeout | null>(null);
-  const unpinTimeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+  const pingIntervalIdRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const unpinTimeoutIdRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   // Handle reset of upin timeout
   const handleResetUnpinTimeout = useCallback(
@@ -228,7 +228,7 @@ export const MessageHandler = () => {
 
         if (messageType === 'session_welcome' && 'session' in payload) {
           dispatch(setTwitchEventSub({ sessionId: payload.session.id }));
-        } else if (messageType === 'notification' && 'event' in payload) {
+        } else if (messageType === 'notification' && 'event' in payload && payload.event) {
           const { type: subscriptionType } = payload.subscription;
           const { event } = payload;
           const id = uuid.v5(JSON.stringify(event), namespace);
@@ -274,14 +274,14 @@ export const MessageHandler = () => {
             if (subscriptionType === 'channel.chat.notification' && 'notice_type' in event) {
               const name = event.chatter_is_anonymous ? 'Someone' : event.chatter_user_name;
 
-              if (event.notice_type === 'announcement') {
+              if (event.announcement && event.notice_type === 'announcement') {
                 dispatch(
                   addAlert({
                     id,
                     color:
                       event.announcement.color !== 'PRIMARY'
                         ? announcementColors[event.announcement.color]
-                        : broadcasterColor,
+                        : (broadcasterColor ?? undefined),
                     // imageUrl: event,
                     isMinor: false,
                     message: event.message,
@@ -290,7 +290,7 @@ export const MessageHandler = () => {
                     userName: event.chatter_user_name,
                   }),
                 );
-              } else if (event.notice_type === 'raid') {
+              } else if (event.notice_type === 'raid' && event.raid) {
                 dispatch(
                   addAlert({
                     id,
@@ -316,7 +316,7 @@ export const MessageHandler = () => {
                     userName: event.chatter_user_name,
                   }),
                 );
-              } else if (event.notice_type === 'resub') {
+              } else if (event.notice_type === 'resub' && event.resub) {
                 const gifterName = event.resub.gifter_is_anonymous ? 'someone' : event.resub.gifter_user_name;
                 const giftMessagePart = ` thanks to ${gifterName}`;
 
@@ -369,7 +369,7 @@ export const MessageHandler = () => {
               );
               dispatch(addTwitchEventSubMessageId(messageId));
             }
-          } else if (subscriptionType === 'channel.chat_settings.update') {
+          } else if (subscriptionType === 'channel.chat_settings.update' && broadcasterId && 'slow_mode' in event) {
             dispatch(
               updateChatSettingsData('getChatSettings', { broadcasterId }, (state) => {
                 const { broadcaster_user_id, broadcaster_user_login, broadcaster_user_name, ...eventData } = event;
@@ -413,13 +413,13 @@ export const MessageHandler = () => {
             subscriptionType === 'channel.guest_star_session.end' ||
             subscriptionType === 'channel.guest_star_guest.update'
           ) {
-            getGuestStarSession({ broadcasterId });
+            if (broadcasterId) getGuestStarSession({ broadcasterId });
           } else if (
             subscriptionType === 'channel.shared_chat.begin' ||
             subscriptionType === 'channel.shared_chat.end' ||
             subscriptionType === 'channel.shared_chat.update'
           ) {
-            getSharedChatSession({ broadcasterId });
+            if (broadcasterId) getSharedChatSession({ broadcasterId });
           } else if (subscriptionType === 'stream.online' || subscriptionType === 'stream.offline') {
             getStreams({ userIds: personIds });
           }
@@ -486,7 +486,7 @@ export const MessageHandler = () => {
               dispatch(addTwitchPubSubMessageId(messageId));
             }
           }
-        } catch (error) {
+        } catch {
           //
         }
       }

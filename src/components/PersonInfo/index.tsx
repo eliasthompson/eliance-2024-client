@@ -10,6 +10,7 @@ import { LinkIcon } from '@components/shared/svgs/LinkIcon';
 import { TwitchIcon } from '@components/shared/svgs/TwitchIcon';
 import { XIcon } from '@components/shared/svgs/XIcon';
 import { TwitchProfileImage } from '@components/shared/TwitchProfileImage';
+import { hasKey } from '@lib/hasKey';
 import { useGetChannelStreamScheduleQuery } from '@store/apis/twitch/getChannelStreamSchedule';
 import { useGetPronounsQuery } from '@store/apis/chatPronouns/getPronouns';
 import { useGetUserQuery } from '@store/apis/chatPronouns/getUser';
@@ -55,9 +56,9 @@ export const PersonInfo = ({ person }: PersonInfoProps) => {
   } = useGetChannelStreamScheduleQuery({ broadcasterId: person.id });
   const { data: pronounsData, /* error: pronounsError, */ isLoading: isPronounsLoading } = useGetPronounsQuery();
   const { data: userData, /* error: userError, */ isLoading: isUserLoading } = useGetUserQuery({ login: person.login });
-  const [nextStream, setNextStream] = useState<{ title: string; startTime: string }>(null);
+  const [nextStream, setNextStream] = useState<{ title: string; startTime: string } | null>(null);
   const [personInfo, setPersonInfo] = useState<string>('primaryInfo');
-  const personInfoIntervalIdRef = useRef<NodeJS.Timeout | null>(null);
+  const personInfoIntervalIdRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const isLoading =
     isChannelStreamScheduleLoading ||
     isEventSubSubscriptionStreamOffline ||
@@ -86,7 +87,7 @@ export const PersonInfo = ({ person }: PersonInfoProps) => {
   if (person.socialPlatform && person.socialHandle) {
     const socialPlatform = person.socialPlatform.toLowerCase();
 
-    SocialIcon = socialPlatforms[socialPlatform] || socialPlatforms.generic;
+    SocialIcon = hasKey(socialPlatforms, socialPlatform) ? socialPlatforms[socialPlatform] : socialPlatforms.generic;
     socialHandle = person.socialHandle;
 
     if (socialPlatform === 'website') socialHandlePrefix = '';
@@ -189,7 +190,10 @@ export const PersonInfo = ({ person }: PersonInfoProps) => {
       let { title, start_time: startTime } = channelStreamScheduleData.data.segments[0];
 
       if (new Date(startTime).getTime() - new Date().getTime() < 0)
-        ({ title, start_time: startTime } = channelStreamScheduleData.data.segments[1]) || {};
+        ({ title, start_time: startTime } = channelStreamScheduleData.data.segments[1] ?? {
+          title: '',
+          start_time: '',
+        });
 
       if (startTime) setNextStream({ title, startTime });
     }

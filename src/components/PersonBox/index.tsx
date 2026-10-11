@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
+import { skipToken } from '@reduxjs/toolkit/query';
 
 import { FlexContainer } from '@components/shared/FlexContainer';
 import { PersonInfo } from '@components/PersonInfo';
@@ -25,7 +26,7 @@ export const PersonBox = () => {
     data: guestStarSessionData,
     // error: guestStarSessionError,
     isLoading: isGuestStarSessionLoading,
-  } = useGetGuestStarSessionQuery({ broadcasterId });
+  } = useGetGuestStarSessionQuery(broadcasterId ? { broadcasterId } : skipToken);
   const [getStreams, { data: streamsData, /* error: streamsError, */ isLoading: isStreamsLoading }] =
     useLazyGetStreamsQuery();
   const [
@@ -35,7 +36,7 @@ export const PersonBox = () => {
   const [getUsers, { data: usersData, /* error: usersError, */ isLoading: isUsersLoading }] = useLazyGetUsersQuery();
   const [getViewers, { data: viewersData /* error: viewersError */ }] = useLazyGetViewersQuery();
   const [addViewerToCustomRole] = useAddViewerToCustomRoleMutation();
-  const activePersonIntervalIdRef = useRef<NodeJS.Timeout | null>(null);
+  const activePersonIntervalIdRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const isLoading = isGuestStarSessionLoading || isStreamsLoading || isUserChatColorsLoading || isUsersLoading;
   const isRenderable = !!(guestStarSessionData && streamsData && userChatColorsData && usersData);
 
@@ -96,17 +97,19 @@ export const PersonBox = () => {
     if (personIds && streamsData && userChatColorsData && usersData) {
       dispatch(
         setInfo({
-          persons: personIds.map((personId, i) => {
+          persons: personIds.flatMap((personId, i) => {
             const user = usersData.data.find(({ id }) => id === personId);
             let metadata = null;
+
+            if (!user) return [];
 
             if (viewersData) ({ metadata } = viewersData.find(({ _id: id }) => id === personId) || {});
 
             return {
-              id: user?.id,
-              login: user?.login,
-              profileImageUrl: user?.profile_image_url,
-              name: metadata?.name || user?.display_name,
+              id: user.id,
+              login: user.login,
+              profileImageUrl: user.profile_image_url,
+              name: metadata?.name || user.display_name,
               color:
                 userChatColorsData.data.find(({ user_id: userId }) => userId === personId)?.color ||
                 metadata?.color ||

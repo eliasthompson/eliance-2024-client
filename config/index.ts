@@ -4,10 +4,10 @@ import {
   clientId as clientIdSecret,
   firebotGuestRoleId as firebotGuestRoleIdSecret,
   namespace as namespaceSecret,
-} from './secrets'; // ???
+} from './secrets';
 
-export const clientId = clientIdSecret || null;
-export const firebotGuestRoleId = firebotGuestRoleIdSecret || null;
+export const clientId = clientIdSecret;
+export const firebotGuestRoleId = firebotGuestRoleIdSecret;
 export const namespace = namespaceSecret || uuid.v4();
 export const scopes = [
   'bits:read',

@@ -1,4 +1,5 @@
 import type { MessageProps } from '@components/shared/Message/types';
+import type { TwitchCheermoteTier } from '@store/apis/twitch';
 
 import { Fragment } from 'react/jsx-runtime';
 import { css } from '@emotion/react';
@@ -10,35 +11,40 @@ import cheer5000Image from '@assets/images/cheer5000.gif';
 import cheer10000Image from '@assets/images/cheer10000.gif';
 import cheer100000Image from '@assets/images/cheer100000.gif';
 import { useGetGlobalEmotesQuery } from '@store/apis/twitch/getGlobalEmotes';
+import { hasKey } from '@lib/hasKey';
 
 export const cheermotes = {
   cheer: {
-    '1': {
+    1: {
       color: 'rgb(151, 151, 151)',
       url: cheer1Image,
     },
-    '100': {
+    100: {
       color: 'rgb(156, 62, 232)',
       url: cheer100Image,
     },
-    '1000': {
+    500: {
+      color: 'rgb(156, 62, 232)',
+      url: cheer100Image,
+    },
+    1000: {
       color: 'rgb(29, 178, 165)',
       url: cheer1000Image,
     },
-    '5000': {
+    5000: {
       color: 'rgb(0, 153, 254)',
       url: cheer5000Image,
     },
-    '10000': {
+    10000: {
       color: 'rgb(244, 48, 33)',
       url: cheer10000Image,
     },
-    '100000': {
+    100000: {
       color: 'rgb(243, 167, 26)',
       url: cheer100000Image,
     },
   },
-} as const;
+} as const satisfies Record<string, Record<TwitchCheermoteTier, { color: string; url: string }>>;
 
 export const Message = ({
   message = {},
@@ -53,10 +59,10 @@ export const Message = ({
   const { template = '' } = globalEmotesData || {};
   const messageEmotes = fragments
     .filter(({ type }) => type === 'cheermote' || type === 'emote')
-    .map(({ cheermote, emote }) => cheermote || emote);
+    .flatMap(({ cheermote, emote }) => cheermote ?? emote ?? []);
   const emotes = messageEmotes.map((emote) => {
-    let color = null;
-    let url = null;
+    let color: string | null = null;
+    let url: string;
 
     if ('id' in emote) {
       const format = emote.format.includes('animated') ? 'animated' : 'static';
@@ -66,7 +72,7 @@ export const Message = ({
         .replace('{{theme_mode}}', 'dark')
         .replace('{{scale}}', '3.0');
     } else {
-      const cheermote = cheermotes[emote.prefix];
+      const cheermote = hasKey(cheermotes, emote.prefix) ? cheermotes[emote.prefix] : null;
 
       ({ color, url } = cheermote ? cheermote[emote.tier] : cheermotes.cheer[emote.tier]);
     }

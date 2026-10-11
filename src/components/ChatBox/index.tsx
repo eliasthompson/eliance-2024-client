@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { skipToken } from '@reduxjs/toolkit/query';
 
 import { ChatMessage } from '@components/ChatMessage';
 import { EmoteIcon } from '@components/shared/svgs/EmoteIcon';
@@ -14,12 +15,12 @@ export const ChatBox = () => {
     data: chatSettingsData,
     // error: chatSettingsError,
     isLoading: isChatSettingsLoading,
-  } = useGetChatSettingsQuery({ broadcasterId });
+  } = useGetChatSettingsQuery(broadcasterId ? { broadcasterId } : skipToken);
   const {
     data: sharedChatSessionData,
     // error: sharedChatSessionError,
     isLoading: isSharedChatSessionLoading,
-  } = useGetSharedChatSessionQuery({ broadcasterId });
+  } = useGetSharedChatSessionQuery(broadcasterId ? { broadcasterId } : skipToken);
   const isLoading = isChatSettingsLoading || isSharedChatSessionLoading;
   const isRenderable = !!(chatSettingsData && sharedChatSessionData);
 

@@ -11,10 +11,10 @@ export const FlexContainer = ({
 }: FlexContainerProps) => {
   let flexDirection = 'row';
 
-  if (reverse) flexDirection = 'row-reverse';
-
-  if (column) {
-    if (reverse) flexDirection = 'column-reverse';
+  if (reverse) {
+    if (column) flexDirection = 'column-reverse';
+    else flexDirection = 'row-reverse';
+  } else if (column) {
     flexDirection = 'column';
   }
 

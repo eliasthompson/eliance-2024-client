@@ -3,24 +3,25 @@
   "compilerOptions": {
     "allowArbitraryExtensions": true,
     "allowImportingTsExtensions": true,
-    "baseUrl": ".",
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "lib": ["DOM", "ES2023"],
     "module": "ES2022",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noEmit": true,
     "paths": {
-      "@assets/*": ["src/assets/*"],
-      "@components/*": ["src/components/*"],
-      "@config": ["config"],
-      "@config/*": ["config/*"],
-      "@lib/*": ["src/lib/*"],
-      "@store": ["src/store"],
-      "@store/*": ["src/store/*"],
-      "@src": ["src"],
-      "@src/*": ["src/*"]
+      "@assets/*": ["./src/assets/*"],
+      "@components/*": ["./src/components/*"],
+      "@config": ["./config"],
+      "@config/*": ["./config/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@store": ["./src/store"],
+      "@store/*": ["./src/store/*"],
+      "@src": ["./src"],
+      "@src/*": ["./src/*"]
     },
-    "target": "ES2023"
+    "strict": true,
+    "target": "ES2023",
+    "types": ["obs-studio"]
   }
 }

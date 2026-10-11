@@ -1,6 +1,7 @@
 import type { InfoBarProps } from '@components/InfoBar/types';
 
 import { css } from '@emotion/react';
+import { skipToken } from '@reduxjs/toolkit/query';
 
 import { ChatBox } from '@components/ChatBox';
 import { EventBox } from '@components/EventBox';
@@ -19,7 +20,7 @@ export const InfoBar = ({ cssBar: cssBarProvided }: InfoBarProps) => {
     data: userChatColorsData,
     // error: userChatColorsError,
     isLoading: isUserChatColorsLoading,
-  } = useGetUserChatColorsQuery({ userIds: [broadcasterId] });
+  } = useGetUserChatColorsQuery(broadcasterId ? { userIds: [broadcasterId] } : skipToken);
   const isRenderable = !!(broadcasterId && broadcasterColor !== null);
 
   const cssBar = css`

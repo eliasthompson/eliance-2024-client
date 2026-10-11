@@ -1,3 +1,5 @@
+import { skipToken } from '@reduxjs/toolkit/query';
+
 import { useGetClipsQuery } from '@store/apis/twitch/getClips';
 import { useSelector } from '@store';
 
@@ -7,7 +9,7 @@ export const Schedule = () => {
     data: clipsData,
     // error: clipsError,
     isLoading: isClipsLoading,
-  } = useGetClipsQuery({ broadcasterId, isFeatured: true });
+  } = useGetClipsQuery(broadcasterId ? { broadcasterId, isFeatured: true } : skipToken);
   const isRenderable = !!clipsData;
   let embedUrl = '';
 

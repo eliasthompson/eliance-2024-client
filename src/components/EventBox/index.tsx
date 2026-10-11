@@ -1,7 +1,8 @@
 import type { IconProps } from '@components/shared/svgs/types';
 
-import { css } from '@emotion/react';
 import { Fragment, FunctionComponent, useEffect, useRef, useState } from 'react';
+import { css } from '@emotion/react';
+import { skipToken } from '@reduxjs/toolkit/query';
 
 import { AnnouncementIcon } from '@components/shared/svgs/AnnouncementIcon';
 import { BitsIcon } from '@components/shared/svgs/BitsIcon';
@@ -61,15 +62,15 @@ export const EventBox = () => {
     data: charityCampaignData,
     // error: charityCampaignError,
     isLoading: isCharityCampaignLoading,
-  } = useGetCharityCampaignQuery({ broadcasterId });
+  } = useGetCharityCampaignQuery(broadcasterId ? { broadcasterId } : skipToken);
   const {
     data: creatorGoalsData,
     // error: creatorGoalsError,
     isLoading: isCreatorGoalsLoading,
-  } = useGetCreatorGoalsQuery({ broadcasterId });
+  } = useGetCreatorGoalsQuery(broadcasterId ? { broadcasterId } : skipToken);
   const [AlertIcon, setAlertIcon] = useState<FunctionComponent<IconProps>>(initialAlertIcon);
   const [goals, setGoals] = useState<GoalInfoProps['goal'][]>([]);
-  const activeAlertTimeoutIdRef = useRef<NodeJS.Timeout>(null);
+  const activeAlertTimeoutIdRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const isLoading = isCharityCampaignLoading || isCreatorGoalsLoading;
   const isRenderable = !!(charityCampaignData && creatorGoalsData);
 
