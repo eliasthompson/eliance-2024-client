@@ -16,6 +16,12 @@ export const twitchAuthSlice = createSlice({
   initialState: initialTwitchAuthState,
   name: 'twitchAuth',
   reducers: {
+    clearTwitchAuth: (state) => {
+      state.accessToken = null;
+      state.refreshToken = null;
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+    },
     setTwitchAuth: (state, { payload }: PayloadAction<Partial<TwitchAuthState>>) => {
       Object.assign(state, payload);
 
@@ -28,5 +34,5 @@ export const twitchAuthSlice = createSlice({
 });
 
 export const {
-  actions: { setTwitchAuth },
+  actions: { clearTwitchAuth, setTwitchAuth },
 } = twitchAuthSlice;

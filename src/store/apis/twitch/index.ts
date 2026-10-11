@@ -42,18 +42,19 @@ export type TwitchEventSubSystemMessage<MessageType, Payload> = TwitchEventSubBa
   },
   Payload
 >;
-export type TwitchEventSubSystemSessionMessage<MessageType, Status> = TwitchEventSubSystemMessage<
-  MessageType,
-  {
-    session: {
-      id: string;
-      status: Status;
-      keepalive_timeout_seconds: null;
-      reconnect_url: string;
-      connected_at: string;
-    };
-  }
->;
+export type TwitchEventSubSystemSessionMessage<MessageType, Status, KeepaliveTimeoutSeconds, ReconnectUrl> =
+  TwitchEventSubSystemMessage<
+    MessageType,
+    {
+      session: {
+        id: string;
+        status: Status;
+        keepalive_timeout_seconds: KeepaliveTimeoutSeconds;
+        reconnect_url: ReconnectUrl;
+        connected_at: string;
+      };
+    }
+  >;
 export type TwitchEventSubSubscriptionMessage<
   MessageType,
   SubscriptionType,
@@ -104,9 +105,19 @@ export type TwitchEventSubRevocationMessage<SubscriptionType, SubscriptionVersio
     SubscriptionCondition,
     undefined
   >;
-export type TwitchEventSubWelcomeMessage = TwitchEventSubSystemSessionMessage<'session_welcome', 'connected'>;
+export type TwitchEventSubWelcomeMessage = TwitchEventSubSystemSessionMessage<
+  'session_welcome',
+  'connected',
+  number,
+  null
+>;
 export type TwitchEventSubKeepaliveMessage = TwitchEventSubSystemMessage<'session_keepalive', object>;
-export type TwitchEventSubReconnectMessage = TwitchEventSubSystemSessionMessage<'session_reconnect', 'reconnecting'>;
+export type TwitchEventSubReconnectMessage = TwitchEventSubSystemSessionMessage<
+  'session_reconnect',
+  'reconnecting',
+  null,
+  string
+>;
 
 export type TwitchPubSubBaseMessage<Type, Data> = {
   type: Type;

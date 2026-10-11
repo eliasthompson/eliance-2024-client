@@ -1,17 +1,12 @@
-import { css } from '@emotion/react';
-
 import type { ApiError } from '@store/slices/info';
 import type { ErrorMessageProps } from '@components/shared/ErrorMessage/types';
 
-export const isApiError = (error: unknown): error is ApiError => {
-  return (
-    error !== null &&
-    typeof error === 'object' &&
-    typeof (error as { status: unknown }).status === 'number' &&
-    'status' in error &&
-    !(error instanceof Error)
-  );
-};
+import { css } from '@emotion/react';
+
+import { isRecord } from '@lib/isRecord';
+
+export const isApiError = (error: unknown): error is ApiError =>
+  isRecord(error) && typeof error.status === 'number' && !(error instanceof Error);
 
 export const ErrorMessage = ({ error: providedError }: ErrorMessageProps) => {
   const cssStrong = css`

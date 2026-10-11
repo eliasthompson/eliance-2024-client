@@ -18,9 +18,11 @@ import {
 import { addFirebotEventSubMessageId } from '@store/slices/firebotEventSub';
 import { addTwitchEventSubMessageId, setTwitchEventSub } from '@store/slices/twitchEventSub';
 import { addTwitchPubSubMessageId } from '@store/slices/twitchPubSub';
+import { clearTwitchAuth } from '@store/slices/twitchAuth';
 import { firebotGuestRoleId, namespace } from '@config';
 import { updateChatSettingsData } from '@store/apis/twitch/getChatSettings';
 import { useDispatch, useSelector } from '@store';
+import { useEventSubSocket } from '@lib/useEventSubSocket';
 import { useLazyCreateEventSubSubscriptionChannelChannelPointsCustomRewardRedemptionAddQuery } from '@store/apis/twitch/createEventSubSubscription/channelChannelPointsCustomRewardRedemptionAdd';
 import { useLazyCreateEventSubSubscriptionChannelChatClearQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatClear';
 import { useLazyCreateEventSubSubscriptionChannelChatClearUserMessagesQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatClearUserMessages';
@@ -66,9 +68,6 @@ export const MessageHandler = () => {
     retryOnError: true,
     share: true,
     shouldReconnect: () => true,
-  });
-  const { lastJsonMessage: twitchMessage } = useWebSocket<TwitchEventSubMessage>('wss://eventsub.wss.twitch.tv/ws', {
-    share: true,
   });
   const {
     lastJsonMessage: twitchPSMessage,
@@ -218,8 +217,8 @@ export const MessageHandler = () => {
   }, [broadcasterId, dispatch, sessionId]);
 
   // Handle twitch event sub messages
-  useEffect(() => {
-    if (twitchMessage) {
+  const handleTwitchMessage = useCallback(
+    (twitchMessage: TwitchEventSubMessage) => {
       const { metadata, payload } = twitchMessage;
       const { message_id: messageId, message_type: messageType } = metadata;
 
@@ -228,6 +227,8 @@ export const MessageHandler = () => {
 
         if (messageType === 'session_welcome' && 'session' in payload) {
           dispatch(setTwitchEventSub({ sessionId: payload.session.id }));
+        } else if ('subscription' in payload && payload.subscription.status === 'authorization_revoked') {
+          dispatch(clearTwitchAuth());
         } else if (messageType === 'notification' && 'event' in payload && payload.event) {
           const { type: subscriptionType } = payload.subscription;
           const { event } = payload;
@@ -317,8 +318,13 @@ export const MessageHandler = () => {
                   }),
                 );
               } else if (event.notice_type === 'resub' && event.resub) {
-                const gifterName = event.resub.gifter_is_anonymous ? 'someone' : event.resub.gifter_user_name;
-                const giftMessagePart = ` thanks to ${gifterName}`;
+                const {
+                  gifter_is_anonymous: isGifterAnonymous,
+                  gifter_user_name: gifterName,
+                  is_gift: isGift,
+                } = event.resub;
+                const gifter = isGifterAnonymous || !gifterName ? 'someone' : gifterName;
+                const giftMessagePart = isGift ? ` thanks to ${gifter}` : '';
 
                 dispatch(
                   addAlert({
@@ -427,8 +433,11 @@ export const MessageHandler = () => {
 
         dispatch(addTwitchEventSubMessageId(messageId));
       }
-    }
-  }, [broadcasterId, dispatch, personIds, twitchMessage, twitchMessageIds]);
+    },
+    [broadcasterId, broadcasterColor, dispatch, personIds, twitchMessageIds],
+  );
+
+  useEventSubSocket(handleTwitchMessage);
 
   // Subscribe to twitch pub sub pinned chat events on first connection
   useEffect(() => {
