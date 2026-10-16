@@ -1,3 +1,5 @@
+import type { LayoutOptions } from 'obs-layout-generator';
+
 import * as uuid from 'uuid';
 
 import {
@@ -8,6 +10,14 @@ import {
 
 export const clientId = clientIdSecret;
 export const firebotGuestRoleId = firebotGuestRoleIdSecret;
+export const layoutOptions = {
+  canvasMarginTop: 111,
+  canvasMarginBottom: 111,
+  canvasPadding: 18,
+  canvasGap: 24,
+  layoutGap: 18,
+  regionBorder: 6,
+} as const satisfies LayoutOptions;
 export const namespace = namespaceSecret || uuid.v4();
 export const scopes = [
   'bits:read',

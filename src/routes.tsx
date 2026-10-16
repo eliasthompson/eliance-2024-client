@@ -4,6 +4,7 @@ import { css } from '@emotion/react';
 import { Container } from '@components/Container';
 import { FeaturedClips } from '@components/FeaturedClips';
 import { InfoBar } from '@components/InfoBar';
+import { Layout } from '@components/Layout';
 import { Schedule } from '@components/Schedule';
 
 const backgroundColorBarInfo = window.obsstudio ? 'transparent' : 'rgba(0, 0, 0, 33%)';
@@ -29,18 +30,11 @@ export const router = createHashRouter([
     element: <Container />,
     errorElement: false,
     children: [
-      {
-        path: 'global-info',
-        element: <InfoBar cssBar={cssBarInfo} />,
-      },
-      {
-        path: 'featured-clips',
-        element: <FeaturedClips />,
-      },
-      {
-        path: 'schedule',
-        element: <Schedule />,
-      },
+      { path: 'global-info', element: <InfoBar cssBar={cssBarInfo} /> },
+      { path: 'featured-clips', element: <FeaturedClips /> },
+      { path: 'schedule', element: <Schedule /> },
     ],
   },
+  // Outside Container so it renders without Twitch authentication
+  { path: '/layout', element: <Layout />, errorElement: false },
 ]);

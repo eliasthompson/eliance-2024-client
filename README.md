@@ -1,8 +1,78 @@
 # Eliance 2024 Client
 
+Browser source overlays for a Twitch stream, built to run inside OBS at 1920×1080. Each hash route is one overlay: the bottom info bar with guests, events, goals and chat, a featured clip embed, and a layout preview that paints the regions computed by [obs-layout-generator](https://github.com/eliasthompson/obs-layout-generator).
+
+Data comes from the Twitch Helix API, Twitch EventSub and PubSub websockets, a local [Firebot](https://firebot.app) instance for guest metadata, and [pronouns.alejo.io](https://pronouns.alejo.io).
+
+## Setup
+
+Node 22.15 or later is required; `.nvmrc` pins 24.
+
+```sh
+npm install
+cp config/secrets.template.js config/secrets.js
+```
+
+Fill in `config/secrets.js`:
+
+- `clientId`: the Twitch application client id used for the device code flow.
+- `firebotGuestRoleId`: the Firebot custom role whose viewers are shown as guests.
+- `namespace`: a UUID used to derive stable ids; a random one is generated when left empty.
+
+`config/secrets.js` is git-ignored. Non-secret app settings, such as the default layout options, live in `config/index.ts`.
+
+## Running
+
+```sh
+npm start        # webpack dev server at http://localhost:8080
+npm run build    # production bundle in build/
+npm run lint     # eslint && tsc
+npm run lint-fix # eslint --fix
+```
+
+The pre-commit hook runs `npm run prebuild`, which is `eslint --fix && tsc`.
+
+Add a route as an OBS browser source at 1920×1080, or open it in a browser for a preview. Outside OBS the overlays draw a background and borders so they are visible; inside OBS (`window.obsstudio`) they are transparent. The VS Code launch config opens `#/global-info` in Chrome with the dev server.
+
+### Authentication
+
+Routes under the root need a Twitch user token. On first load the authentication bar shows a device code flow: open the verification link, grant the scopes listed in `config/index.ts`, then press Authenticate. Tokens are stored in `localStorage` and refreshed automatically.
+
+## Routes
+
+| Route              | Renders                                                                      | Auth |
+| ------------------ | ---------------------------------------------------------------------------- | ---- |
+| `#/global-info`    | The info bar: guests and their info, alerts and goals, and recent chat       | yes  |
+| `#/featured-clips` | A random featured clip, embedded                                             | yes  |
+| `#/schedule`       | Placeholder; currently the same clip embed as `#/featured-clips`             | yes  |
+| `#/layout`         | Layout preview: one box per region from `obs-layout-generator`, with metrics | no   |
+
+### Layout route
+
+`#/layout` runs `generateLayout` and paints every region as a box showing the participant number, region type, size, position, and aspect ratio. Regions that were ratio-driven show an exact ratio such as `16:9`; regions that just filled leftover space show the closest small ratio with `≈`. The `regionBorder` is drawn as an outline around each box, matching how the package measures it.
+
+Query params inside the hash drive the layout. Defaults for the canvas come from `layoutOptions` in `config/index.ts`, and every URL option overrides them.
+
+- Any `LayoutConfig` key, or an alias below, sets the base config for every participant: `#/layout?name&aux=4:3`.
+- `participants=3` sets the participant count; missing participants use the base config.
+- `participant=main=null,camera=4x3` adds one participant per occurrence, merged over the base config, in order. Values are comma separated `key` or `key=value` pairs.
+- Any `LayoutOptions` key, or `width`, `height`, `marginTop`, `marginBottom`, `marginLeft`, `marginRight`, `padding`, `gap`, `border`, as a number.
+
+Config aliases are `main`, `aux`, `info`, `camera`, `cameraMain`, and `name`. Booleans take `true`/`false`, `1`/`0`, `yes`/`no`, `on`/`off`, or no value for `true`. Ratios take `16:9` or `16x9`; `null`, `none` or `off` turn a region off, and `info=auto` fills the cell. `camera` sets `hasCamera` for a boolean and `cameraMainAspectRatio` for a ratio. Unknown keys and unsupported content ratios are ignored.
+
+```text
+#/layout?participants=3&name&gap=30&border=4
+#/layout?name&info=auto&participant=main=null,camera=4x3&participant=info=none
+#/layout?participants=2&hasName=1&contentMainAspectRatio=4:3&width=2560&height=1440
+```
+
 ## Todo
 
 - [ ] BUG: Config import
+- [ ] layout
+  - [x] layout route paints `obs-layout-generator` regions with their metrics
+  - [x] url params for layout configs and options
+  - [ ] generate configs from guest star participants
 - [ ] person box
   - [ ] BUG: interval desync of schedule slideshow
   - [ ] BUG: proper timeout for clocks needed
@@ -206,3 +276,7 @@
 - [ ] error display and handling
 - [ ] design
 - [ ] animations
+
+## License
+
+[ISC](LICENSE) © Elias Thompson
