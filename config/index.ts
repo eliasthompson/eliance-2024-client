@@ -11,9 +11,11 @@ import {
 export const clientId = clientIdSecret;
 export const firebotGuestRoleId = firebotGuestRoleIdSecret;
 export const layoutOptions = {
-  canvasMarginTop: 111,
-  canvasMarginBottom: 111,
-  canvasPadding: 18,
+  canvasWidth: 1920,
+  canvasHeight: 1080,
+  canvasMarginTop: 105,
+  canvasMarginBottom: 105,
+  canvasPadding: 24,
   canvasGap: 24,
   layoutGap: 18,
   regionBorder: 6,
