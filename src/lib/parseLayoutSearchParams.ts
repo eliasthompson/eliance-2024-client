@@ -54,6 +54,7 @@ export const layoutOptionKeyAliases = {
   marginLeft: 'canvasMarginLeft',
   marginRight: 'canvasMarginRight',
   marginTop: 'canvasMarginTop',
+  nameHeightMin: 'nameHeightMin',
   padding: 'canvasPadding',
   regionBorder: 'regionBorder',
   width: 'canvasWidth',

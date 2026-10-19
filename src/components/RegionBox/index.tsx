@@ -35,7 +35,6 @@ export const RegionBox = ({ participantIndex, region, regionBorder = 0, type }: 
     overflow: hidden;
     width: ${width}px;
     height: ${height}px;
-    border: 1px dashed ${colorContainer};
     outline: ${outlineWidthContainer}px solid ${colorContainer};
     outline-offset: 0px;
     background-color: ${backgroundColorContainer};
