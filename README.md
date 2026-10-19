@@ -16,7 +16,7 @@ cp config/secrets.template.js config/secrets.js
 Fill in `config/secrets.js`:
 
 - `clientId`: the Twitch application client id used for the device code flow.
-- `firebotGuestRoleId`: the Firebot custom role whose viewers are shown as guests.
+- `firebotGuestRoleId`: the Firebot custom role whose viewers are shown as guests. Leave it empty to show only Guest Star guests without syncing them to Firebot. Firebot itself is optional: without it, persons fall back to their Twitch data.
 - `namespace`: a UUID used to derive stable ids; a random one is generated when left empty.
 
 `config/secrets.js` is git-ignored. Non-secret app settings, such as the default layout options, live in `config/index.ts`.

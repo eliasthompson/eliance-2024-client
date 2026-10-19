@@ -64,7 +64,7 @@ export const MessageHandler = () => {
     sendJsonMessage: sendFirebotMessage,
   } = useWebSocket<FirebotEventSubMessage>('ws://localhost:7472', {
     reconnectAttempts: 100,
-    reconnectInterval: (attempt = 0) => ~~((Math.random() + 0.4) * (300 << attempt)),
+    reconnectInterval: (attempt = 0) => ~~((Math.random() + 0.4) * (300 << Math.min(attempt, 5))),
     retryOnError: true,
     share: true,
     shouldReconnect: () => true,
@@ -157,14 +157,17 @@ export const MessageHandler = () => {
     [dispatch, unpinTimeoutIdRef],
   );
 
-  // Subscribe to firebot event sub events on first connection
+  // Subscribe to firebot event sub events and refetch firebot data on each connection, in case firebot started late
   useEffect(() => {
-    if (firebotReadyState === 1)
+    if (firebotReadyState === 1) {
       sendFirebotMessage<FirebotEventSubMessagePayload>({
         type: 'invoke',
         name: 'subscribe-events',
       });
-  }, [dispatch, firebotReadyState]);
+      if (firebotGuestRoleId) getCustomRole({ customRoleId: firebotGuestRoleId });
+      getViewers();
+    }
+  }, [dispatch, firebotReadyState, getCustomRole, getViewers]);
 
   // Handle firebot event sub messages
   useEffect(() => {
@@ -180,7 +183,7 @@ export const MessageHandler = () => {
           }
         } else if (type === 'event') {
           if (name === 'custom-role:updated') {
-            getCustomRole({ customRoleId: firebotGuestRoleId });
+            if (firebotGuestRoleId) getCustomRole({ customRoleId: firebotGuestRoleId });
             dispatch(addFirebotEventSubMessageId(messageId));
           } else if (
             name === 'viewer-metadata:created' ||

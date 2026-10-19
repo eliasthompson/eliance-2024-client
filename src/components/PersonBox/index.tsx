@@ -21,7 +21,7 @@ export const PersonBox = () => {
   const {
     data: customRoleData,
     // error: customRoleError,
-  } = useGetCustomRoleQuery({ customRoleId: firebotGuestRoleId });
+  } = useGetCustomRoleQuery(firebotGuestRoleId ? { customRoleId: firebotGuestRoleId } : skipToken);
   const {
     data: guestStarSessionData,
     // error: guestStarSessionError,
