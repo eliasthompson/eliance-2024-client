@@ -34,6 +34,16 @@ The pre-commit hook runs `npm run prebuild`, which is `eslint --fix && tsc`.
 
 Add a route as an OBS browser source at 1920×1080, or open it in a browser for a preview. Outside OBS the overlays draw a background and borders so they are visible; inside OBS (`window.obsstudio`) they are transparent. The VS Code launch config opens `#/global-info` in Chrome with the dev server.
 
+### Fonts for OBS text sources
+
+The overlays bundle Roboto, but OBS text sources only see fonts installed on the machine and silently fall back to Arial when a face is missing. On each streaming machine, run the install script from an elevated PowerShell prompt and restart OBS:
+
+```powershell
+.\scripts\install-fonts.ps1
+```
+
+It installs the Light, Regular and Medium weights from `src/assets/fonts` for all users.
+
 ### Authentication
 
 Routes under the root need a Twitch user token. On first load the authentication bar shows a device code flow: open the verification link, grant the scopes listed in `config/index.ts`, then press Authenticate. Tokens are stored in `localStorage` and refreshed automatically.
