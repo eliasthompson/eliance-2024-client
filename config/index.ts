@@ -1,4 +1,4 @@
-import type { LayoutOptions } from 'obs-layout-generator';
+import type { LayoutOptions } from '@eliasthompson/obs-layout-generator';
 
 import * as uuid from 'uuid';
 

@@ -1,4 +1,4 @@
-import type { LayoutMetric, LayoutRegion } from 'obs-layout-generator';
+import type { LayoutMetric, LayoutRegion } from '@eliasthompson/obs-layout-generator';
 
 export interface RegionBoxProps {
   participantIndex: number;

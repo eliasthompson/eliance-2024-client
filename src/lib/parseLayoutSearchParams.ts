@@ -1,6 +1,6 @@
-import type { AspectRatio, ContentAspectRatio, LayoutConfig, LayoutOptions } from 'obs-layout-generator';
+import type { AspectRatio, ContentAspectRatio, LayoutConfig, LayoutOptions } from '@eliasthompson/obs-layout-generator';
 
-import { CONTENT_ASPECT_RATIOS } from 'obs-layout-generator';
+import { CONTENT_ASPECT_RATIOS } from '@eliasthompson/obs-layout-generator';
 
 import { hasKey } from '@lib/hasKey';
 

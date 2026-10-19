@@ -1,6 +1,6 @@
 # AGENTS.md
 
-React overlay app for OBS browser sources on a Twitch stream. Each hash route is one 1920×1080 overlay. Data comes from the Twitch Helix API, Twitch EventSub and PubSub websockets, a local Firebot API, and pronouns.alejo.io. Layout regions come from the `obs-layout-generator` package.
+React overlay app for OBS browser sources on a Twitch stream. Each hash route is one 1920×1080 overlay. Data comes from the Twitch Helix API, Twitch EventSub and PubSub websockets, a local Firebot API, and pronouns.alejo.io. Layout regions come from the `@eliasthompson/obs-layout-generator` package.
 
 ## Commands
 

@@ -1,9 +1,9 @@
-import type { LayoutMetric } from 'obs-layout-generator';
+import type { LayoutMetric } from '@eliasthompson/obs-layout-generator';
 
 import { css } from '@emotion/react';
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { generateLayout, LAYOUT_OPTIONS_DEFAULT } from 'obs-layout-generator';
+import { generateLayout, LAYOUT_OPTIONS_DEFAULT } from '@eliasthompson/obs-layout-generator';
 
 import { FlexContainer } from '@components/shared/FlexContainer';
 import { RegionBox } from '@components/RegionBox';

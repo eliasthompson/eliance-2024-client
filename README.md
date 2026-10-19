@@ -1,6 +1,6 @@
 # Eliance 2024 Client
 
-Browser source overlays for a Twitch stream, built to run inside OBS at 1920×1080. Each hash route is one overlay: the bottom info bar with guests, events, goals and chat, a featured clip embed, and a layout preview that paints the regions computed by [obs-layout-generator](https://github.com/eliasthompson/obs-layout-generator).
+Browser source overlays for a Twitch stream, built to run inside OBS at 1920×1080. Each hash route is one overlay: the bottom info bar with guests, events, goals and chat, a featured clip embed, and a layout preview that paints the regions computed by [@eliasthompson/obs-layout-generator](https://github.com/eliasthompson/obs-layout-generator).
 
 Data comes from the Twitch Helix API, Twitch EventSub and PubSub websockets, a local [Firebot](https://firebot.app) instance for guest metadata, and [pronouns.alejo.io](https://pronouns.alejo.io).
 
@@ -40,12 +40,12 @@ Routes under the root need a Twitch user token. On first load the authentication
 
 ## Routes
 
-| Route              | Renders                                                                      | Auth |
-| ------------------ | ---------------------------------------------------------------------------- | ---- |
-| `#/global-info`    | The info bar: guests and their info, alerts and goals, and recent chat       | yes  |
-| `#/featured-clips` | A random featured clip, embedded                                             | yes  |
-| `#/schedule`       | Placeholder; currently the same clip embed as `#/featured-clips`             | yes  |
-| `#/layout`         | Layout preview: one box per region from `obs-layout-generator`, with metrics | no   |
+| Route              | Renders                                                                                     | Auth |
+| ------------------ | ------------------------------------------------------------------------------------------- | ---- |
+| `#/global-info`    | The info bar: guests and their info, alerts and goals, and recent chat                      | yes  |
+| `#/featured-clips` | A random featured clip, embedded                                                            | yes  |
+| `#/schedule`       | Placeholder; currently the same clip embed as `#/featured-clips`                            | yes  |
+| `#/layout`         | Layout preview: one box per region from `@eliasthompson/obs-layout-generator`, with metrics | no   |
 
 ### Layout route
 
