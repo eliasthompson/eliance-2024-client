@@ -5,37 +5,74 @@ import { CONTENT_ASPECT_RATIOS } from '@eliasthompson/obs-layout-generator';
 import { hasKey } from '@lib/hasKey';
 
 /**
- * Search params understood by the layout route, e.g. `#/layout?participants=3&name&aux=4:3&marginBottom=105`:
+ * Search params understood by the layout route, e.g.
+ * `#/layout?participants=3&name&aux=4:3&aux.mainAttached&camera.greenScreen&marginBottom=105`:
  *
- * - Every `LayoutConfig` key (or its alias below): the base config applied to every participant.
- * - `participant`: one `LayoutConfig` per occurrence, merged over the base config, as comma separated `key` or
- *   `key=value` pairs.
+ * - A region key (`main`, `aux`, `info`, `camera`, or the `LayoutConfig` name) with a ratio shows that region at the
+ *   ratio, with `null`/`none`/`off` hides it, and with no value shows it with its defaults. `info` also takes `auto`,
+ *   and `camera` takes a boolean or its main column ratio.
+ * - A region field as `region.field`: `ratio`, `mainAttached`, `aboveAttached`, and `greenScreen`, or the `LayoutConfig`
+ *   field names. Fields a region does not have are ignored.
+ * - `name`: the name tag, as a boolean.
+ * - `participant`: one participant per occurrence, merged region by region over the base config, as comma separated
+ *   `key` or `key=value` pairs.
  * - `participants`: total participant count; missing participants are filled with the base config.
  * - Every `LayoutOptions` key (or its alias below) as a number.
  *
- * Booleans take `true`/`false`, `1`/`0`, `yes`/`no`, `on`/`off`, or no value for `true`. Ratios take `16:9` or
- * `16x9`, and `null`/`none`/`off` turn a region off. `camera` sets `hasCamera` for a boolean and
- * `cameraMainAspectRatio` for a ratio.
+ * Booleans take `true`/`false`, `1`/`0`, `yes`/`no`, `on`/`off`, or no value for `true`. Ratios take `16:9` or `16x9`.
  */
 export interface ParsedLayoutSearchParams {
   layoutConfigs: LayoutConfig[];
   layoutOptions: LayoutOptions;
 }
 
-export const layoutConfigKeyAliases = {
-  aux: 'contentAuxAspectRatio',
-  camera: 'hasCamera',
-  cameraMain: 'cameraMainAspectRatio',
-  cameraMainAspectRatio: 'cameraMainAspectRatio',
-  contentAuxAspectRatio: 'contentAuxAspectRatio',
-  contentMainAspectRatio: 'contentMainAspectRatio',
-  hasCamera: 'hasCamera',
-  hasName: 'hasName',
-  info: 'infoAspectRatio',
-  infoAspectRatio: 'infoAspectRatio',
-  main: 'contentMainAspectRatio',
-  name: 'hasName',
-} as const satisfies Record<string, keyof LayoutConfig>;
+export type LayoutRegionConfigKey = Exclude<keyof LayoutConfig, 'hasName'>;
+
+export type LayoutRegionConfigField = 'aspectRatio' | 'isMainAttached' | 'isAboveAttached' | 'isGreenScreen';
+
+/** Every field any region config can take; a region only receives the fields listed for it in `layoutRegionFields` */
+export interface LayoutRegionConfigFields {
+  mainAspectRatio?: AspectRatio;
+  aspectRatio?: 'auto' | AspectRatio;
+  isMainAttached?: boolean;
+  isAboveAttached?: boolean;
+  isGreenScreen?: boolean;
+}
+
+export const layoutRegionConfigKeys = [
+  'camera',
+  'contentMain',
+  'contentAux',
+  'info',
+] as const satisfies readonly LayoutRegionConfigKey[];
+
+export const layoutRegionKeyAliases = {
+  aux: 'contentAux',
+  camera: 'camera',
+  contentAux: 'contentAux',
+  contentMain: 'contentMain',
+  info: 'info',
+  main: 'contentMain',
+} as const satisfies Record<string, LayoutRegionConfigKey>;
+
+export const layoutRegionFieldAliases = {
+  aspectRatio: 'aspectRatio',
+  aboveAttached: 'isAboveAttached',
+  mainAttached: 'isMainAttached',
+  greenScreen: 'isGreenScreen',
+  isAboveAttached: 'isAboveAttached',
+  isGreenScreen: 'isGreenScreen',
+  isMainAttached: 'isMainAttached',
+  mainAspectRatio: 'aspectRatio',
+  ratio: 'aspectRatio',
+} as const satisfies Record<string, LayoutRegionConfigField>;
+
+export const layoutRegionFields = {
+  camera: ['aspectRatio', 'isMainAttached', 'isAboveAttached', 'isGreenScreen'],
+  contentMain: ['aspectRatio'],
+  contentAux: ['aspectRatio', 'isMainAttached'],
+  info: ['aspectRatio', 'isMainAttached', 'isAboveAttached'],
+} as const satisfies Record<LayoutRegionConfigKey, readonly LayoutRegionConfigField[]>;
 
 export const layoutOptionKeyAliases = {
   border: 'regionBorder',
@@ -82,58 +119,80 @@ export const parseAspectRatioParam = (value: string): AspectRatio | null | undef
 export const isContentAspectRatio = (value: string): value is ContentAspectRatio =>
   (CONTENT_ASPECT_RATIOS as readonly string[]).includes(value);
 
+/** Parse a ratio for a region: content regions take content ratios only, info also takes `auto`, camera any ratio */
+export const parseRegionAspectRatioParam = (
+  regionKey: LayoutRegionConfigKey,
+  value: string,
+): 'auto' | AspectRatio | undefined => {
+  if (regionKey === 'info' && value.trim().toLowerCase() === 'auto') return 'auto';
+
+  const aspectRatio = parseAspectRatioParam(value);
+
+  if (!aspectRatio) return undefined;
+  if (regionKey === 'camera' || regionKey === 'info') return aspectRatio;
+  return isContentAspectRatio(aspectRatio) ? aspectRatio : undefined;
+};
+
+/** Merge fields into a region config, turning the region on if it was off or unset */
+export const setLayoutRegionFields = <Key extends LayoutRegionConfigKey>(
+  layoutConfig: LayoutConfig,
+  regionKey: Key,
+  fields: LayoutRegionConfigFields,
+) => {
+  // Only fields the region has reach this point, so the loose fields type fits the region's config
+  layoutConfig[regionKey] = { ...layoutConfig[regionKey], ...fields } as LayoutConfig[Key];
+};
+
 export const parseLayoutConfigPairs = (pairs: Iterable<[string, string]>): LayoutConfig => {
   const layoutConfig: LayoutConfig = {};
 
   for (const [rawKey, pairValue] of pairs) {
     const key = rawKey.trim();
 
-    if (!hasKey(layoutConfigKeyAliases, key)) continue;
+    if (key === 'name' || key === 'hasName') {
+      const hasName = parseBooleanParam(pairValue);
 
-    switch (layoutConfigKeyAliases[key]) {
-      case 'hasCamera': {
-        const hasCamera = parseBooleanParam(pairValue);
-        const cameraMainAspectRatio = hasCamera === undefined ? parseAspectRatioParam(pairValue) : undefined;
+      if (hasName !== undefined) layoutConfig.hasName = hasName;
+      continue;
+    }
 
-        if (hasCamera !== undefined) layoutConfig.hasCamera = hasCamera;
-        else if (cameraMainAspectRatio) layoutConfig.cameraMainAspectRatio = cameraMainAspectRatio;
-        break;
-      }
-      case 'hasName': {
-        const hasName = parseBooleanParam(pairValue);
+    const [rawRegionKey, rawFieldKey, ...rest] = key.split('.');
 
-        if (hasName !== undefined) layoutConfig.hasName = hasName;
-        break;
-      }
-      case 'cameraMainAspectRatio': {
-        const cameraMainAspectRatio = parseAspectRatioParam(pairValue);
+    if (rest.length || !hasKey(layoutRegionKeyAliases, rawRegionKey)) continue;
 
-        if (cameraMainAspectRatio) layoutConfig.cameraMainAspectRatio = cameraMainAspectRatio;
-        break;
-      }
-      case 'contentAuxAspectRatio': {
-        const contentAuxAspectRatio = parseAspectRatioParam(pairValue);
+    const regionKey = layoutRegionKeyAliases[rawRegionKey];
 
-        if (contentAuxAspectRatio === null) layoutConfig.contentAuxAspectRatio = null;
-        else if (contentAuxAspectRatio && isContentAspectRatio(contentAuxAspectRatio))
-          layoutConfig.contentAuxAspectRatio = contentAuxAspectRatio;
-        break;
-      }
-      case 'contentMainAspectRatio': {
-        const contentMainAspectRatio = parseAspectRatioParam(pairValue);
+    // A bare region key takes a boolean, a ratio, or nothing to show the region with its defaults
+    if (rawFieldKey === undefined) {
+      const isShown = parseBooleanParam(pairValue);
+      const aspectRatio = isShown === undefined ? parseRegionAspectRatioParam(regionKey, pairValue) : undefined;
 
-        if (contentMainAspectRatio === null) layoutConfig.contentMainAspectRatio = null;
-        else if (contentMainAspectRatio && isContentAspectRatio(contentMainAspectRatio))
-          layoutConfig.contentMainAspectRatio = contentMainAspectRatio;
-        break;
-      }
-      case 'infoAspectRatio': {
-        const infoAspectRatio =
-          pairValue.trim().toLowerCase() === 'auto' ? ('auto' as const) : parseAspectRatioParam(pairValue);
+      if (isShown) setLayoutRegionFields(layoutConfig, regionKey, {});
+      else if (isShown === false || parseAspectRatioParam(pairValue) === null) layoutConfig[regionKey] = null;
+      else if (aspectRatio)
+        setLayoutRegionFields(layoutConfig, regionKey, {
+          [regionKey === 'camera' ? 'mainAspectRatio' : 'aspectRatio']: aspectRatio,
+        });
+      continue;
+    }
 
-        if (infoAspectRatio !== undefined) layoutConfig.infoAspectRatio = infoAspectRatio;
-        break;
-      }
+    if (!hasKey(layoutRegionFieldAliases, rawFieldKey)) continue;
+
+    const field = layoutRegionFieldAliases[rawFieldKey];
+
+    if (!(layoutRegionFields[regionKey] as readonly LayoutRegionConfigField[]).includes(field)) continue;
+
+    if (field === 'aspectRatio') {
+      const aspectRatio = parseRegionAspectRatioParam(regionKey, pairValue);
+
+      if (aspectRatio)
+        setLayoutRegionFields(layoutConfig, regionKey, {
+          [regionKey === 'camera' ? 'mainAspectRatio' : 'aspectRatio']: aspectRatio,
+        });
+    } else {
+      const flag = parseBooleanParam(pairValue);
+
+      if (flag !== undefined) setLayoutRegionFields(layoutConfig, regionKey, { [field]: flag });
     }
   }
 
@@ -148,6 +207,20 @@ export const parseLayoutConfigParam = (value: string): LayoutConfig =>
       return [rawKey, rawValue.join('=')];
     }),
   );
+
+/** Merge an override config over a base config, field by field within each region both of them show */
+export const mergeLayoutConfigs = (baseLayoutConfig: LayoutConfig, layoutConfig: LayoutConfig): LayoutConfig => {
+  const mergedLayoutConfig: LayoutConfig = { ...baseLayoutConfig, ...layoutConfig };
+
+  for (const regionKey of layoutRegionConfigKeys) {
+    const baseRegion = baseLayoutConfig[regionKey];
+    const region = layoutConfig[regionKey];
+
+    if (baseRegion && region) setLayoutRegionFields(mergedLayoutConfig, regionKey, { ...baseRegion, ...region });
+  }
+
+  return mergedLayoutConfig;
+};
 
 export const parseLayoutOptionsParams = (searchParams: URLSearchParams): LayoutOptions => {
   const layoutOptions: LayoutOptions = {};
@@ -167,10 +240,10 @@ export const parseLayoutSearchParams = (searchParams: URLSearchParams): ParsedLa
   const baseLayoutConfig = parseLayoutConfigPairs(searchParams);
   const layoutConfigs = searchParams
     .getAll('participant')
-    .map((value) => ({ ...baseLayoutConfig, ...parseLayoutConfigParam(value) }));
+    .map((value) => mergeLayoutConfigs(baseLayoutConfig, parseLayoutConfigParam(value)));
   const participantsTotal = Math.max(1, Math.trunc(Number(searchParams.get('participants')) || 0));
 
-  while (layoutConfigs.length < participantsTotal) layoutConfigs.push({ ...baseLayoutConfig });
+  while (layoutConfigs.length < participantsTotal) layoutConfigs.push(mergeLayoutConfigs(baseLayoutConfig, {}));
 
   return { layoutConfigs, layoutOptions: parseLayoutOptionsParams(searchParams) };
 };

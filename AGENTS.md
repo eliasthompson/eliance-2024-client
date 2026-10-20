@@ -14,6 +14,7 @@ Before finishing a change, run `npm run lint`. There is no test suite; `npm test
 ## Layout
 
 - `config/index.ts`: app config and the Twitch scopes. `config/secrets.js` holds secrets, is git-ignored, and is typed by `config/secrets.d.ts`; `config/secrets.template.js` lists its keys. Add non-secret settings to `config/index.ts` and secrets to all three secrets files.
+- `config/layoutOptions.ts`: the canvas, as raw `LayoutOptions` the app sizes itself from. `config/scenes.ts`: the `@eliasthompson/obs-layout-firebot` config for this installation, taking those options. It must stay pure data (`firebot:deploy` stores it in Firebot as JSON), so it imports only `layoutOptions` and types. The `npm run obs:*` and `firebot:*` scripts run that package's CLI against it, and `config/preset-effect-lists.json`, which the deploy writes, is versioned. Until that package's 2.0 is published it is linked from the sibling checkout, not a dependency in package.json.
 - `config/webpack.js`, `config/babel.js`: build config. Emotion's `css` prop is wired through `@babel/preset-react` `importSource`.
 - `src/index.tsx`: entry; `src/routes.tsx`: the hash router. Routes under `Container` require a Twitch token; routes that need no Twitch data are siblings of it.
 - `src/components/<Name>/index.tsx`: one component per folder, with its props interface in `types.ts` beside it. Route-level and composite components sit at the top level; reusable pieces are in `shared/`, icons in `shared/svgs/`.
@@ -21,6 +22,7 @@ Before finishing a change, run `npm run lint`. There is no test suite; `npm test
 - `src/store/apis/<service>/`: one RTK Query API per service in `index.ts`, one endpoint per file injected with `injectEndpoints`, exporting the generated hooks and typed request and response interfaces. Twitch EventSub subscriptions live under `twitch/createEventSubSubscription/`.
 - `src/store/slices/<name>/index.ts`: Redux Toolkit slices. `info` holds overlay state such as persons, alerts, and chats.
 - `src/assets/`: fonts, images, and videos, each with a `<name>.d.<ext>.ts` declaration beside it.
+- `src/components/BorderColorSync/`: colors the OBS layout borders from the persons over obs-websocket (`src/lib/obsWebSocket.ts`, `src/lib/writeBorderColor.ts`). It mirrors a few obs-layout-firebot constants because that package is Node-only; keep them in step with it.
 - Path aliases are defined in `tsconfig.json` (`@components`, `@config`, `@lib`, `@store`, `@src`, `@assets`) and resolved by `tsconfig-paths-webpack-plugin`. Use them instead of relative paths.
 
 ## Conventions

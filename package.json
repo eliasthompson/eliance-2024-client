@@ -12,13 +12,19 @@
     "lint-fix": "eslint --fix",
     "lint": "eslint && tsc",
     "start": "webpack serve --config config/webpack.js",
-    "test": "test"
+    "test": "test",
+    "obs:deploy": "obs-layout-firebot obs:deploy --config config/scenes.ts",
+    "obs:restart": "obs-layout-firebot obs:restart --config config/scenes.ts",
+    "obs:verify": "obs-layout-firebot obs:verify --config config/scenes.ts",
+    "obs:capture": "obs-layout-firebot obs:capture --config config/scenes.ts",
+    "firebot:deploy": "obs-layout-firebot firebot:deploy --config config/scenes.ts",
+    "firebot:restart": "obs-layout-firebot firebot:restart --config config/scenes.ts"
   },
   "author": "Elias Thompson",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@eliasthompson/obs-layout-generator": "^1.1.1",
+    "@eliasthompson/obs-layout-generator": "^2.0.0",
     "@emotion/babel-plugin": "^11.13.5",
     "@emotion/react": "^11.14.0",
     "@reduxjs/toolkit": "^2.13.0",

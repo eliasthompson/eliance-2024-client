@@ -18,8 +18,11 @@ Fill in `config/secrets.js`:
 - `clientId`: the Twitch application client id used for the device code flow.
 - `firebotGuestRoleId`: the Firebot custom role whose viewers are shown as guests. Leave it empty to show only Guest Star guests without syncing them to Firebot. Firebot itself is optional: without it, persons fall back to their Twitch data.
 - `namespace`: a UUID used to derive stable ids; a random one is generated when left empty.
+- `obsWebSocketPassword`: the obs-websocket password, which the info bar uses to color the layout borders. Leave it
+  empty when OBS has authentication off.
 
-`config/secrets.js` is git-ignored. Non-secret app settings, such as the default layout options, live in `config/index.ts`.
+`config/secrets.js` is git-ignored. Non-secret settings live beside it: the canvas in `config/layoutOptions.ts`, the
+OBS layout installation in `config/scenes.ts`, and the rest in `config/index.ts`.
 
 ## Running
 
@@ -59,22 +62,58 @@ Routes under the root need a Twitch user token. On first load the authentication
 
 ### Layout route
 
-`#/layout` runs `generateLayout` and paints every region as a box showing the participant number, region type, size, position, and aspect ratio. Regions that were ratio-driven show an exact ratio such as `16:9`; regions that just filled leftover space show the closest small ratio with `≈`. The `regionBorder` is drawn as an outline around each box, matching how the package measures it.
+`#/layout` runs `generateLayout` and paints every region as a box showing the participant number, region type, size, position, and aspect ratio. Regions that were ratio-driven show an exact ratio such as `16:9`; regions that just filled leftover space show the closest small ratio with `≈`. The `regionBorder` is drawn as an outline around each box that has one, matching how the package measures it; a green screen camera has no outline and a green tint.
 
 Query params inside the hash drive the layout. Defaults for the canvas come from `layoutOptions` in `config/index.ts`, and every URL option overrides them.
 
-- Any `LayoutConfig` key, or an alias below, sets the base config for every participant: `#/layout?name&aux=4:3`.
+- A region key sets the base config for every participant: `main`, `aux`, `info`, `camera`, or the `LayoutConfig` name. A ratio shows the region at that ratio, `null`/`none`/`off` hides it, and no value shows it with its defaults: `#/layout?name&aux=4:3&info`. `info` also takes `auto`, and `camera` takes a boolean or its main column ratio.
+- A region field as `region.field`: `ratio`, `mainAttached`, `aboveAttached`, and `greenScreen`, or the `LayoutConfig` field names such as `isMainAttached`: `#/layout?camera.greenScreen&aux=4:3&aux.mainAttached`. Fields a region does not have are ignored.
+- `name` shows the name tag.
 - `participants=3` sets the participant count; missing participants use the base config.
-- `participant=main=null,camera=4x3` adds one participant per occurrence, merged over the base config, in order. Values are comma separated `key` or `key=value` pairs.
+- `participant=main=null,camera.ratio=4x3` adds one participant per occurrence, merged region by region over the base config, in order. Values are comma separated `key` or `key=value` pairs.
 - Any `LayoutOptions` key, or `width`, `height`, `marginTop`, `marginBottom`, `marginLeft`, `marginRight`, `padding`, `gap`, `border`, as a number.
 
-Config aliases are `main`, `aux`, `info`, `camera`, `cameraMain`, and `name`. Booleans take `true`/`false`, `1`/`0`, `yes`/`no`, `on`/`off`, or no value for `true`. Ratios take `16:9` or `16x9`; `null`, `none` or `off` turn a region off, and `info=auto` fills the cell. `camera` sets `hasCamera` for a boolean and `cameraMainAspectRatio` for a ratio. Unknown keys and unsupported content ratios are ignored.
+Booleans take `true`/`false`, `1`/`0`, `yes`/`no`, `on`/`off`, or no value for `true`. Ratios take `16:9` or `16x9`. Unknown keys and unsupported content ratios are ignored.
 
 ```text
 #/layout?participants=3&name&gap=30&border=4
-#/layout?name&info=auto&participant=main=null,camera=4x3&participant=info=none
-#/layout?participants=2&hasName=1&contentMainAspectRatio=4:3&width=2560&height=1440
+#/layout?name&camera.mainAttached&info&info.mainAttached&camera.aboveAttached
+#/layout?name&camera.greenScreen&participant=main=null&participant=aux=4:3,aux.mainAttached
+#/layout?participants=2&hasName=1&contentMain.aspectRatio=4:3&width=2560&height=1440
 ```
+
+## OBS layout tooling
+
+This repository is also the installation for [obs-layout-firebot](https://github.com/eliasthompson/obs-layout-firebot):
+`config/scenes.ts` is its config, a pure data module describing the container scene, the participant layout scenes
+with their sources and borders, the compositions, the standby screens, and the `borderColor` filter. It takes its
+`options` from `config/layoutOptions.ts`, so the overlays and the OBS layouts share one canvas. The names in it are
+placeholders from the obs-layout-firebot example until the real installation is bound. The tools run from here:
+
+```sh
+npm run obs:deploy       # creates the filters in OBS, then restarts OBS to set the item transitions (asks first)
+npm run firebot:deploy   # checks the config against OBS, stores it in Firebot, installs the script and presets
+npm run obs:restart      # restarts OBS, never forcibly
+npm run obs:verify -- "<scene key>"   # applies a scene from here and compares every item with the plan
+npm run obs:capture -- "<scene key>"  # screenshots during a transition
+npm run firebot:restart  # installs the presets into the profile and restarts Firebot
+```
+
+Each takes `--dry-run` to report what it would do. `firebot:deploy` writes `config/preset-effect-lists.json`, which is
+versioned: it holds the ids that keep the Firebot presets stable across machines. Where Firebot or OBS live on a
+machine comes from `.env` (see `.env.example`); unset, the tools use Firebot's own OBS integration settings and the
+default profile. Until obs-layout-firebot 2.0 is published, the package is linked from a sibling checkout with
+`npx link ../obs-layout-firebot`.
+
+### Border colors
+
+Inside OBS, `#/global-info` connects to obs-websocket (`obsWebSocketUrl` in `config/index.ts`, the password from
+`config/secrets.js`) and colors the layout borders to match the persons it shows: the border sources of the first
+layout in `config/scenes.ts` take the first person's color, and so on, in the same order the bar lists them. Colors
+are written when the person list or a color changes and when OBS connects, never on the rotation, and fade through the
+`Move: Color` filter that `obs:deploy` creates on each border; a border without that filter gets the color written into
+its Stroke filter directly. Without OBS, as in a browser preview, the bar logs a debug line and retries every fifteen
+seconds.
 
 ## Todo
 
@@ -82,6 +121,8 @@ Config aliases are `main`, `aux`, `info`, `camera`, `cameraMain`, and `name`. Bo
 - [ ] layout
   - [x] layout route paints `obs-layout-generator` regions with their metrics
   - [x] url params for layout configs and options
+  - [x] obs-layout-firebot config and tools run from this repo
+  - [x] layout border colors follow the persons in the info bar
   - [ ] generate configs from guest star participants
 - [ ] person box
   - [ ] BUG: interval desync of schedule slideshow
