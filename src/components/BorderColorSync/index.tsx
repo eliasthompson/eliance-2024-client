@@ -1,12 +1,13 @@
 import type { ScenesConfig } from '@eliasthompson/obs-layout-firebot';
 
+import { resolveBorderColor } from '@eliasthompson/obs-layout-firebot/settings';
 import { useEffect, useRef, useState } from 'react';
 
 import type { ObsClient } from '@lib/obsWebSocket';
 
 import { createObsClient } from '@lib/obsWebSocket';
 import { obsWebSocketPassword, obsWebSocketUrl, scenes } from '@config';
-import { resolveBorderColor, writeBorderColor } from '@lib/writeBorderColor';
+import { writeBorderColor } from '@lib/writeBorderColor';
 import { useSelector } from '@store';
 
 // The config is read through its declared type, not the literal one, so every binding may carry a border
