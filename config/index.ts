@@ -13,7 +13,6 @@ export { default as scenes } from './scenes';
 export const clientId = clientIdSecret;
 export const firebotGuestRoleId = firebotGuestRoleIdSecret;
 export const namespace = namespaceSecret || uuid.v4();
-/** obs-websocket on this machine, which the info bar uses to color the layout borders; OBS's default port. */
 export const obsWebSocketUrl = 'ws://localhost:4455';
 export const obsWebSocketPassword = obsWebSocketPasswordSecret;
 export const scopes = [

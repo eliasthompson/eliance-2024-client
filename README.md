@@ -87,11 +87,11 @@ Booleans take `true`/`false`, `1`/`0`, `yes`/`no`, `on`/`off`, or no value for `
 This repository is also the installation for [obs-layout-firebot](https://github.com/eliasthompson/obs-layout-firebot):
 `config/scenes.ts` is its config, a pure data module describing the container scene, the participant layout scenes
 with their sources and borders, the compositions, the standby screens, and the `borderColor` filter. It takes its
-`options` from `config/layoutOptions.ts`, so the overlays and the OBS layouts share one canvas. The names in it are
-placeholders from the obs-layout-firebot example until the real installation is bound. The tools run from here:
+`options` from `config/layoutOptions.ts`, so the OBS layouts match `#/layout`, and `borderPadding` is the border
+sources' shadow, drawn outside the border. The tools run from here:
 
 ```sh
-npm run obs:deploy       # creates the filters in OBS, then restarts OBS to set the item transitions (asks first)
+npm run obs:deploy       # creates the filters in OBS, then restarts OBS if the item transitions need setting (asks first)
 npm run firebot:deploy   # checks the config against OBS, stores it in Firebot, installs the script and presets
 npm run obs:restart      # restarts OBS, never forcibly
 npm run obs:verify -- "<scene key>"   # applies a scene from here and compares every item with the plan
@@ -99,11 +99,14 @@ npm run obs:capture -- "<scene key>"  # screenshots during a transition
 npm run firebot:restart  # installs the presets into the profile and restarts Firebot
 ```
 
-Each takes `--dry-run` to report what it would do. `firebot:deploy` writes `config/preset-effect-lists.json`, which is
-versioned: it holds the ids that keep the Firebot presets stable across machines. Where Firebot or OBS live on a
-machine comes from `.env` (see `.env.example`); unset, the tools use Firebot's own OBS integration settings and the
-default profile. Until obs-layout-firebot 2.0 is published, the package is linked from a sibling checkout with
-`npx link ../obs-layout-firebot`.
+The deploy and restart commands take `--dry-run` to report what they would do. The Firebot presets, one per scene key,
+derive from the config, ids included, so they stay the same across deploys and machines with nothing else to version.
+Where Firebot or OBS live on a machine comes from `.env` (see `.env.example`); unset, the tools use Firebot's own OBS
+integration settings and the default profile.
+
+obs-layout-firebot is a dev dependency: the overlays only import its types, and the scripts above run its CLI. To try
+unreleased changes from a sibling checkout, link it with `npx link ../obs-layout-firebot` and keep the version range in
+`package.json`; the next `npm install` puts the published package back.
 
 ### Border colors
 
