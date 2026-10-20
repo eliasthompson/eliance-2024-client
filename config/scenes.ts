@@ -5,8 +5,14 @@ import type { ScenesConfig } from '@eliasthompson/obs-layout-firebot';
 import { layoutOptions } from './layoutOptions';
 
 export default {
+  // The OBS scene collection, for when OBS cannot say which one is loaded
+  obs: { sceneCollection: 'Eliance 2026' },
+  // The Firebot profile the tools install into
+  firebot: { profile: 'Eliance 2026' },
   // OBS scene that holds one nested layout scene per participant
   container: '[Scene] Canvas',
+  // The scene in the container that holds the standby texts, and the height of the standby line
+  standby: { textScene: '[Widget] Standby Text', lineHeight: 540 },
   // The canvas the overlays size themselves from, so the OBS layouts match the #/layout preview
   options: layoutOptions,
   // Pixels the border sources' shadow filters add outside the border on every side
@@ -35,17 +41,25 @@ export default {
   },
   // One preset per scene key: the participants it shows, in layout order, each with an optional layout config
   scenes: {
+    '[Standby] Starting Soon': {
+      participants: [{ layout: '[Layout] Person 1' }],
+      standby: { text: { source: '[Text] Starting Soon', region: { x: 990, y: 339, width: 580, height: 402 } } },
+    },
+    '[Standby] Be Right Back': {
+      participants: [{ layout: '[Layout] Person 1' }],
+      standby: { text: { source: '[Text] Be Right Back', region: { x: 990, y: 339, width: 612, height: 402 } } },
+    },
+    '[Standby] Thanks for Watching': {
+      participants: [{ layout: '[Layout] Person 1' }],
+      standby: {
+        text: { source: '[Text] Thanks for Watching', region: { x: 990, y: 339, width: 782, height: 402 } },
+      },
+    },
     '[1P] Camera': {
       participants: [{ layout: '[Layout] Person 1', config: { contentMain: null } }],
     },
-    '[1P] Camera (Keyed)': {
-      participants: [{ layout: '[Layout] Person 1', config: { contentMain: null, camera: { isGreenScreen: true } } }],
-    },
     '[1P] 16:9': {
       participants: [{ layout: '[Layout] Person 1' }],
-    },
-    '[1P] 16:9 (Keyed)': {
-      participants: [{ layout: '[Layout] Person 1', config: { camera: { isGreenScreen: true } } }],
     },
     '[1P] 16:9 w/ Timer': {
       participants: [
@@ -57,14 +71,6 @@ export default {
     },
     '[1P] 4:3': {
       participants: [{ layout: '[Layout] Person 1', config: { contentMain: { aspectRatio: '4:3' } } }],
-    },
-    '[1P] 4:3 (Keyed)': {
-      participants: [
-        {
-          layout: '[Layout] Person 1',
-          config: { contentMain: { aspectRatio: '4:3' }, camera: { isGreenScreen: true } },
-        },
-      ],
     },
     '[1P] 4:3 w/ Timer': {
       participants: [
@@ -102,21 +108,19 @@ export default {
     '[1P] NES': {
       participants: [{ layout: '[Layout] Person 1', config: { contentMain: { aspectRatio: '16:15' } } }],
     },
-    '[Standby] Starting Soon': {
-      participants: [{ layout: '[Layout] Person 1' }],
-      standby: { text: { source: '[Text] Starting Soon', region: { x: 990, y: 339, width: 580, height: 402 } } },
+    '[1P] Camera (Keyed)': {
+      participants: [{ layout: '[Layout] Person 1', config: { contentMain: null, camera: { isGreenScreen: true } } }],
     },
-    '[Standby] Be Right Back': {
-      participants: [{ layout: '[Layout] Person 1' }],
-      standby: { text: { source: '[Text] Be Right Back', region: { x: 990, y: 339, width: 612, height: 402 } } },
+    '[1P] 16:9 (Keyed)': {
+      participants: [{ layout: '[Layout] Person 1', config: { camera: { isGreenScreen: true } } }],
     },
-    '[Standby] Thanks for Watching': {
-      participants: [{ layout: '[Layout] Person 1' }],
-      standby: {
-        text: { source: '[Text] Thanks for Watching', region: { x: 990, y: 339, width: 782, height: 402 } },
-      },
+    '[1P] 4:3 (Keyed)': {
+      participants: [
+        {
+          layout: '[Layout] Person 1',
+          config: { contentMain: { aspectRatio: '4:3' }, camera: { isGreenScreen: true } },
+        },
+      ],
     },
   },
-  // The scene in the container that holds the standby texts, and the height of the standby line
-  standby: { textScene: '[Widget] Standby Text', lineHeight: 540 },
 } satisfies ScenesConfig;
