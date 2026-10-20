@@ -1,8 +1,49 @@
 // The OBS layout installation: the scenes and sources obs-layout-firebot drives, and what the overlays read about
 // them. Pure data: `firebot:deploy` stores it in Firebot as JSON, so nothing here may import secrets or code.
-import type { ScenesConfig } from '@eliasthompson/obs-layout-firebot';
+import type { LayoutConfig } from '@eliasthompson/obs-layout-generator';
+import type { ParticipantPoolEntry, SceneBinding, ScenesConfig } from '@eliasthompson/obs-layout-firebot';
 
 import { layoutOptions } from './layoutOptions';
+
+/** How many `[Layout] Person N` scenes exist in OBS. Raise it as they are built; `obs:verify` reports missing ones. */
+const PEOPLE = 1;
+
+/** The content shapes, each a scene preset. What is not a shape is a modifier, switched on and off over any of them. */
+const shapes = {
+  'Camera': { contentMain: null },
+  '16:9': {},
+  '4:3': { contentMain: { aspectRatio: '4:3' } },
+  '3DS Split': { contentMain: { aspectRatio: '5:3' }, contentAux: { aspectRatio: '4:3', isMainAttached: true } },
+  'DS Split': { contentMain: { aspectRatio: '4:3' }, contentAux: { aspectRatio: '4:3', isMainAttached: true } },
+  'SNES': { contentMain: { aspectRatio: '8:7' } },
+  'GB(C)': { contentMain: { aspectRatio: '10:9' } },
+  'NES': { contentMain: { aspectRatio: '16:15' } },
+} satisfies Record<string, LayoutConfig>;
+
+type Shape = keyof typeof shapes;
+
+const people = Array.from({ length: PEOPLE }, (_, index) => index + 1);
+const shapeKeys = Object.keys(shapes) as Shape[];
+
+/** One person's layout scene and the OBS item (and border) that fills each of their regions, named by their number. */
+const person = (n: number): ParticipantPoolEntry => ({
+  sources: {
+    contentMain: { source: `[Group] Main Content ${n}`, border: `[Border] Main Content ${n}` },
+    contentAux: { source: `[Group] Aux Content ${n}`, border: `[Border] Aux Content ${n}` },
+    info: { source: `[Widget] Info ${n}`, border: `[Border] Info ${n}` },
+    camera: { source: `[Group] Camera ${n}`, border: `[Border] Camera ${n}` },
+    name: { source: `[Text] Name ${n}` },
+  },
+});
+
+/**
+ * A scene showing one person per shape, in layout order: `[2P] 16:9` when everyone shares the shape, `[2P] 16:9 +
+ * Camera` when not. Scene keys name the Firebot presets, so renaming one orphans its preset.
+ */
+const scene = (...keys: Shape[]): [string, SceneBinding] => [
+  `[${keys.length}P] ${new Set(keys).size === 1 ? keys[0] : keys.join(' + ')}`,
+  { participants: keys.map((key, index) => ({ layout: `[Layout] Person ${index + 1}`, config: shapes[key] })) },
+];
 
 export default {
   // The OBS scene collection, for when OBS cannot say which one is loaded
@@ -11,8 +52,9 @@ export default {
   firebot: { profile: 'Eliance 2026' },
   // OBS scene that holds one nested layout scene per participant
   container: '[Scene] Canvas',
-  // The scene in the container that holds the standby texts, and the height of the standby line
-  standby: { textScene: '[Widget] Standby Text', lineHeight: 540 },
+  // The scene in the container that holds the standby texts, the height of the standby line, and how far past the
+  // line a standby text shows, centered on it at its rendered size
+  standby: { textScene: '[Widget] Standby Text', lineHeight: 540, textGap: 48 },
   // The canvas the overlays size themselves from, so the OBS layouts match the #/layout preview
   options: layoutOptions,
   // Pixels the border sources' shadow filters add outside the border on every side
@@ -21,106 +63,30 @@ export default {
   borderColor: { filter: 'Stroke', duration: 500 },
   // Move duration in milliseconds
   duration: 300,
-  // Every layout scene, with the OBS item (and border) that fills each region. Their order is the participant
-  // order: the broadcaster first, then Guest Star guests, then the Firebot guest role, as the info bar lists them
-  participants: {
-    '[Layout] Person 1': {
-      sources: {
-        contentMain: { source: '[Group] Main Content 1', border: '[Border] Main Content 1' },
-        contentAux: { source: '[Group] Aux Content 1', border: '[Border] Aux Content 1' },
-        info: {
-          source: '[Widget] Info 1',
-          border: '[Border] Info 1',
-          inset: 12,
-          boundsAlignment: 'top center',
-        },
-        camera: { source: '[Group] Camera 1', border: '[Border] Camera 1' },
-        name: { source: '[Text] Name 1', inset: 12, fontScale: 0.45, fontSizeMin: 24, fontSizeMax: 48 },
-      },
-    },
+  // How every participant's sources sit in their regions; a person or a scene can override any field per region
+  regions: {
+    info: { inset: 12, boundsAlignment: 'top center' },
+    name: { inset: 12, fontSizeMin: 24, fontSizeMax: 48 },
   },
-  // One preset per scene key: the participants it shows, in layout order, each with an optional layout config
+  // Every layout scene, in participant order: the broadcaster first, then Guest Star guests, then the Firebot guest
+  // role, as the info bar lists them
+  participants: Object.fromEntries(people.map((n) => [`[Layout] Person ${n}`, person(n)])),
+  // One preset per scene key: the standby screens, then the shapes for one person, then the mixes for more
   scenes: {
-    '[Standby] Starting Soon': {
-      participants: [{ layout: '[Layout] Person 1' }],
-      standby: { text: { source: '[Text] Starting Soon', region: { x: 990, y: 339, width: 580, height: 402 } } },
-    },
-    '[Standby] Be Right Back': {
-      participants: [{ layout: '[Layout] Person 1' }],
-      standby: { text: { source: '[Text] Be Right Back', region: { x: 990, y: 339, width: 612, height: 402 } } },
-    },
-    '[Standby] Thanks for Watching': {
-      participants: [{ layout: '[Layout] Person 1' }],
-      standby: {
-        text: { source: '[Text] Thanks for Watching', region: { x: 990, y: 339, width: 782, height: 402 } },
-      },
-    },
-    '[1P] Camera': {
-      participants: [{ layout: '[Layout] Person 1', config: { contentMain: null } }],
-    },
-    '[1P] 16:9': {
-      participants: [{ layout: '[Layout] Person 1' }],
-    },
-    '[1P] 16:9 w/ Timer': {
-      participants: [
-        {
-          layout: '[Layout] Person 1',
-          config: { info: { aspectRatio: '250:49', isAboveAttached: true, isMainAttached: true } },
-        },
-      ],
-    },
-    '[1P] 4:3': {
-      participants: [{ layout: '[Layout] Person 1', config: { contentMain: { aspectRatio: '4:3' } } }],
-    },
-    '[1P] 4:3 w/ Timer': {
-      participants: [
-        {
-          layout: '[Layout] Person 1',
-          config: {
-            contentMain: { aspectRatio: '4:3' },
-            info: { aspectRatio: '250:49', isAboveAttached: true, isMainAttached: true },
-          },
-        },
-      ],
-    },
-    '[1P] 3DS Split': {
-      participants: [
-        {
-          layout: '[Layout] Person 1',
-          config: { contentMain: { aspectRatio: '5:3' }, contentAux: { aspectRatio: '4:3' } },
-        },
-      ],
-    },
-    '[1P] DS Split': {
-      participants: [
-        {
-          layout: '[Layout] Person 1',
-          config: { contentMain: { aspectRatio: '4:3' }, contentAux: { aspectRatio: '4:3' } },
-        },
-      ],
-    },
-    '[1P] SNES': {
-      participants: [{ layout: '[Layout] Person 1', config: { contentMain: { aspectRatio: '8:7' } } }],
-    },
-    '[1P] GB(C)': {
-      participants: [{ layout: '[Layout] Person 1', config: { contentMain: { aspectRatio: '10:9' } } }],
-    },
-    '[1P] NES': {
-      participants: [{ layout: '[Layout] Person 1', config: { contentMain: { aspectRatio: '16:15' } } }],
-    },
-    '[1P] Camera (Keyed)': {
-      participants: [{ layout: '[Layout] Person 1', config: { contentMain: null, camera: { isGreenScreen: true } } }],
-    },
-    '[1P] 16:9 (Keyed)': {
-      participants: [{ layout: '[Layout] Person 1', config: { camera: { isGreenScreen: true } } }],
-    },
-    '[1P] 4:3 (Keyed)': {
-      participants: [
-        {
-          layout: '[Layout] Person 1',
-          config: { contentMain: { aspectRatio: '4:3' }, camera: { isGreenScreen: true } },
-        },
-      ],
-    },
+    '[Standby] Starting Soon': { standby: { text: '[Text] Starting Soon' } },
+    '[Standby] Be Right Back': { standby: { text: '[Text] Be Right Back' } },
+    '[Standby] Thanks for Watching': { standby: { text: '[Text] Thanks for Watching' } },
+    ...Object.fromEntries([
+      ...shapeKeys.map((shape) => scene(shape)),
+      // Two people: the broadcaster in any shape with a camera guest, and both on 16:9
+      ...(people.length >= 2 ? [...shapeKeys.map((shape) => scene(shape, 'Camera')), scene('16:9', '16:9')] : []),
+    ]),
+  },
+  // Switched on and off over any scene with their own presets: "Keyed On", "Keyed Off", and so on, plus "Reset
+  // Modifiers". A region config switches the region on, so the timer strip's shape lives in its modifier
+  modifiers: {
+    'Keyed Cameras': { config: { camera: { isGreenScreen: true } } },
+    'Names': { config: { hasName: true } },
+    'Timer': { config: { info: { aspectRatio: '250:49', isAboveAttached: true, isMainAttached: true } } },
   },
 } satisfies ScenesConfig;

@@ -24,7 +24,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@eliasthompson/obs-layout-generator": "^2.0.0",
+    "@eliasthompson/obs-layout-generator": "^2.1.0",
     "@emotion/babel-plugin": "^11.13.5",
     "@emotion/react": "^11.14.0",
     "@reduxjs/toolkit": "^2.13.0",
