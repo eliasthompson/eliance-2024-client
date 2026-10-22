@@ -10,7 +10,7 @@ import { hasKey } from '@lib/hasKey';
  *
  * - A region key (`main`, `aux`, `info`, `camera`, or the `LayoutConfig` name) with a ratio shows that region at the
  *   ratio, with `null`/`none`/`off` hides it, and with no value shows it with its defaults. `info` also takes `auto`,
- *   and `camera` takes a boolean or its main column ratio.
+ *   and `camera` takes a boolean or its main column ratio, including `auto`.
  * - A region field as `region.field`: `ratio`, `mainAttached`, `aboveAttached`, and `greenScreen`, or the `LayoutConfig`
  *   field names. Fields a region does not have are ignored.
  * - `name`: the name tag, as a boolean.
@@ -18,6 +18,8 @@ import { hasKey } from '@lib/hasKey';
  *   `key` or `key=value` pairs.
  * - `participants`: total participant count; missing participants are filled with the base config.
  * - Every `LayoutOptions` key (or its alias below) as a number.
+ * - `orientation`: the global param from `useOrientation`, not parsed here. It picks the configured canvas the options
+ *   above apply over.
  *
  * Booleans take `true`/`false`, `1`/`0`, `yes`/`no`, `on`/`off`, or no value for `true`. Ratios take `16:9` or `16x9`.
  */
@@ -32,7 +34,7 @@ export type LayoutRegionConfigField = 'aspectRatio' | 'isMainAttached' | 'isAbov
 
 /** Every field any region config can take; a region only receives the fields listed for it in `layoutRegionFields` */
 export interface LayoutRegionConfigFields {
-  mainAspectRatio?: AspectRatio;
+  mainAspectRatio?: 'auto' | AspectRatio;
   aspectRatio?: 'auto' | AspectRatio;
   isMainAttached?: boolean;
   isAboveAttached?: boolean;
@@ -119,12 +121,12 @@ export const parseAspectRatioParam = (value: string): AspectRatio | null | undef
 export const isContentAspectRatio = (value: string): value is ContentAspectRatio =>
   (CONTENT_ASPECT_RATIOS as readonly string[]).includes(value);
 
-/** Parse a ratio for a region: content regions take content ratios only, info also takes `auto`, camera any ratio */
+/** Parse a ratio for a region: content regions take content ratios only, info and camera any ratio or `auto` */
 export const parseRegionAspectRatioParam = (
   regionKey: LayoutRegionConfigKey,
   value: string,
 ): 'auto' | AspectRatio | undefined => {
-  if (regionKey === 'info' && value.trim().toLowerCase() === 'auto') return 'auto';
+  if ((regionKey === 'info' || regionKey === 'camera') && value.trim().toLowerCase() === 'auto') return 'auto';
 
   const aspectRatio = parseAspectRatioParam(value);
 

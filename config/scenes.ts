@@ -3,7 +3,7 @@
 import type { LayoutConfig } from '@eliasthompson/obs-layout-generator';
 import type { ParticipantPoolEntry, SceneBinding, ScenesConfig } from '@eliasthompson/obs-layout-firebot';
 
-import { layoutOptions } from './layoutOptions';
+import { layoutCanvases } from './layoutCanvases';
 
 /** How many `[Layout] Person N` scenes exist in OBS. Raise it as they are built; `obs:verify` reports missing ones. */
 const PEOPLE = 1;
@@ -13,8 +13,9 @@ const shapes = {
   'Camera': { contentMain: null },
   '16:9': {},
   '4:3': { contentMain: { aspectRatio: '4:3' } },
-  '3DS Split': { contentMain: { aspectRatio: '5:3' }, contentAux: { aspectRatio: '4:3', isMainAttached: true } },
   'DS Split': { contentMain: { aspectRatio: '4:3' }, contentAux: { aspectRatio: '4:3', isMainAttached: true } },
+  '3DS Split': { contentMain: { aspectRatio: '5:3' }, contentAux: { aspectRatio: '4:3', isMainAttached: true } },
+  'GBA': { contentMain: { aspectRatio: '3:2' } },
   'SNES': { contentMain: { aspectRatio: '8:7' } },
   'GB(C)': { contentMain: { aspectRatio: '10:9' } },
   'NES': { contentMain: { aspectRatio: '16:15' } },
@@ -28,10 +29,10 @@ const shapeKeys = Object.keys(shapes) as Shape[];
 /** One person's layout scene and the OBS item (and border) that fills each of their regions, named by their number. */
 const person = (n: number): ParticipantPoolEntry => ({
   sources: {
-    contentMain: { source: `[Group] Main Content ${n}`, border: `[Border] Main Content ${n}` },
-    contentAux: { source: `[Group] Aux Content ${n}`, border: `[Border] Aux Content ${n}` },
-    info: { source: `[Widget] Info ${n}`, border: `[Border] Info ${n}` },
     camera: { source: `[Group] Camera ${n}`, border: `[Border] Camera ${n}` },
+    contentAux: { source: `[Group] Aux Content ${n}`, border: `[Border] Aux Content ${n}` },
+    contentMain: { source: `[Group] Main Content ${n}`, border: `[Border] Main Content ${n}` },
+    info: { source: `[Widget] Info ${n}`, border: `[Border] Info ${n}` },
     name: { source: `[Text] Name ${n}` },
   },
 });
@@ -55,8 +56,8 @@ export default {
   // The scene in the container that holds the standby texts, the height of the standby line, and how far past the
   // line a standby text shows, centered on it at its rendered size
   standby: { textScene: '[Widget] Standby Text', lineHeight: 540, textGap: 48 },
-  // The canvas the overlays size themselves from, so the OBS layouts match the #/layout preview
-  options: layoutOptions,
+  // The landscape canvas the overlays size themselves from, so the OBS layouts match the #/layout preview
+  options: layoutCanvases.landscape,
   // Pixels the border sources' shadow filters add outside the border on every side
   borderPadding: 9,
   // The Stroke filter on each border carries its color; the info bar fades it to each participant's color

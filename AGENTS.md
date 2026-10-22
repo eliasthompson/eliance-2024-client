@@ -1,6 +1,6 @@
 # AGENTS.md
 
-React overlay app for OBS browser sources on a Twitch stream. Each hash route is one 1920×1080 overlay. Data comes from the Twitch Helix API, Twitch EventSub and PubSub websockets, a local Firebot API, and pronouns.alejo.io. Layout regions come from the `@eliasthompson/obs-layout-generator` package.
+React overlay app for OBS browser sources on a Twitch stream. Each hash route is one 1920×1080 overlay, or 1080×1920 with the global `orientation=portrait` search param (`useOrientation` in `src/lib/`, which `GlobalStyle` and the layout route read; the other routes do not adapt to it yet). Data comes from the Twitch Helix API, Twitch EventSub and PubSub websockets, a local Firebot API, and pronouns.alejo.io. Layout regions come from the `@eliasthompson/obs-layout-generator` package.
 
 ## Commands
 
@@ -14,7 +14,7 @@ Before finishing a change, run `npm run lint`. There is no test suite; `npm test
 ## Layout
 
 - `config/index.ts`: app config and the Twitch scopes. `config/secrets.js` holds secrets, is git-ignored, and is typed by `config/secrets.d.ts`; `config/secrets.template.js` lists its keys. Add non-secret settings to `config/index.ts` and secrets to all three secrets files.
-- `config/layoutOptions.ts`: the canvas, as raw `LayoutOptions` the app sizes itself from. `config/scenes.ts`: the `@eliasthompson/obs-layout-firebot` config for this installation, taking those options, with `borderPadding` for the border shadows that reach past them. It must stay pure data (`firebot:deploy` stores it in Firebot as JSON), so it imports only `layoutOptions` and types. The `npm run obs:*` and `firebot:*` scripts run that package's CLI against it; the Firebot presets derive from it, so the deploy writes nothing here. The package is a dev dependency, since the app only imports its types; to work against unreleased changes, link the sibling checkout with `npx link ../obs-layout-firebot` and keep the range in package.json.
+- `config/layoutCanvases.ts`: the `landscape` and `portrait` canvases, as raw `LayoutOptions` the app sizes itself from, sharing their spacing, plus `infoBlockHeight`, the height of one info block on either canvas. `config/scenes.ts`: the `@eliasthompson/obs-layout-firebot` config for this installation, taking the landscape options, with `borderPadding` for the border shadows that reach past them. It must stay pure data (`firebot:deploy` stores it in Firebot as JSON), so it imports only `layoutCanvases` and types. The `npm run obs:*` and `firebot:*` scripts run that package's CLI against it; the Firebot presets derive from it, so the deploy writes nothing here. The package is a dev dependency, since the app only imports its types; to work against unreleased changes, link the sibling checkout with `npx link ../obs-layout-firebot` and keep the range in package.json.
 - `config/webpack.js`, `config/babel.js`: build config. Emotion's `css` prop is wired through `@babel/preset-react` `importSource`.
 - `src/index.tsx`: entry; `src/routes.tsx`: the hash router. Routes under `Container` require a Twitch token; routes that need no Twitch data are siblings of it.
 - `src/components/<Name>/index.tsx`: one component per folder, with its props interface in `types.ts` beside it. Route-level and composite components sit at the top level; reusable pieces are in `shared/`, icons in `shared/svgs/`.
