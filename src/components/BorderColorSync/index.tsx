@@ -13,9 +13,17 @@ import { useSelector } from '@store';
 // The config is read through its declared type, not the literal one, so every binding may carry a border
 const scenesConfig: ScenesConfig = scenes;
 
-/** Each participant layout's border sources, in the config's participant order. */
-export const participantBorders = Object.values(scenesConfig.participants).map((entry) =>
-  Object.values(entry.sources).flatMap((binding) => (binding.border ? [binding.border] : [])),
+/** Each canvas's participant layouts' border sources, in the canvas's participant order. */
+const canvasBorders = Object.values(scenesConfig.canvases).map((canvas) =>
+  Object.values(canvas.participants).map((entry) =>
+    Object.values(entry.sources).flatMap((binding) => (binding.border ? [binding.border] : [])),
+  ),
+);
+
+/** Each participant's border sources on every canvas, in the config's participant order. */
+export const participantBorders = Array.from(
+  { length: Math.max(0, ...canvasBorders.map((borders) => borders.length)) },
+  (_, i) => canvasBorders.flatMap((borders) => borders.at(i) ?? []),
 );
 
 /**

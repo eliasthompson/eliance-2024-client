@@ -26,16 +26,32 @@ type Shape = keyof typeof shapes;
 const people = Array.from({ length: PEOPLE }, (_, index) => index + 1);
 const shapeKeys = Object.keys(shapes) as Shape[];
 
-/** One person's layout scene and the OBS item (and border) that fills each of their regions, named by their number. */
-const person = (n: number): ParticipantPoolEntry => ({
+/**
+ * Whether the vertical canvas (Aitum Vertical) has its scenes and sources in OBS yet. Turn it on once it does: then
+ * every preset lays out both canvases, and `firebot:deploy` checks the vertical one too.
+ */
+const VERTICAL = false;
+
+/**
+ * One person's layout scene and the OBS item (and border) that fills each of their regions, named by their number.
+ * Source names are shared across canvases, so each canvas's copies carry its suffix; scene names may repeat.
+ */
+const person = (n: number, suffix = ''): ParticipantPoolEntry => ({
   sources: {
-    camera: { source: `[Group] Camera ${n}`, border: `[Border] Camera ${n}` },
-    contentAux: { source: `[Group] Aux Content ${n}`, border: `[Border] Aux Content ${n}` },
-    contentMain: { source: `[Group] Main Content ${n}`, border: `[Border] Main Content ${n}` },
-    info: { source: `[Widget] Info ${n}`, border: `[Border] Info ${n}` },
-    name: { source: `[Text] Name ${n}` },
+    camera: { source: `[Group] Camera ${n}${suffix}`, border: `[Border] Camera ${n}${suffix}` },
+    contentAux: { source: `[Group] Aux Content ${n}${suffix}`, border: `[Border] Aux Content ${n}${suffix}` },
+    contentMain: { source: `[Group] Main Content ${n}${suffix}`, border: `[Border] Main Content ${n}${suffix}` },
+    info: { source: `[Widget] Info ${n}${suffix}`, border: `[Border] Info ${n}${suffix}` },
+    name: { source: `[Text] Name ${n}${suffix}` },
   },
 });
+
+/**
+ * Every layout scene of a canvas, in participant order: the broadcaster first, then Guest Star guests, then the
+ * Firebot guest role, as the info bar lists them.
+ */
+const participants = (suffix = '') =>
+  Object.fromEntries(people.map((n) => [`[Layout] Person ${n}`, person(n, suffix)]));
 
 /**
  * A scene showing one person per shape, in layout order: `[2P] 16:9` when everyone shares the shape, `[2P] 16:9 +
@@ -51,13 +67,28 @@ export default {
   obs: { sceneCollection: 'Eliance 2026' },
   // The Firebot profile the tools install into
   firebot: { profile: 'Eliance 2026' },
-  // OBS scene that holds one nested layout scene per participant
-  container: '[Scene] Canvas',
-  // The scene in the container that holds the standby texts, the height of the standby line, and how far past the
-  // line a standby text shows, centered on it at its rendered size
-  standby: { textScene: '[Widget] Standby Text', lineHeight: 540, textGap: 48 },
-  // The landscape canvas the overlays size themselves from, so the OBS layouts match the #/layout preview
-  options: layoutCanvases.landscape,
+  // Each OBS canvas: the scene that holds one nested layout scene per participant, the options the overlays size
+  // themselves from, so the OBS layouts match the #/layout preview, and its layout scenes
+  canvases: {
+    landscape: {
+      container: '[Scene] Canvas',
+      options: layoutCanvases.landscape,
+      participants: participants(),
+      // The scene in the container that holds the standby texts, the height of the standby line, and how far past
+      // the line a standby text shows, centered on it at its rendered size
+      standby: { textScene: '[Widget] Standby Text', lineHeight: 540, textGap: 48 },
+    },
+    ...(VERTICAL
+      ? {
+          portrait: {
+            canvas: 'Aitum Vertical',
+            container: '[Scene] Canvas',
+            options: layoutCanvases.portrait,
+            participants: participants(' (V)'),
+          },
+        }
+      : {}),
+  },
   // Pixels the border sources' shadow filters add outside the border on every side
   borderPadding: 9,
   // The Stroke filter on each border carries its color; the info bar fades it to each participant's color
@@ -69,14 +100,16 @@ export default {
     info: { inset: 12, boundsAlignment: 'top center' },
     name: { inset: 12, fontSizeMin: 24, fontSizeMax: 48 },
   },
-  // Every layout scene, in participant order: the broadcaster first, then Guest Star guests, then the Firebot guest
-  // role, as the info bar lists them
-  participants: Object.fromEntries(people.map((n) => [`[Layout] Person ${n}`, person(n)])),
-  // One preset per scene key: the standby screens, then the shapes for one person, then the mixes for more
+  // One preset per scene key, on every canvas: the standby screens, then the shapes for one person, then the mixes
+  // for more
   scenes: {
-    '[Standby] Starting Soon': { standby: { text: '[Text] Starting Soon' } },
-    '[Standby] Be Right Back': { standby: { text: '[Text] Be Right Back' } },
-    '[Standby] Thanks for Watching': { standby: { text: '[Text] Thanks for Watching' } },
+    // Standby screens leave the vertical canvas as it is until it has standby settings of its own
+    '[Standby] Starting Soon': { standby: { text: '[Text] Starting Soon' }, canvases: { portrait: false } },
+    '[Standby] Be Right Back': { standby: { text: '[Text] Be Right Back' }, canvases: { portrait: false } },
+    '[Standby] Thanks for Watching': {
+      standby: { text: '[Text] Thanks for Watching' },
+      canvases: { portrait: false },
+    },
     ...Object.fromEntries([
       ...shapeKeys.map((shape) => scene(shape)),
       // Two people: the broadcaster in any shape with a camera guest, and both on 16:9
