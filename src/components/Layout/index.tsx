@@ -7,8 +7,9 @@ import { generateLayout, LAYOUT_OPTIONS_DEFAULT } from '@eliasthompson/obs-layou
 
 import { FlexContainer } from '@components/shared/FlexContainer';
 import { RegionBox } from '@components/RegionBox';
-import { layoutOptions as layoutOptionsConfig } from '@config';
+import { layoutCanvases } from '@config';
 import { parseLayoutSearchParams } from '@lib/parseLayoutSearchParams';
+import { useOrientation } from '@lib/useOrientation';
 
 export const regionTypes = [
   'contentMain',
@@ -20,12 +21,14 @@ export const regionTypes = [
 
 export const Layout = () => {
   const [searchParams] = useSearchParams();
+  const orientation = useOrientation();
   const { layoutMetrics, layoutOptions } = useMemo(() => {
     const parsedLayoutSearchParams = parseLayoutSearchParams(searchParams);
-    const layoutOptions = { ...layoutOptionsConfig, ...parsedLayoutSearchParams.layoutOptions };
+    // The orientation picks the configured canvas, and the options in the params apply over it
+    const layoutOptions = { ...layoutCanvases[orientation], ...parsedLayoutSearchParams.layoutOptions };
 
     return { layoutMetrics: generateLayout(parsedLayoutSearchParams.layoutConfigs, layoutOptions), layoutOptions };
-  }, [searchParams]);
+  }, [orientation, searchParams]);
   const {
     canvasWidth = LAYOUT_OPTIONS_DEFAULT.canvasWidth,
     canvasHeight = LAYOUT_OPTIONS_DEFAULT.canvasHeight,

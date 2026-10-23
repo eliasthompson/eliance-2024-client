@@ -3,9 +3,13 @@ import { Global, css } from '@emotion/react';
 import robotoLightFont from '@assets/fonts/Roboto-Light.ttf';
 import robotoRegularFont from '@assets/fonts/Roboto-Regular.ttf';
 import robotoMediumFont from '@assets/fonts/Roboto-Medium.ttf';
-import { layoutOptions } from '@config';
+import { infoBlockHeights, layoutCanvases } from '@config';
+import { useOrientation } from '@lib/useOrientation';
 
 export const GlobalStyle = () => {
+  const orientation = useOrientation();
+  const { canvasWidth, canvasHeight, canvasMarginBottom, canvasPadding, canvasGap, regionBorder } =
+    layoutCanvases[orientation];
   const bodyBackgroundColor = window.obsstudio ? 'transparent' : '#121212';
   const rootBackgroundColor = window.obsstudio ? 'transparent' : '#226600';
   const rootBackgroundImage = window.obsstudio
@@ -55,11 +59,12 @@ export const GlobalStyle = () => {
       --safe-area-inset-right: env(safe-area-inset-right);
       --safe-area-inset-bottom: env(safe-area-inset-bottom);
 
-      --container-width: ${layoutOptions.canvasWidth}px;
-      --container-height: ${layoutOptions.canvasHeight}px;
-      --bar-width: ${layoutOptions.canvasWidth - layoutOptions.canvasPadding * 2 - layoutOptions.regionBorder * 2}px;
-      --bar-height: ${layoutOptions.canvasMarginBottom - layoutOptions.regionBorder}px;
-      --padding: ${layoutOptions.canvasGap / 2}px;
+      --container-width: ${canvasWidth}px;
+      --container-height: ${canvasHeight}px;
+      --bar-width: ${canvasWidth - canvasPadding * 2 - regionBorder * 2}px;
+      --bar-height: ${infoBlockHeights[orientation]}px;
+      --info-height: ${canvasMarginBottom - regionBorder}px;
+      --padding: ${canvasGap / 2}px;
       --line-height: calc((var(--bar-height) - (var(--padding) * 2)) / 3);
       --font-size: calc(var(--line-height) / 6 * 5);
     }
@@ -100,6 +105,7 @@ export const GlobalStyle = () => {
       justify-content: center;
       background-color: ${rootBackgroundColor};
       background-image: ${rootBackgroundImage};
+      background-position: center;
       background-size: cover;
     }
   `;

@@ -7,7 +7,7 @@ import {
   obsWebSocketPassword as obsWebSocketPasswordSecret,
 } from './secrets';
 
-export { layoutOptions } from './layoutOptions';
+export { infoBlockHeights, layoutCanvases } from './layoutCanvases';
 export { default as scenes } from './scenes';
 
 export const clientId = clientIdSecret;

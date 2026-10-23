@@ -14,7 +14,9 @@ import { PinIcon } from '@components/shared/svgs/PinIcon';
 import { SparkleIcon } from '@components/shared/svgs/SparkleIcon';
 import { SubscriberIcon } from '@components/shared/svgs/SubscriberIcon';
 import { TwitchIcon } from '@components/shared/svgs/TwitchIcon';
+import { infoBlockHeights, layoutCanvases } from '@config';
 import { hasKey } from '@lib/hasKey';
+import { useOrientation } from '@lib/useOrientation';
 import { useGetChannelChatBadgesQuery } from '@store/apis/twitch/getChannelChatBadges';
 import { useGetGlobalChatBadgesQuery } from '@store/apis/twitch/getGlobalChatBadges';
 import { useGetPronounsQuery } from '@store/apis/chatPronouns/getPronouns';
@@ -41,7 +43,25 @@ export const announcementColors = {
   PURPLE: 'linear-gradient(#9146ff, #ff75e6)',
 } as const;
 
+/**
+ * How far landscape chat text runs before it wraps, in ems of its own font: the chat section (three eighths of the bar)
+ * less the chat settings beside it, the messages' padding, and their gutter, as landscape sizes them. Portrait chat
+ * wraps at the same ems, so a message breaks after the same words on both canvases.
+ */
+const landscapeChatEms = (() => {
+  const { canvasWidth, canvasPadding, canvasGap, regionBorder } = layoutCanvases.landscape;
+  const bar = infoBlockHeights.landscape;
+  const padding = canvasGap / 2;
+  const section = ((canvasWidth - (canvasPadding + regionBorder) * 2) * 3) / 8;
+  const settings = padding * 2 + (bar - padding * 2.5) / 2;
+  const gutter = (bar - padding * 2) / 3 - padding / 2 + padding * 1.5;
+  const chatLineHeight = (bar - padding * 1.5) / 3 - padding / 2;
+
+  return (section - settings - padding - gutter) / ((chatLineHeight / 6) * 5);
+})();
+
 export const ChatMessage = ({ event }: ChatMessageProps) => {
+  const orientation = useOrientation();
   const { broadcasterId, broadcasterColor } = useSelector(({ info }) => info);
   const {
     data: channelChatBadgesData,
@@ -126,6 +146,15 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
   const marginDivMessageEffect = isRainbowEclipse ? 'calc(var(--padding) * (2 / 3))' : '0';
   const paddingDivMessageEffect = !isRainbowEclipse ? 'calc(var(--padding) * (2 / 3))' : '0';
   const widthDivMessageEffectBefore = isSimmer ? '100%' : '99999px';
+  // Landscape fits three lines of chat into a block. Portrait chat has the bar's width less the messages' padding and
+  // gutter and the inset on the right (each a line and a padding), and its font is sized so that width holds as many
+  // ems as landscape chat's text, so it wraps after the same words and lines up with the goals beneath it
+  const isPortrait = orientation === 'portrait';
+  const fontSizePMessage = isPortrait
+    ? `calc((var(--bar-width) - (var(--line-height) * 2) - (var(--padding) * 3)) / ${String(landscapeChatEms)})`
+    : 'calc((((var(--bar-height) - (var(--padding) * 1.5)) / 3) - (var(--padding) / 2)) / 6 * 5)';
+  const lineHeightPMessage = `calc(${fontSizePMessage} / 5 * 6)`;
+  const maxWidthPMessage = isPortrait ? `${String(landscapeChatEms)}em` : 'none';
   let backgroundColorContainerContent = isSpecialMessage ? 'rgba(0, 0, 0, 33%)' : 'transparent';
 
   if (isMessageEffect) backgroundColorContainerContent = 'rgba(0, 0, 0, 100%)';
@@ -189,16 +218,17 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
   const cssPMessage = css`
     padding: calc(var(--padding) / 4) 0 calc(var(--padding) / 4)
       calc((var(--line-height) - (var(--padding) / 2)) + (var(--padding) * 1.5));
-    line-height: calc(((var(--bar-height) - (var(--padding) * 1.5)) / 3) - (var(--padding) / 2));
-    font-size: calc((((var(--bar-height) - (var(--padding) * 1.5)) / 3) - (var(--padding) / 2)) / 6 * 5);
+    max-width: ${maxWidthPMessage};
+    line-height: ${lineHeightPMessage};
+    font-size: ${fontSizePMessage};
 
     * {
       filter: ${filterPMessageChild};
     }
   `;
   const cssImgBadge = css`
-    height: calc(((var(--bar-height) - (var(--padding) * 1.5)) / 3) - (var(--padding) / 2));
-    width: calc(((var(--bar-height) - (var(--padding) * 1.5)) / 3) - (var(--padding) / 2));
+    height: ${lineHeightPMessage};
+    width: ${lineHeightPMessage};
     margin: 0 calc(var(--padding) / 4) 0 0;
     vertical-align: text-bottom;
   `;
