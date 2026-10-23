@@ -22,7 +22,7 @@ Before finishing a change, run `npm run lint`. There is no test suite; `npm test
 - `src/store/apis/<service>/`: one RTK Query API per service in `index.ts`, one endpoint per file injected with `injectEndpoints`, exporting the generated hooks and typed request and response interfaces. Twitch EventSub subscriptions live under `twitch/createEventSubSubscription/`.
 - `src/store/slices/<name>/index.ts`: Redux Toolkit slices. `info` holds overlay state such as persons, alerts, and chats.
 - `src/assets/`: fonts, images, and videos, each with a `<name>.d.<ext>.ts` declaration beside it.
-- `src/components/BorderColorSync/`: colors the OBS layout borders from the persons over obs-websocket (`src/lib/obsWebSocket.ts`, `src/lib/writeBorderColor.ts`). The filter names and settings come from `@eliasthompson/obs-layout-firebot/settings`, the package's browser-safe subpath; its main entry is Node-only and is imported for types alone.
+- `src/components/LayoutSync/`: colors the OBS layout borders and writes the name texts from the persons over obs-websocket, on every canvas (`src/lib/obsWebSocket.ts`, `src/lib/writeBorderColor.ts`, `src/lib/writeNameText.ts`). The filter names and settings come from `@eliasthompson/obs-layout-firebot/settings`, the package's browser-safe subpath; its main entry is Node-only and is imported for types alone.
 - Path aliases are defined in `tsconfig.json` (`@components`, `@config`, `@lib`, `@store`, `@src`, `@assets`) and resolved by `tsconfig-paths-webpack-plugin`. Use them instead of relative paths.
 
 ## Conventions

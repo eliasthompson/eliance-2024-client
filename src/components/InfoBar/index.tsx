@@ -3,10 +3,10 @@ import type { InfoBarProps } from '@components/InfoBar/types';
 import { css } from '@emotion/react';
 import { skipToken } from '@reduxjs/toolkit/query';
 
-import { BorderColorSync } from '@components/BorderColorSync';
 import { ChatBox } from '@components/ChatBox';
 import { EventBox } from '@components/EventBox';
 import { FlexContainer } from '@components/shared/FlexContainer';
+import { LayoutSync } from '@components/LayoutSync';
 import { MessageHandler } from '@components/MessageHandler';
 import { PersonBox } from '@components/PersonBox';
 import { useDispatch, useSelector } from '@store';
@@ -41,7 +41,7 @@ export const InfoBar = ({ cssBar: cssBarProvided }: InfoBarProps) => {
   return (
     <FlexContainer css={cssBar}>
       <MessageHandler />
-      <BorderColorSync />
+      <LayoutSync />
       <PersonBox />
       <EventBox />
       <ChatBox />
