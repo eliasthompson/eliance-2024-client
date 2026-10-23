@@ -13,12 +13,15 @@
     "lint": "eslint && tsc",
     "start": "webpack serve --config config/webpack.js",
     "test": "test",
+    "deploy": "obs-layout-firebot obs:deploy --config config/scenes.ts --yes && obs-layout-firebot firebot:deploy --config config/scenes.ts --yes",
     "obs:deploy": "obs-layout-firebot obs:deploy --config config/scenes.ts",
     "obs:restart": "obs-layout-firebot obs:restart --config config/scenes.ts",
     "obs:verify": "obs-layout-firebot obs:verify --config config/scenes.ts",
     "obs:capture": "obs-layout-firebot obs:capture --config config/scenes.ts",
+    "obs:prune": "obs-layout-firebot obs:prune --config config/scenes.ts",
     "firebot:deploy": "obs-layout-firebot firebot:deploy --config config/scenes.ts",
-    "firebot:restart": "obs-layout-firebot firebot:restart --config config/scenes.ts"
+    "firebot:restart": "obs-layout-firebot firebot:restart --config config/scenes.ts",
+    "firebot:prune": "obs-layout-firebot firebot:prune --config config/scenes.ts"
   },
   "author": "Elias Thompson",
   "license": "ISC",
