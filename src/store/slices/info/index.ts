@@ -79,11 +79,14 @@ export const getStoredRecentChats = (ex: number = 60 * 60 * 1000) => {
     //
   }
 
-  return localStoredChats.filter((localStoredChat) => {
+  // Every overlay showing chat stores what it receives, landscape and portrait alike, so a message can be stored twice
+  return localStoredChats.filter((localStoredChat, i) => {
     const chatTime = new Date(localStoredChat.messageTimestamp).getTime();
     const referenceDate = new Date().getTime() - ex;
+    const isFirst =
+      localStoredChats.findIndex(({ message_id: messageId }) => messageId === localStoredChat.message_id) === i;
 
-    return chatTime > referenceDate;
+    return isFirst && chatTime > referenceDate;
   });
 };
 
@@ -112,6 +115,9 @@ export const infoSlice = createSlice({
       if (state.chats.length > 150) state.chats.shift();
 
       const storedRecentChats = getStoredRecentChats();
+
+      // Another overlay may have stored it already
+      if (storedRecentChats.some(({ message_id: messageId }) => messageId === payload.message_id)) return;
 
       storedRecentChats.push(payload);
       if (storedRecentChats.length > 3) storedRecentChats.shift();

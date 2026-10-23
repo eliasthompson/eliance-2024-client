@@ -16,7 +16,7 @@ const cssBarInfo = css`
   position: absolute;
   bottom: ${bottomBarInfo};
   width: var(--bar-width);
-  height: var(--bar-height);
+  height: var(--info-height);
   border-color: #9147ff;
   border-style: ${borderStyleBarInfo};
   border-width: calc(var(--padding) / 2);

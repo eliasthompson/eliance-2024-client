@@ -21,6 +21,7 @@ import { changeAlert, setInfo } from '@store/slices/info';
 import { useGetCharityCampaignQuery } from '@store/apis/twitch/getCharityCampaign';
 import { useGetCreatorGoalsQuery } from '@store/apis/twitch/getCreatorGoals';
 import { useDispatch, useSelector } from '@store';
+import { useOrientation } from '@lib/useOrientation';
 
 export const alertTypeIcons = {
   announcement: AnnouncementIcon,
@@ -57,6 +58,7 @@ export const initialAlertIcon = () => alertTypeIcons.default;
 
 export const EventBox = () => {
   const dispatch = useDispatch();
+  const orientation = useOrientation();
   const { activeAlert, alerts, broadcasterId /* , isAlertsPaused */ } = useSelector(({ info }) => info);
   const {
     data: charityCampaignData,
@@ -131,10 +133,12 @@ export const EventBox = () => {
   const containerGoalsOpacity = activeAlert ? '0' : '1';
   const spanGoalLabelFlex = '1';
   const spanGoalLabelOpacity = '1';
+  // In portrait the goals sit at the foot of the chat, and an alert covers both, against the section that holds them
+  const positionContainer = orientation === 'portrait' ? 'static' : 'relative';
 
   const containerCss = css`
     flex: 2;
-    position: relative;
+    position: ${positionContainer};
     display: flex;
     justify-content: center;
     filter: drop-shadow(#000000 0 0 calc(var(--padding) * 0.75));
