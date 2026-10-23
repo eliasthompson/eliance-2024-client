@@ -15,6 +15,9 @@ interface TwitchApiRefreshTokenResponse {
 }
 
 const refreshMutex = new Mutex();
+// Web Locks reach every page on the origin; without them, a page only serializes its own refreshes
+const withSharedRefreshLock = (callback: () => Promise<void>) =>
+  'locks' in navigator ? navigator.locks.request('twitchRefresh', callback) : callback();
 const oauthBaseQuery = fetchBaseQuery({ baseUrl: 'https://id.twitch.tv/oauth2' });
 const helixBaseQuery = fetchBaseQuery({
   baseUrl: 'https://api.twitch.tv/helix',
@@ -57,39 +60,49 @@ export const fetchRefreshedBaseQuery: BaseQueryFn<string | FetchArgs, unknown, F
   const release = await refreshMutex.acquire();
 
   try {
-    const {
-      twitchAuth: { accessToken, refreshToken },
-    } = api.getState() as RootState;
-    const wasRefreshedSinceRequest = accessToken !== accessTokenUsedByRequest;
+    // Every overlay on this origin, such as the landscape and portrait info bars, shares the stored tokens, and Twitch
+    // takes each refresh token only once, so refresh under a lock they all share, and take up tokens another refreshed
+    await withSharedRefreshLock(async () => {
+      const { twitchAuth } = api.getState() as RootState;
+      const accessToken = localStorage.getItem('accessToken') ?? twitchAuth.accessToken;
+      const refreshToken = localStorage.getItem('refreshToken') ?? twitchAuth.refreshToken;
+      const wasRefreshedSinceRequest = accessToken !== null && accessToken !== accessTokenUsedByRequest;
 
-    if (wasRefreshedSinceRequest) return await helixBaseQuery(args, api, extraOptions);
+      if (wasRefreshedSinceRequest) {
+        if (accessToken !== twitchAuth.accessToken) api.dispatch(setTwitchAuth({ accessToken, refreshToken }));
 
-    if (!refreshToken) {
-      api.dispatch(clearTwitchAuth());
+        result = await helixBaseQuery(args, api, extraOptions);
 
-      return result;
-    }
+        return;
+      }
 
-    const refreshResult = await oauthBaseQuery(
-      {
-        body: new URLSearchParams({ client_id: clientId, grant_type: 'refresh_token', refresh_token: refreshToken }),
-        method: 'POST',
-        url: '/token',
-      },
-      api,
-      extraOptions,
-    );
-    const isRefreshTokenRejected = refreshResult.error?.status === 400 || refreshResult.error?.status === 401;
+      if (!refreshToken) {
+        api.dispatch(clearTwitchAuth());
 
-    if (refreshResult.data) {
-      const { access_token: newAccessToken, refresh_token: newRefreshToken } =
-        refreshResult.data as TwitchApiRefreshTokenResponse;
+        return;
+      }
 
-      api.dispatch(setTwitchAuth({ accessToken: newAccessToken, refreshToken: newRefreshToken }));
-      result = await helixBaseQuery(args, api, extraOptions);
-    } else if (isRefreshTokenRejected) {
-      api.dispatch(clearTwitchAuth());
-    }
+      const refreshResult = await oauthBaseQuery(
+        {
+          body: new URLSearchParams({ client_id: clientId, grant_type: 'refresh_token', refresh_token: refreshToken }),
+          method: 'POST',
+          url: '/token',
+        },
+        api,
+        extraOptions,
+      );
+      const isRefreshTokenRejected = refreshResult.error?.status === 400 || refreshResult.error?.status === 401;
+
+      if (refreshResult.data) {
+        const { access_token: newAccessToken, refresh_token: newRefreshToken } =
+          refreshResult.data as TwitchApiRefreshTokenResponse;
+
+        api.dispatch(setTwitchAuth({ accessToken: newAccessToken, refreshToken: newRefreshToken }));
+        result = await helixBaseQuery(args, api, extraOptions);
+      } else if (isRefreshTokenRejected) {
+        api.dispatch(clearTwitchAuth());
+      }
+    });
   } finally {
     release();
   }
