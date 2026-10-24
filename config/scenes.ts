@@ -5,6 +5,8 @@ import { LAYOUTS } from '@/constants/layouts';
 import { LAYOUT_KEYS, type LayoutKey } from '@/constants/layoutKeys';
 import { STANDBY_KEYS, type StandbyKey } from '@/constants/standbyKeys';
 import { CANVAS_SPACING } from '@/constants/canvasSpacing';
+import { REGIONS } from '@/constants/regions';
+import { AUDIO_SOURCES } from '@/constants/audioSources';
 
 const isVerticalEnabled = true as const satisfies boolean;
 const nameFontSizeMax = 48 as const satisfies number;
@@ -17,6 +19,9 @@ const verticalSuffix = ' (V)' as const satisfies string;
 
 const borderPadding = CANVAS_SPACING.layoutGap / 2;
 const participantNums = Array.from({ length: participantTotal }, (_, index) => index + 1);
+const sourceLists = participantNums.flatMap((participantNum) =>
+  REGIONS.map((region) => `[List] ${region} ${participantNum} Sources`),
+);
 const portraitLineLength = CANVASES.portrait.canvasWidth * 0.75;
 const portraitLineInset = (CANVASES.portrait.canvasWidth - portraitLineLength) / 2;
 const landscapeLineLength =
@@ -62,6 +67,7 @@ const getStandbyScene = (standbyKey: StandbyKey): [string, SceneBinding] => [
   `[Standby] ${standbyKey}`,
   {
     standby: { text: `[Text] ${standbyKey}` },
+    items: { '[Audio] Voice': false },
     ...(isVerticalEnabled
       ? { canvases: { portrait: { standby: { text: `[Text] ${standbyKey}${verticalSuffix}` } } } }
       : {}),
@@ -77,6 +83,8 @@ export const SCENES = Object.freeze({
       options: CANVASES.landscape,
       participants: getParticipants(),
       standby: { textScene: '[List] Standby Text Sources', lineLength: landscapeLineLength, textGap: standbyTextGap },
+      items: { '[Audio] Alerts': { visible: true }, '[Audio] Voice': { visible: true } },
+      fadeScenes: [...AUDIO_SOURCES, ...sourceLists],
     },
     ...(isVerticalEnabled
       ? {
@@ -113,8 +121,17 @@ export const SCENES = Object.freeze({
       ...STANDBY_KEYS.map((standbyKey) => getStandbyScene(standbyKey)),
       ...LAYOUT_KEYS.map((layoutKey) => getLayout(layoutKey)),
       ...LAYOUT_KEYS.map((layoutKey) => getLayout(layoutKey, layoutKey)),
-      // Add custom layouts here,
     ]),
+    // Add custom layouts here,
+    '[1P] 4:3 w/o Camera': {
+      participants: [
+        {
+          layout: '[Layout] Person 1',
+          config: { contentMain: { aspectRatio: '4:3' }, camera: null },
+        },
+      ],
+      items: { '[Audio] Alerts': false, '[Audio] Voice': false },
+    },
   },
   modifiers: {
     'Keyed Cameras': { config: { camera: { isGreenScreen: true } } },
