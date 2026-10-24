@@ -1,13 +1,13 @@
 import { css } from '@emotion/react';
 import { skipToken } from '@reduxjs/toolkit/query';
 
-import { ChatMessage } from '@components/ChatMessage';
-import { ChatSettings } from '@components/ChatSettings';
-import { FlexContainer } from '@components/shared/FlexContainer';
-import { useGetChatSettingsQuery } from '@store/apis/twitch/getChatSettings';
-import { useSelector } from '@store';
-import { useGetSharedChatSessionQuery } from '@store/apis/twitch/getSharedChatSession';
-import { useOrientation } from '@lib/useOrientation';
+import { ChatMessage } from '@/components/ChatMessage';
+import { ChatSettings } from '@/components/ChatSettings';
+import { FlexContainer } from '@/components/shared/FlexContainer';
+import { useGetChatSettingsQuery } from '@/store/apis/twitch/getChatSettings';
+import { useSelector } from '@/store';
+import { useGetSharedChatSessionQuery } from '@/store/apis/twitch/getSharedChatSession';
+import { useOrientation } from '@/lib/useOrientation';
 
 export const ChatBox = () => {
   const orientation = useOrientation();

@@ -5,11 +5,11 @@ import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { generateLayout, LAYOUT_OPTIONS_DEFAULT } from '@eliasthompson/obs-layout-generator';
 
-import { FlexContainer } from '@components/shared/FlexContainer';
-import { RegionBox } from '@components/RegionBox';
-import { layoutCanvases } from '@config';
-import { parseLayoutSearchParams } from '@lib/parseLayoutSearchParams';
-import { useOrientation } from '@lib/useOrientation';
+import { FlexContainer } from '@/components/shared/FlexContainer';
+import { RegionBox } from '@/components/RegionBox';
+import { CANVASES } from '@/constants/canvases';
+import { parseLayoutSearchParams } from '@/lib/parseLayoutSearchParams';
+import { useOrientation } from '@/lib/useOrientation';
 
 export const regionTypes = [
   'contentMain',
@@ -25,7 +25,7 @@ export const Layout = () => {
   const { layoutMetrics, layoutOptions } = useMemo(() => {
     const parsedLayoutSearchParams = parseLayoutSearchParams(searchParams);
     // The orientation picks the configured canvas, and the options in the params apply over it
-    const layoutOptions = { ...layoutCanvases[orientation], ...parsedLayoutSearchParams.layoutOptions };
+    const layoutOptions = { ...CANVASES[orientation], ...parsedLayoutSearchParams.layoutOptions };
 
     return { layoutMetrics: generateLayout(parsedLayoutSearchParams.layoutConfigs, layoutOptions), layoutOptions };
   }, [orientation, searchParams]);

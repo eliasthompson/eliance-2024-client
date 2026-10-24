@@ -1,17 +1,17 @@
-import type { MessageProps } from '@components/shared/Message/types';
-import type { TwitchCheermoteTier } from '@store/apis/twitch';
+import type { MessageProps } from '@/components/shared/Message/types';
+import type { TwitchCheermoteTier } from '@/store/apis/twitch';
 
 import { Fragment } from 'react/jsx-runtime';
 import { css } from '@emotion/react';
 
-import cheer1Image from '@assets/images/cheer1.gif';
-import cheer100Image from '@assets/images/cheer100.gif';
-import cheer1000Image from '@assets/images/cheer1000.gif';
-import cheer5000Image from '@assets/images/cheer5000.gif';
-import cheer10000Image from '@assets/images/cheer10000.gif';
-import cheer100000Image from '@assets/images/cheer100000.gif';
-import { useGetGlobalEmotesQuery } from '@store/apis/twitch/getGlobalEmotes';
-import { hasKey } from '@lib/hasKey';
+import cheer1Image from '@/assets/images/cheer1.gif';
+import cheer100Image from '@/assets/images/cheer100.gif';
+import cheer1000Image from '@/assets/images/cheer1000.gif';
+import cheer5000Image from '@/assets/images/cheer5000.gif';
+import cheer10000Image from '@/assets/images/cheer10000.gif';
+import cheer100000Image from '@/assets/images/cheer100000.gif';
+import { useGetGlobalEmotesQuery } from '@/store/apis/twitch/getGlobalEmotes';
+import { hasKey } from '@/lib/hasKey';
 
 export const cheermotes = {
   cheer: {

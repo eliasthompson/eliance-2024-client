@@ -1,15 +1,17 @@
+import type { CanvasKey } from '@/constants/canvasKeys';
+
 import { useSyncExternalStore } from 'react';
 
-import { layoutCanvases } from '@config';
-import { hasKey } from '@lib/hasKey';
+import { CANVASES } from '@/constants/canvases';
+import { hasKey } from '@/lib/hasKey';
 
 /** A canvas orientation: one of the configured canvases */
-export type Orientation = keyof typeof layoutCanvases;
+export type Orientation = CanvasKey;
 
 export const parseOrientationParam = (value: string | null): Orientation => {
   const orientation = value?.trim().toLowerCase() ?? '';
 
-  return hasKey(layoutCanvases, orientation) ? orientation : 'landscape';
+  return hasKey(CANVASES, orientation) ? orientation : 'landscape';
 };
 
 // The hash router keeps the search params in the hash, and GlobalStyle renders outside the router, so they are read
@@ -30,7 +32,7 @@ const subscribeToHash = (onChange: () => void) => {
 };
 
 /**
- * The global `orientation` search param every route shares, picking the canvas from `layoutCanvases`: `landscape` (the
+ * The global `orientation` search param every route shares, picking the canvas from `CANVASES`: `landscape` (the
  * default) or `portrait`, e.g. `#/layout?orientation=portrait&participants=2`.
  */
 export const useOrientation = () => useSyncExternalStore(subscribeToHash, getOrientation);

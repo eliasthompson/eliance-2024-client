@@ -2,7 +2,7 @@ import type { AspectRatio, ContentAspectRatio, LayoutConfig, LayoutOptions } fro
 
 import { CONTENT_ASPECT_RATIOS } from '@eliasthompson/obs-layout-generator';
 
-import { hasKey } from '@lib/hasKey';
+import { hasKey } from '@/lib/hasKey';
 
 /**
  * Search params understood by the layout route, e.g.

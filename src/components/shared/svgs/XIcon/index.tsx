@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import type { IconProps } from '@components/shared/svgs/types';
+import type { IconProps } from '@/components/shared/svgs/types';
 
 export const XIcon = ({ colored, cssIcon: cssIconProvided }: IconProps) => {
   const color = '#ffffff';

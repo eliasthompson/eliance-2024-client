@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
-import { fetchRefreshedBaseQuery } from '@store/apis/twitch/fetchRefreshedBaseQuery';
+import { fetchRefreshedBaseQuery } from '@/store/apis/twitch/fetchRefreshedBaseQuery';
 
 export type TwitchCheermoteTier = 1 | 100 | 500 | 1000 | 5000 | 10000 | 100000;
 

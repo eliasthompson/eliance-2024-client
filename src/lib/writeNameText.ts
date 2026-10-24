@@ -1,4 +1,4 @@
-import type { ObsClient } from '@lib/obsWebSocket';
+import type { ObsClient } from '@/lib/obsWebSocket';
 
 /**
  * Write a person's name into a layout's name text source, leaving its font and everything else as they are, since

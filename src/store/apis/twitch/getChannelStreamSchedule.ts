@@ -1,4 +1,4 @@
-import { twitchApi } from '@store/apis/twitch';
+import { twitchApi } from '@/store/apis/twitch';
 
 export interface TwitchApiGetChannelStreamScheduleRequest {
   broadcasterId: string;

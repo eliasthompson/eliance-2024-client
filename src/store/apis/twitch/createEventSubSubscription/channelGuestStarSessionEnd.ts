@@ -2,9 +2,9 @@ import type {
   TwitchApiCreateEventSubSubscriptionResponse,
   TwitchEventSubNotificationMessage,
   TwitchEventSubRevocationMessage,
-} from '@store/apis/twitch';
+} from '@/store/apis/twitch';
 
-import { twitchApi } from '@store/apis/twitch';
+import { twitchApi } from '@/store/apis/twitch';
 
 const type = 'channel.guest_star_session.end';
 const version = 'beta';

@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 
-import type { TwitchEventSubMessage } from '@components/types';
+import type { TwitchEventSubMessage } from '@/components/types';
 
-import { isRecord } from '@lib/isRecord';
+import { isRecord } from '@/lib/isRecord';
 
 const initialKeepaliveMs = 30 * 1000;
 const eventSubUrl = `wss://eventsub.wss.twitch.tv/ws?keepalive_timeout_seconds=${initialKeepaliveMs / 1000}`;

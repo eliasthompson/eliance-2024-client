@@ -1,9 +1,9 @@
-import type { RegionBoxProps } from '@components/RegionBox/types';
+import type { RegionBoxProps } from '@/components/RegionBox/types';
 
 import { css } from '@emotion/react';
 
-import { FlexContainer } from '@components/shared/FlexContainer';
-import { formatAspectRatio } from '@lib/formatAspectRatio';
+import { FlexContainer } from '@/components/shared/FlexContainer';
+import { formatAspectRatio } from '@/lib/formatAspectRatio';
 
 export const regionTypeLabels = {
   camera: 'Camera',

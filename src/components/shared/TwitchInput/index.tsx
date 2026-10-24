@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import type { TwitchInputProps } from '@components/shared/TwitchInput/types';
+import type { TwitchInputProps } from '@/components/shared/TwitchInput/types';
 
 export const TwitchInput = ({ attach, ...propsInput }: TwitchInputProps) => {
   let borderRadius = css`

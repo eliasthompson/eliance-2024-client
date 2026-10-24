@@ -49,6 +49,8 @@ export default {
     plugins: [
       new TsconfigPathsPlugin({
         configFile: './tsconfig.json',
+        // It tries only .ts and .tsx by default, and `@/config/secrets` is a .js file
+        extensions: ['.js', '.jsx', '.tsx', '.ts'],
       }),
     ],
     fallback: { util: false },

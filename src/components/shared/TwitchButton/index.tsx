@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import type { TwitchButtonProps, TwitchButtonValidTags } from '@components/shared/TwitchButton/types';
+import type { TwitchButtonProps, TwitchButtonValidTags } from '@/components/shared/TwitchButton/types';
 
 export const defaultTwitchButtonAsValue = 'button' as const;
 

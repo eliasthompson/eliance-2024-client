@@ -3,9 +3,9 @@ import type {
   TwitchCheermoteTier,
   TwitchEventSubNotificationMessage,
   TwitchEventSubRevocationMessage,
-} from '@store/apis/twitch';
+} from '@/store/apis/twitch';
 
-import { twitchApi } from '@store/apis/twitch';
+import { twitchApi } from '@/store/apis/twitch';
 
 const type = 'channel.chat.notification';
 const version = '1';

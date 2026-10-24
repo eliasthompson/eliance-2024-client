@@ -1,10 +1,10 @@
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-import type { FirebotApiErrorResponse } from '@store/apis/firebot';
-import type { TwitchApiErrorResponse } from '@store/apis/twitch';
-import type { TwitchEventSubChannelChatMessageNotificationMessageEvent } from '@store/apis/twitch/createEventSubSubscription/channelChatMessage';
-import type { TwitchEventSubChannelChatNotificationNotificationMessageEvent } from '@store/apis/twitch/createEventSubSubscription/channelChatNotification';
+import type { FirebotApiErrorResponse } from '@/store/apis/firebot';
+import type { TwitchApiErrorResponse } from '@/store/apis/twitch';
+import type { TwitchEventSubChannelChatMessageNotificationMessageEvent } from '@/store/apis/twitch/createEventSubSubscription/channelChatMessage';
+import type { TwitchEventSubChannelChatNotificationNotificationMessageEvent } from '@/store/apis/twitch/createEventSubSubscription/channelChatNotification';
 
 import { createSlice } from '@reduxjs/toolkit';
 

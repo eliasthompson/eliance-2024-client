@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
-import { fetchStaggeredBaseQuery } from '@store/apis/firebot/fetchStaggeredBaseQuery';
+import { fetchStaggeredBaseQuery } from '@/store/apis/firebot/fetchStaggeredBaseQuery';
 
 export interface FirebotApiErrorResponse {
   status: 'error';

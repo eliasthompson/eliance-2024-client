@@ -2,26 +2,27 @@ import { Fragment } from 'react';
 import { css } from '@emotion/react';
 import { skipToken } from '@reduxjs/toolkit/query';
 
-import type { ChatMessageProps, TwitchChatBoxBadge } from '@components/ChatMessage/types';
+import type { ChatMessageProps, TwitchChatBoxBadge } from '@/components/ChatMessage/types';
 
-import cosmicAbyssTallVideo from '@assets/videos/cosmic-abyss-tall.mp4';
-import { AnnouncementIcon } from '@components/shared/svgs/AnnouncementIcon';
-import { BitsIcon } from '@components/shared/svgs/BitsIcon';
-import { ChannelPointIcon } from '@components/shared/svgs/ChannelPointIcon';
-import { FlexContainer } from '@components/shared/FlexContainer';
-import { Message } from '@components/shared/Message';
-import { PinIcon } from '@components/shared/svgs/PinIcon';
-import { SparkleIcon } from '@components/shared/svgs/SparkleIcon';
-import { SubscriberIcon } from '@components/shared/svgs/SubscriberIcon';
-import { TwitchIcon } from '@components/shared/svgs/TwitchIcon';
-import { infoBlockHeights, layoutCanvases } from '@config';
-import { hasKey } from '@lib/hasKey';
-import { useOrientation } from '@lib/useOrientation';
-import { useGetChannelChatBadgesQuery } from '@store/apis/twitch/getChannelChatBadges';
-import { useGetGlobalChatBadgesQuery } from '@store/apis/twitch/getGlobalChatBadges';
-import { useGetPronounsQuery } from '@store/apis/chatPronouns/getPronouns';
-import { useGetUserQuery } from '@store/apis/chatPronouns/getUser';
-import { useSelector } from '@store';
+import cosmicAbyssTallVideo from '@/assets/videos/cosmic-abyss-tall.mp4';
+import { AnnouncementIcon } from '@/components/shared/svgs/AnnouncementIcon';
+import { BitsIcon } from '@/components/shared/svgs/BitsIcon';
+import { ChannelPointIcon } from '@/components/shared/svgs/ChannelPointIcon';
+import { FlexContainer } from '@/components/shared/FlexContainer';
+import { Message } from '@/components/shared/Message';
+import { PinIcon } from '@/components/shared/svgs/PinIcon';
+import { SparkleIcon } from '@/components/shared/svgs/SparkleIcon';
+import { SubscriberIcon } from '@/components/shared/svgs/SubscriberIcon';
+import { TwitchIcon } from '@/components/shared/svgs/TwitchIcon';
+import { CANVASES } from '@/constants/canvases';
+import { INFO_BLOCK_HEIGHTS } from '@/constants/infoBlockHeights';
+import { hasKey } from '@/lib/hasKey';
+import { useOrientation } from '@/lib/useOrientation';
+import { useGetChannelChatBadgesQuery } from '@/store/apis/twitch/getChannelChatBadges';
+import { useGetGlobalChatBadgesQuery } from '@/store/apis/twitch/getGlobalChatBadges';
+import { useGetPronounsQuery } from '@/store/apis/chatPronouns/getPronouns';
+import { useGetUserQuery } from '@/store/apis/chatPronouns/getUser';
+import { useSelector } from '@/store';
 
 export const noticeTypes = {
   announcement: AnnouncementIcon,
@@ -49,8 +50,8 @@ export const announcementColors = {
  * wraps at the same ems, so a message breaks after the same words on both canvases.
  */
 const landscapeChatEms = (() => {
-  const { canvasWidth, canvasPadding, canvasGap, regionBorder } = layoutCanvases.landscape;
-  const bar = infoBlockHeights.landscape;
+  const { canvasWidth, canvasPadding, canvasGap, regionBorder } = CANVASES.landscape;
+  const bar = INFO_BLOCK_HEIGHTS.landscape;
   const padding = canvasGap / 2;
   const section = ((canvasWidth - (canvasPadding + regionBorder) * 2) * 3) / 8;
   const settings = padding * 2 + (bar - padding * 2.5) / 2;

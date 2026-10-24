@@ -1,11 +1,11 @@
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import type { RootState } from '@store';
+import type { RootState } from '@/store';
 
 import { Mutex } from 'async-mutex';
 import { fetchBaseQuery } from '@reduxjs/toolkit/query';
 
-import { clientId } from '@config';
-import { clearTwitchAuth, setTwitchAuth } from '@store/slices/twitchAuth';
+import { clientId } from '@/config';
+import { clearTwitchAuth, setTwitchAuth } from '@/store/slices/twitchAuth';
 
 interface TwitchApiRefreshTokenResponse {
   access_token: string;

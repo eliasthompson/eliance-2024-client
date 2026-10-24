@@ -2,9 +2,9 @@ import type {
   TwitchApiCreateEventSubSubscriptionResponse,
   TwitchEventSubNotificationMessage,
   TwitchEventSubRevocationMessage,
-} from '@store/apis/twitch';
+} from '@/store/apis/twitch';
 
-import { twitchApi } from '@store/apis/twitch';
+import { twitchApi } from '@/store/apis/twitch';
 
 const type = 'channel.channel_points_custom_reward_redemption.add';
 const version = '1';

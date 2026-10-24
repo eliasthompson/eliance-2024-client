@@ -1,9 +1,9 @@
 import { css } from '@emotion/react';
 
-import type { GoalInfoProps } from '@components/GoalInfo/types';
+import type { GoalInfoProps } from '@/components/GoalInfo/types';
 
-import { FlexContainer } from '@components/shared/FlexContainer';
-import { useSelector } from '@store';
+import { FlexContainer } from '@/components/shared/FlexContainer';
+import { useSelector } from '@/store';
 
 export const GoalInfo = ({ goal }: GoalInfoProps) => {
   const { broadcasterColor } = useSelector(({ info }) => info);

@@ -1,11 +1,11 @@
 import { css } from '@emotion/react';
 import { skipToken } from '@reduxjs/toolkit/query';
 
-import { EmoteIcon } from '@components/shared/svgs/EmoteIcon';
-import { FlexContainer } from '@components/shared/FlexContainer';
-import { FollowerIcon } from '@components/shared/svgs/FollowerIcon';
-import { useGetChatSettingsQuery } from '@store/apis/twitch/getChatSettings';
-import { useSelector } from '@store';
+import { EmoteIcon } from '@/components/shared/svgs/EmoteIcon';
+import { FlexContainer } from '@/components/shared/FlexContainer';
+import { FollowerIcon } from '@/components/shared/svgs/FollowerIcon';
+import { useGetChatSettingsQuery } from '@/store/apis/twitch/getChatSettings';
+import { useSelector } from '@/store';
 
 /**
  * Whether chat is in follower-only and emote-only mode, as two icons stacked to fill a block's height: beside the chat

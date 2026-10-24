@@ -1,9 +1,9 @@
-import type { ApiError } from '@store/slices/info';
-import type { ErrorMessageProps } from '@components/shared/ErrorMessage/types';
+import type { ApiError } from '@/store/slices/info';
+import type { ErrorMessageProps } from '@/components/shared/ErrorMessage/types';
 
 import { css } from '@emotion/react';
 
-import { isRecord } from '@lib/isRecord';
+import { isRecord } from '@/lib/isRecord';
 
 export const isApiError = (error: unknown): error is ApiError =>
   isRecord(error) && typeof error.status === 'number' && !(error instanceof Error);

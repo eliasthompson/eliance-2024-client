@@ -2,9 +2,9 @@ import type { BorderColor } from '@eliasthompson/obs-layout-firebot/settings';
 
 import { COLOR_MOVE_FILTER_NAME, colorMoveFilterSettings } from '@eliasthompson/obs-layout-firebot/settings';
 
-import type { ObsClient } from '@lib/obsWebSocket';
+import type { ObsClient } from '@/lib/obsWebSocket';
 
-import { toObsColor } from '@lib/toObsColor';
+import { toObsColor } from '@/lib/toObsColor';
 
 /**
  * Fade a border source to a color through its Move: Color filter, restarting it in case a fade is still running. A

@@ -1,4 +1,4 @@
-import type { TwitchCheermoteTier, TwitchPubSubBaseMessage } from '@store/apis/twitch';
+import type { TwitchCheermoteTier, TwitchPubSubBaseMessage } from '@/store/apis/twitch';
 
 export type TwitchPubSubPinMessagePinnedChatUpdatesMessageMessage = TwitchPubSubBaseMessage<
   'pin-message',

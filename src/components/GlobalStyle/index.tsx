@@ -1,15 +1,16 @@
 import { Global, css } from '@emotion/react';
 
-import robotoLightFont from '@assets/fonts/Roboto-Light.ttf';
-import robotoRegularFont from '@assets/fonts/Roboto-Regular.ttf';
-import robotoMediumFont from '@assets/fonts/Roboto-Medium.ttf';
-import { infoBlockHeights, layoutCanvases } from '@config';
-import { useOrientation } from '@lib/useOrientation';
+import robotoLightFont from '@/assets/fonts/Roboto-Light.ttf';
+import robotoRegularFont from '@/assets/fonts/Roboto-Regular.ttf';
+import robotoMediumFont from '@/assets/fonts/Roboto-Medium.ttf';
+import { CANVASES } from '@/constants/canvases';
+import { INFO_BLOCK_HEIGHTS } from '@/constants/infoBlockHeights';
+import { useOrientation } from '@/lib/useOrientation';
 
 export const GlobalStyle = () => {
   const orientation = useOrientation();
   const { canvasWidth, canvasHeight, canvasMarginBottom, canvasPadding, canvasGap, regionBorder } =
-    layoutCanvases[orientation];
+    CANVASES[orientation];
   const bodyBackgroundColor = window.obsstudio ? 'transparent' : '#121212';
   const rootBackgroundColor = window.obsstudio ? 'transparent' : '#226600';
   const rootBackgroundImage = window.obsstudio
@@ -62,7 +63,7 @@ export const GlobalStyle = () => {
       --container-width: ${canvasWidth}px;
       --container-height: ${canvasHeight}px;
       --bar-width: ${canvasWidth - canvasPadding * 2 - regionBorder * 2}px;
-      --bar-height: ${infoBlockHeights[orientation]}px;
+      --bar-height: ${INFO_BLOCK_HEIGHTS[orientation]}px;
       --info-height: ${canvasMarginBottom - regionBorder}px;
       --padding: ${canvasGap / 2}px;
       --line-height: calc((var(--bar-height) - (var(--padding) * 2)) / 3);

@@ -1,6 +1,6 @@
 # AGENTS.md
 
-React overlay app for OBS browser sources on a Twitch stream. Each hash route is one 1920×1080 overlay, or 1080×1920 with the global `orientation=portrait` search param (`useOrientation` in `src/lib/`, which `GlobalStyle` and the layout route read; the other routes do not adapt to it yet). Data comes from the Twitch Helix API, Twitch EventSub and PubSub websockets, a local Firebot API, and pronouns.alejo.io. Layout regions come from the `@eliasthompson/obs-layout-generator` package.
+React overlay app for OBS browser sources on a Twitch stream. Each hash route is one 1920×1080 overlay, or 1080×1920 with the global `orientation=portrait` search param (`useOrientation` in `src/lib/`, which `GlobalStyle`, the layout route, and the global info route read; the featured clips and schedule routes do not adapt to it yet). Data comes from the Twitch Helix API, Twitch EventSub and PubSub websockets, a local Firebot API, and pronouns.alejo.io. Layout regions come from the `@eliasthompson/obs-layout-generator` package.
 
 ## Commands
 
@@ -13,17 +13,18 @@ Before finishing a change, run `npm run lint`. There is no test suite; `npm test
 
 ## Layout
 
-- `config/index.ts`: app config and the Twitch scopes. `config/secrets.js` holds secrets, is git-ignored, and is typed by `config/secrets.d.ts`; `config/secrets.template.js` lists its keys. Add non-secret settings to `config/index.ts` and secrets to all three secrets files.
-- `config/layoutCanvases.ts`: the `landscape` and `portrait` canvases, as raw `LayoutOptions` the app sizes itself from, sharing their spacing, plus `infoBlockHeights`, the height of one info block on each canvas, from which every size inside a block derives. The global info fills each canvas's bottom margin less its border: one landscape block, or in portrait the person block over chat with the goals at its foot, chat taking the rest. `config/scenes.ts`: the `@eliasthompson/obs-layout-firebot` config for this installation: one entry under `canvases` per OBS canvas, each taking its options from `layoutCanvases`, with `borderPadding` for the border shadows that reach past them. The vertical canvas (Aitum Vertical) is behind `VERTICAL`; its own scenes and sources (container, layout and standby text scenes, borders, name and standby texts) carry a ` (V)` suffix, while the content, camera, info, and background scenes are shared, since both canvases show and hide them at once. obs-layout-firebot's shared-source check in `firebot:deploy` holds that true. It must stay pure data (`firebot:deploy` stores it in Firebot as JSON), so it imports only `layoutCanvases` and types. The `npm run obs:*` and `firebot:*` scripts run that package's CLI against it; the Firebot presets derive from it, so the deploy writes nothing here. The package is a dev dependency, since the app only imports its types; to work against unreleased changes, link the sibling checkout with `npx link ../obs-layout-firebot` and keep the range in package.json.
+- `config/index.ts`: the settings that come from secrets, and the obs-websocket URL. `config/secrets.js` holds secrets, is git-ignored, and is typed by `config/secrets.d.ts`; `config/secrets.template.js` lists its keys. Add secrets to all three secrets files, and other settings as constants in `src/constants/`.
+- `src/constants/`: one constant per file, imported as `@/constants/<name>`. `CANVASES` holds the `landscape` and `portrait` canvases as raw `LayoutOptions` the app sizes itself from, sharing `CANVAS_SPACING`; `INFO_BLOCK_HEIGHTS` is the height of one info block on each canvas, from which every size inside a block derives. The global info fills each canvas's bottom margin less its border: one landscape block, or in portrait the person block over chat with the goals at its foot, chat taking the rest. `LAYOUTS` are the content shapes, `STANDBY_KEYS` the standby screens, and `TWITCH_SCOPES` the scopes the device code flow requests.
+- `config/scenes.ts`: the `@eliasthompson/obs-layout-firebot` config for this installation, built from the constants: one entry under `canvases` per OBS canvas, each taking its options from `CANVASES`, with `borderPadding`, half the layout gap, for the border shadows that reach past them. The vertical canvas (Aitum Vertical) is behind `isVerticalEnabled`; its own scenes and sources (container, layout and standby text scenes, borders, name and standby texts) carry a ` (V)` suffix, while the content, camera, info, and background scenes are shared, since both canvases show and hide them at once. obs-layout-firebot's shared-source check in `firebot:deploy` holds that true; README.md's OBS scene collection section lists the names. It must evaluate to plain data (`firebot:deploy` stores it in Firebot as JSON), so neither it nor the constants it imports may hold secrets or side effects. Its default export is for the CLI, which resolves the `@/` aliases through tsconfig.json; the app imports the named `SCENES`. The `npm run obs:*` and `firebot:*` scripts run that package's CLI against it; the Firebot presets derive from it, so the deploy writes nothing here. The package is a dev dependency, since the app only imports its types; to work against unreleased changes, link the sibling checkout with `npx link ../obs-layout-firebot` and keep the range in package.json.
 - `config/webpack.js`, `config/babel.js`: build config. Emotion's `css` prop is wired through `@babel/preset-react` `importSource`.
 - `src/index.tsx`: entry; `src/routes.tsx`: the hash router. Routes under `Container` require a Twitch token; routes that need no Twitch data are siblings of it.
 - `src/components/<Name>/index.tsx`: one component per folder, with its props interface in `types.ts` beside it. Route-level and composite components sit at the top level; reusable pieces are in `shared/`, icons in `shared/svgs/`.
-- `src/lib/`: one export group per file, imported as `@lib/<name>`.
+- `src/lib/`: one export group per file, imported as `@/lib/<name>`.
 - `src/store/apis/<service>/`: one RTK Query API per service in `index.ts`, one endpoint per file injected with `injectEndpoints`, exporting the generated hooks and typed request and response interfaces. Twitch EventSub subscriptions live under `twitch/createEventSubSubscription/`.
 - `src/store/slices/<name>/index.ts`: Redux Toolkit slices. `info` holds overlay state such as persons, alerts, and chats.
 - `src/assets/`: fonts, images, and videos, each with a `<name>.d.<ext>.ts` declaration beside it.
 - `src/components/LayoutSync/`: colors the OBS layout borders and writes the name texts from the persons over obs-websocket, on every canvas (`src/lib/obsWebSocket.ts`, `src/lib/writeBorderColor.ts`, `src/lib/writeNameText.ts`). The filter names and settings come from `@eliasthompson/obs-layout-firebot/settings`, the package's browser-safe subpath; its main entry is Node-only and is imported for types alone.
-- Path aliases are defined in `tsconfig.json` (`@components`, `@config`, `@lib`, `@store`, `@src`, `@assets`) and resolved by `tsconfig-paths-webpack-plugin`. Use them instead of relative paths.
+- Path aliases are defined in `tsconfig.json` (`@/components`, `@/config`, `@/constants`, `@/lib`, `@/store`, `@/src`, `@/assets`) and resolved by `tsconfig-paths-webpack-plugin`, and by obs-layout-firebot's CLI when it loads `config/scenes.ts`. Use them instead of relative paths.
 
 ## Conventions
 
@@ -33,9 +34,15 @@ Before finishing a change, run `npm run lint`. There is no test suite; `npm test
 - Sizes derive from the CSS variables in `GlobalStyle` (`--padding`, `--bar-height`, `--line-height`, `--font-size`, `--container-width`, `--container-height`) rather than new pixel values. `window.obsstudio` distinguishes OBS from a browser preview; previews draw backgrounds and borders that OBS does not.
 - Gate rendering with `isLoading` and `isRenderable` and `return false` under a `// Render nothing if data is loading or required data is incomplete` comment. Short comments precede each `useEffect` and the final `// Render component`.
 - RTK Query hooks take `skipToken` until their arguments exist. Unused `error` destructures are kept as commented placeholders.
-- Lookup tables are `as const` (with `satisfies` where a shape exists) and narrowed with `hasKey` from `@lib/hasKey`.
+- Lookup tables are `as const` (with `satisfies` where a shape exists) and narrowed with `hasKey` from `@/lib/hasKey`.
+- Constants live in `src/constants/`, one per file named after it, in SCREAMING_CASE, frozen with `Object.freeze` and `as const satisfies` their shape. A list of keys exports its key type beside it (`CANVAS_KEYS`, `CanvasKey`).
 - Import order: type imports, then packages, then project imports, with a blank line between groups. Object keys and interface members keep semantic order (`x, y, width, height`) and are not sorted.
 - Prettier settings are in `.prettierrc` (120 columns, single quotes, trailing commas). Let `eslint --fix` apply them.
+
+## Commits
+
+- A commit message is one lowercase sentence in the imperative, with no type prefix, period, body, or trailers (no `Co-Authored-By`), saying what changes and why: `refresh the twitch token under a lock every overlay shares, taking up tokens another refreshed, since twitch takes each refresh token once`.
+- A dependency update names the versions it takes: `take obs-layout-generator 3.0 and obs-layout-firebot 4.0`.
 
 ## Toolchain constraints
 

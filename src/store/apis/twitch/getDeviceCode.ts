@@ -1,8 +1,10 @@
-import { twitchApi } from '@store/apis/twitch';
+import type { TWITCH_SCOPES } from '@/constants/twitchScopes';
+
+import { twitchApi } from '@/store/apis/twitch';
 
 export interface TwitchApiGetDeviceCodeRequest {
   clientId: string;
-  scopes: string[];
+  scopes: typeof TWITCH_SCOPES;
 }
 
 export interface TwitchApiGetDeviceCodeResponse {

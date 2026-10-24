@@ -2,17 +2,18 @@ import { MdContentCopy, MdOpenInNew } from 'react-icons/md';
 import { css } from '@emotion/react';
 import { useCallback } from 'react';
 
-import type { AuthenticationBarProps } from '@components/AuthenticationBar/types';
+import type { AuthenticationBarProps } from '@/components/AuthenticationBar/types';
 
-import { FlexContainer } from '@components/shared/FlexContainer';
-import { TwitchButton } from '@components/shared/TwitchButton';
-import { TwitchInput } from '@components/shared/TwitchInput';
-import { clientId, scopes } from '@config';
-import { invalidateTwitchApiTags } from '@store/apis/twitch';
-import { setTwitchAuth } from '@store/slices/twitchAuth';
-import { useCreateTokenMutation } from '@store/apis/twitch/createToken';
-import { useDispatch } from '@store';
-import { useGetDeviceCodeQuery } from '@store/apis/twitch/getDeviceCode';
+import { FlexContainer } from '@/components/shared/FlexContainer';
+import { TwitchButton } from '@/components/shared/TwitchButton';
+import { TwitchInput } from '@/components/shared/TwitchInput';
+import { clientId } from '@/config';
+import { TWITCH_SCOPES } from '@/constants/twitchScopes';
+import { invalidateTwitchApiTags } from '@/store/apis/twitch';
+import { setTwitchAuth } from '@/store/slices/twitchAuth';
+import { useCreateTokenMutation } from '@/store/apis/twitch/createToken';
+import { useDispatch } from '@/store';
+import { useGetDeviceCodeQuery } from '@/store/apis/twitch/getDeviceCode';
 
 export const AuthenticationBar = ({ cssBar: cssBarProvided }: AuthenticationBarProps) => {
   const dispatch = useDispatch();
@@ -20,7 +21,7 @@ export const AuthenticationBar = ({ cssBar: cssBarProvided }: AuthenticationBarP
     data: deviceCodeData,
     // error: deviceCodeError,
     isLoading: isDeviceCodeLoading,
-  } = useGetDeviceCodeQuery({ clientId, scopes });
+  } = useGetDeviceCodeQuery({ clientId, scopes: TWITCH_SCOPES });
   const [createTokenMutation] = useCreateTokenMutation();
   const isRenderable = !!deviceCodeData;
 
@@ -37,7 +38,7 @@ export const AuthenticationBar = ({ cssBar: cssBarProvided }: AuthenticationBarP
       const { data: tokenData } = await createTokenMutation({
         clientId,
         deviceCode: deviceCodeData.device_code,
-        scopes,
+        scopes: TWITCH_SCOPES,
       });
 
       if (tokenData) {

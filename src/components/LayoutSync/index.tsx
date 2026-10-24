@@ -3,16 +3,17 @@ import type { ParticipantPoolEntry, ScenesConfig } from '@eliasthompson/obs-layo
 import { resolveBorderColor } from '@eliasthompson/obs-layout-firebot/settings';
 import { useEffect, useRef, useState } from 'react';
 
-import type { ObsClient } from '@lib/obsWebSocket';
+import type { ObsClient } from '@/lib/obsWebSocket';
 
-import { createObsClient } from '@lib/obsWebSocket';
-import { obsWebSocketPassword, obsWebSocketUrl, scenes } from '@config';
-import { writeBorderColor } from '@lib/writeBorderColor';
-import { writeNameText } from '@lib/writeNameText';
-import { useSelector } from '@store';
+import { createObsClient } from '@/lib/obsWebSocket';
+import { obsWebSocketPassword, obsWebSocketUrl } from '@/config';
+import { SCENES } from '@/config/scenes';
+import { writeBorderColor } from '@/lib/writeBorderColor';
+import { writeNameText } from '@/lib/writeNameText';
+import { useSelector } from '@/store';
 
 // The config is read through its declared type, not the literal one, so every binding may carry a border
-const scenesConfig: ScenesConfig = scenes;
+const scenesConfig: ScenesConfig = SCENES;
 
 /** Each canvas's participant layouts, in the canvas's participant order. */
 const canvasEntries = Object.values(scenesConfig.canvases).map((canvas) => Object.values(canvas.participants));
@@ -42,7 +43,7 @@ export const LayoutSync = () => {
   const clientRef = useRef<ObsClient>(undefined);
   const writtenColorsRef = useRef(new Map<string, string>());
   const writtenNamesRef = useRef(new Map<string, string>());
-  const borderColor = resolveBorderColor(scenes);
+  const borderColor = resolveBorderColor(SCENES);
   const hasNames = participantNames.some((names) => names.length);
   const personKeys = persons.map(({ id, color, name }) => `${id}:${color}:${name}`).join('|');
 

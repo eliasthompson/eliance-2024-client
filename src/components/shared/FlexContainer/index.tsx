@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import type { FlexContainerProps } from '@components/shared/FlexContainer/types';
+import type { FlexContainerProps } from '@/components/shared/FlexContainer/types';
 
 export const FlexContainer = ({
   children,

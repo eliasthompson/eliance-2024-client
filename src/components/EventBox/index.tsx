@@ -1,27 +1,27 @@
-import type { IconProps } from '@components/shared/svgs/types';
+import type { IconProps } from '@/components/shared/svgs/types';
 
 import { Fragment, FunctionComponent, useEffect, useRef, useState } from 'react';
 import { css } from '@emotion/react';
 import { skipToken } from '@reduxjs/toolkit/query';
 
-import { AnnouncementIcon } from '@components/shared/svgs/AnnouncementIcon';
-import { BitsIcon } from '@components/shared/svgs/BitsIcon';
-import { ChannelPointIcon } from '@components/shared/svgs/ChannelPointIcon';
-import { CharityIcon } from '@components/shared/svgs/CharityIcon';
-import { EmptyComponent } from '@components/shared/EmptyComponent';
-import { FlexContainer } from '@components/shared/FlexContainer';
-import { FollowerIcon } from '@components/shared/svgs/FollowerIcon';
-import { GoalInfo } from '@components/GoalInfo';
-import { GoalInfoProps } from '@components/GoalInfo/types';
-import { Message } from '@components/shared/Message';
-import { RaidIcon } from '@components/shared/svgs/RaidIcon';
-import { SubscriberIcon } from '@components/shared/svgs/SubscriberIcon';
-import { TwitchIcon } from '@components/shared/svgs/TwitchIcon';
-import { changeAlert, setInfo } from '@store/slices/info';
-import { useGetCharityCampaignQuery } from '@store/apis/twitch/getCharityCampaign';
-import { useGetCreatorGoalsQuery } from '@store/apis/twitch/getCreatorGoals';
-import { useDispatch, useSelector } from '@store';
-import { useOrientation } from '@lib/useOrientation';
+import { AnnouncementIcon } from '@/components/shared/svgs/AnnouncementIcon';
+import { BitsIcon } from '@/components/shared/svgs/BitsIcon';
+import { ChannelPointIcon } from '@/components/shared/svgs/ChannelPointIcon';
+import { CharityIcon } from '@/components/shared/svgs/CharityIcon';
+import { EmptyComponent } from '@/components/shared/EmptyComponent';
+import { FlexContainer } from '@/components/shared/FlexContainer';
+import { FollowerIcon } from '@/components/shared/svgs/FollowerIcon';
+import { GoalInfo } from '@/components/GoalInfo';
+import { GoalInfoProps } from '@/components/GoalInfo/types';
+import { Message } from '@/components/shared/Message';
+import { RaidIcon } from '@/components/shared/svgs/RaidIcon';
+import { SubscriberIcon } from '@/components/shared/svgs/SubscriberIcon';
+import { TwitchIcon } from '@/components/shared/svgs/TwitchIcon';
+import { changeAlert, setInfo } from '@/store/slices/info';
+import { useGetCharityCampaignQuery } from '@/store/apis/twitch/getCharityCampaign';
+import { useGetCreatorGoalsQuery } from '@/store/apis/twitch/getCreatorGoals';
+import { useDispatch, useSelector } from '@/store';
+import { useOrientation } from '@/lib/useOrientation';
 
 export const alertTypeIcons = {
   announcement: AnnouncementIcon,

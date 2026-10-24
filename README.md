@@ -1,6 +1,6 @@
 # Eliance 2024 Client
 
-Browser source overlays for a Twitch stream, built to run inside OBS at 1920×1080. Each hash route is one overlay: the bottom info bar with guests, events, goals and chat, a featured clip embed, and a layout preview that paints the regions computed by [@eliasthompson/obs-layout-generator](https://github.com/eliasthompson/obs-layout-generator).
+Browser source overlays for a Twitch stream, built to run inside OBS at 1920×1080, with the info bar and layout preview also at 1080×1920 for Twitch's Dual Format vertical canvas. Each hash route is one overlay: the bottom info bar with guests, events, goals and chat, a featured clip embed, and a layout preview that paints the regions computed by [@eliasthompson/obs-layout-generator](https://github.com/eliasthompson/obs-layout-generator).
 
 Data comes from the Twitch Helix API, Twitch EventSub and PubSub websockets, a local [Firebot](https://firebot.app) instance for guest metadata, and [pronouns.alejo.io](https://pronouns.alejo.io).
 
@@ -21,8 +21,9 @@ Fill in `config/secrets.js`:
 - `obsWebSocketPassword`: the obs-websocket password, which the info bar uses to color the layout borders. Leave it
   empty when OBS has authentication off.
 
-`config/secrets.js` is git-ignored. Non-secret settings live beside it: the canvas in `config/layoutOptions.ts`, the
-OBS layout installation in `config/scenes.ts`, and the rest in `config/index.ts`.
+`config/secrets.js` is git-ignored. `config/index.ts` reads it, alongside the obs-websocket URL. Other settings are
+constants in `src/constants/`, one per file: the canvases, the info block heights, the content shapes, the standby
+screens, and the Twitch scopes. The OBS layout installation is `config/scenes.ts`.
 
 ## Running
 
@@ -35,7 +36,7 @@ npm run lint-fix # eslint --fix
 
 The pre-commit hook runs `npm run prebuild`, which is `eslint --fix && tsc`.
 
-Add a route as an OBS browser source at 1920×1080, or open it in a browser for a preview. Outside OBS the overlays draw a background and borders so they are visible; inside OBS (`window.obsstudio`) they are transparent. The VS Code launch config opens `#/global-info` in Chrome with the dev server.
+Add a route as an OBS browser source at 1920×1080, or at 1080×1920 with `?orientation=portrait` (see [Vertical canvas](#vertical-canvas)), or open it in a browser for a preview. Outside OBS the overlays draw a background and borders so they are visible; inside OBS (`window.obsstudio`) they are transparent. The VS Code launch config opens `#/global-info` in Chrome with the dev server.
 
 ### Fonts for OBS text sources
 
@@ -64,7 +65,7 @@ Routes under the root need a Twitch user token. On first load the authentication
 
 `#/layout` runs `generateLayout` and paints every region as a box showing the participant number, region type, size, position, and aspect ratio. Regions that were ratio-driven show an exact ratio such as `16:9`; regions that just filled leftover space show the closest small ratio with `≈`. The `regionBorder` is drawn as an outline around each box that has one, matching how the package measures it; a green screen camera has no outline and a green tint.
 
-Query params inside the hash drive the layout. Defaults for the canvas come from `layoutOptions` in `config/index.ts`, and every URL option overrides them.
+Query params inside the hash drive the layout. Defaults for the canvas come from `CANVASES` in `src/constants/canvases.ts`, the landscape canvas or with `orientation=portrait` the portrait one, and every URL option overrides them.
 
 - A region key sets the base config for every participant: `main`, `aux`, `info`, `camera`, or the `LayoutConfig` name. A ratio shows the region at that ratio, `null`/`none`/`off` hides it, and no value shows it with its defaults: `#/layout?name&aux=4:3&info`. `info` also takes `auto`, and `camera` takes a boolean or its main column ratio.
 - A region field as `region.field`: `ratio`, `mainAttached`, `aboveAttached`, and `greenScreen`, or the `LayoutConfig` field names such as `isMainAttached`: `#/layout?camera.greenScreen&aux=4:3&aux.mainAttached`. Fields a region does not have are ignored.
@@ -85,18 +86,21 @@ Booleans take `true`/`false`, `1`/`0`, `yes`/`no`, `on`/`off`, or no value for `
 ## OBS layout tooling
 
 This repository is also the installation for [obs-layout-firebot](https://github.com/eliasthompson/obs-layout-firebot):
-`config/scenes.ts` is its config, a pure data module describing the container scene, the participant layout scenes
-with their sources and borders, the compositions, the standby screens, and the `borderColor` filter. It takes its
-`options` from `config/layoutOptions.ts`, so the OBS layouts match `#/layout`, and `borderPadding` is the border
-sources' shadow, drawn outside the border. The tools run from here:
+`config/scenes.ts` is its config, a module of plain data describing each canvas's container scene, the participant
+layout scenes with their sources and borders, the compositions, the standby screens, and the `borderColor` filter. It
+takes each canvas's `options` from `CANVASES`, so the OBS layouts match `#/layout`, and imports the constants through
+the `@/` aliases, which the CLI resolves through `tsconfig.json`. The tools run from here:
 
 ```sh
+npm run deploy           # obs:deploy, then firebot:deploy, without prompting
 npm run obs:deploy       # creates the filters in OBS, then restarts OBS if the item transitions need setting (asks first)
 npm run firebot:deploy   # checks the config against OBS, stores it in Firebot, installs the script and presets
 npm run obs:restart      # restarts OBS, never forcibly
 npm run obs:verify -- "<scene key>"   # applies a scene from here and compares every item with the plan
 npm run obs:capture -- "<scene key>"  # screenshots during a transition
+npm run obs:prune        # deletes old scene collection backups for good, keeping the newest 3 (asks first)
 npm run firebot:restart  # installs the presets into the profile and restarts Firebot
+npm run firebot:prune    # deletes old Firebot profile file backups for good, keeping the newest 3 (asks first)
 ```
 
 The deploy and restart commands take `--dry-run` to report what they would do. The Firebot presets, one per scene key,
@@ -108,15 +112,60 @@ obs-layout-firebot is a dev dependency: the overlays only import its types, and 
 unreleased changes from a sibling checkout, link it with `npx link ../obs-layout-firebot` and keep the version range in
 `package.json`; the next `npm install` puts the published package back.
 
-### Border colors
+### OBS scene collection
+
+`config/scenes.ts` names every scene and source the tools drive, so the `Eliance 2026` collection has to match it:
+
+- **One layout scene per person**, `[Layout] Person N`, nested in the container `[Scene] Canvas`, for each of the
+  `participantTotal` people. Raise `participantTotal` as you build them; `obs:verify` reports the ones missing. People
+  are numbered in the order the info bar lists them: the broadcaster first, then Guest Star guests, then the Firebot
+  guest role.
+- **Each layout scene holds** `[Group] Main Content N`, `[Group] Aux Content N`, `[Group] Camera N`, `[List] Info N`,
+  and `[Text] Name N`, and a `[Border] … N` color source for each region but the name. The shadow filters on the
+  border sources reach `borderPadding` past the border, which is always half the layout gap.
+- **The vertical canvas** (Aitum Vertical) has its own container, layout scenes, borders, and name texts, named with a
+  ` (V)` suffix: `[Scene] Canvas (V)`, `[Layout] Person 1 (V)`, `[Border] Camera 1 (V)`, `[Text] Name 1 (V)`. OBS
+  sizes every scene to its canvas, and the tools size borders and name texts on the source itself, so each canvas
+  needs its own.
+- **The content, camera, info, and background scenes are shared.** They live on the main canvas, and the vertical
+  layouts nest them too. The tools fade a source on the source itself, so both canvases fade a shared scene together,
+  and `firebot:deploy` refuses a config where any preset would fade one differently on the two canvases.
+- **Each standby screen** has a text source in `[Widget] Standby Text`, such as `[Text] Starting Soon`, and a vertical
+  copy with its lines centered, such as `[Text] Starting Soon (V)` in `[Widget] Standby Text (V)`.
+- **`isVerticalEnabled`** in `config/scenes.ts` has every preset lay out the vertical canvas too. Turned off, the
+  shared scenes still fade with landscape inside whatever vertical layout was last shown, and the vertical borders and
+  name texts stop updating.
+
+### Border colors and names
 
 Inside OBS, `#/global-info` connects to obs-websocket (`obsWebSocketUrl` in `config/index.ts`, the password from
-`config/secrets.js`) and colors the layout borders to match the persons it shows: the border sources of the first
-layout in `config/scenes.ts` take the first person's color, and so on, in the same order the bar lists them. Colors
-are written when the person list or a color changes and when OBS connects, never on the rotation, and fade through the
-`Move: Color` filter that `obs:deploy` creates on each border; a border without that filter gets the color written into
-its Stroke filter directly. Without OBS, as in a browser preview, the bar logs a debug line and retries every fifteen
-seconds.
+`config/secrets.js`) and keeps the layouts in step with the persons it shows, on every canvas: person 1's border
+sources take the first person's color and their name texts the first person's name, and so on, in the same order the
+bar lists them. Only the landscape bar writes, so the two bars never write twice. Colors and names are written when a
+person, color, or name changes and when OBS connects, never on the rotation. Colors fade through the `Move: Color`
+filter that `obs:deploy` creates on each border; a border without that filter gets the color written into its Stroke
+filter directly. Without OBS, as in a browser preview, the bar logs a debug line and retries every fifteen seconds.
+
+### Vertical canvas
+
+The vertical canvas is the 1080×1920 one Twitch's Dual Format streams beside the landscape one, made with the Aitum
+Vertical plugin. Its overlay is `#/global-info?orientation=portrait`, and `#/layout?orientation=portrait` previews its
+layouts. Its margins keep the layout clear of Twitch's vertical player:
+
+| Value                 | Why                                                                                                                                                                                                                                                                   |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Top margin 148        | Twitch's top bar, about 120 tall on large phones to 160 on small ones.                                                                                                                                                                                                |
+| Bottom margin 343     | Where the info bar sits. Twitch's chat covers 11% to 33% of the bottom: about 290 shows two lines of it, each line is about 39 more, and 430 clears it on a small phone with chat open. At 343, one person's 16:9 content leaves their camera exactly 4:3 beneath it. |
+| Info blocks 125 tall  | 99 in landscape. About 1.26 times as large, so the text is readable on a phone.                                                                                                                                                                                       |
+| Standby line 810 wide | Three quarters of the canvas, longer than the widest standby text. The landscape line runs up its layout area with the same 135 inset from the top margin and the info bar's border.                                                                                  |
+
+With chat open at full height, Twitch still covers the bottom of the layout, names included. Names stay at the bottom
+of their cameras anyway, since along the top they would cover faces.
+
+The info bar fills each canvas's bottom margin less its border. In landscape it is one block of three sections side by
+side: the person, the events and goals, and chat. In portrait it is the person block, as wide for its height as in
+landscape with the chat settings in its corner, over chat, with the goals at chat's foot and chat taking the rest of
+the margin. Portrait chat breaks lines after the same words as landscape chat.
 
 ## Todo
 

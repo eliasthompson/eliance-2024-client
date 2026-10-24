@@ -5,18 +5,18 @@ import { useEffect, useRef, useState } from 'react';
 
 import type { PersonInfoProps } from './types';
 
-import { FlexContainer } from '@components/shared/FlexContainer';
-import { LinkIcon } from '@components/shared/svgs/LinkIcon';
-import { TwitchIcon } from '@components/shared/svgs/TwitchIcon';
-import { XIcon } from '@components/shared/svgs/XIcon';
-import { TwitchProfileImage } from '@components/shared/TwitchProfileImage';
-import { hasKey } from '@lib/hasKey';
-import { useGetChannelStreamScheduleQuery } from '@store/apis/twitch/getChannelStreamSchedule';
-import { useGetPronounsQuery } from '@store/apis/chatPronouns/getPronouns';
-import { useGetUserQuery } from '@store/apis/chatPronouns/getUser';
-import { useLazyCreateEventSubSubscriptionStreamOfflineQuery } from '@store/apis/twitch/createEventSubSubscription/streamOffline';
-import { useLazyCreateEventSubSubscriptionStreamOnlineQuery } from '@store/apis/twitch/createEventSubSubscription/streamOnline';
-import { useSelector } from '@store';
+import { FlexContainer } from '@/components/shared/FlexContainer';
+import { LinkIcon } from '@/components/shared/svgs/LinkIcon';
+import { TwitchIcon } from '@/components/shared/svgs/TwitchIcon';
+import { XIcon } from '@/components/shared/svgs/XIcon';
+import { TwitchProfileImage } from '@/components/shared/TwitchProfileImage';
+import { hasKey } from '@/lib/hasKey';
+import { useGetChannelStreamScheduleQuery } from '@/store/apis/twitch/getChannelStreamSchedule';
+import { useGetPronounsQuery } from '@/store/apis/chatPronouns/getPronouns';
+import { useGetUserQuery } from '@/store/apis/chatPronouns/getUser';
+import { useLazyCreateEventSubSubscriptionStreamOfflineQuery } from '@/store/apis/twitch/createEventSubSubscription/streamOffline';
+import { useLazyCreateEventSubSubscriptionStreamOnlineQuery } from '@/store/apis/twitch/createEventSubSubscription/streamOnline';
+import { useSelector } from '@/store';
 
 export const socialPlatforms = {
   // facebook: FacebookIcon,

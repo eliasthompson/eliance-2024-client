@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import type { IconProps } from '@components/shared/svgs/types';
+import type { IconProps } from '@/components/shared/svgs/types';
 
 export const SubscriberIcon = ({ colored, cssIcon: cssIconProvided, filled }: IconProps) => {
   const color = '#1f69ff';

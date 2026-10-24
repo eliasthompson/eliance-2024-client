@@ -1,30 +1,31 @@
-import type { InfoBarProps } from '@components/InfoBar/types';
+import type { InfoBarProps } from '@/components/InfoBar/types';
 
 import { css } from '@emotion/react';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { Fragment, useEffect } from 'react';
 
-import { ChatBox } from '@components/ChatBox';
-import { ChatSettings } from '@components/ChatSettings';
-import { EventBox } from '@components/EventBox';
-import { FlexContainer } from '@components/shared/FlexContainer';
-import { LayoutSync } from '@components/LayoutSync';
-import { MessageHandler } from '@components/MessageHandler';
-import { PersonBox } from '@components/PersonBox';
-import { infoBlockHeights, layoutCanvases } from '@config';
-import { useDispatch, useSelector } from '@store';
-import { useGetUserChatColorsQuery } from '@store/apis/twitch/getUserChatColors';
-import { setInfo } from '@store/slices/info';
-import { useOrientation } from '@lib/useOrientation';
+import { ChatBox } from '@/components/ChatBox';
+import { ChatSettings } from '@/components/ChatSettings';
+import { EventBox } from '@/components/EventBox';
+import { FlexContainer } from '@/components/shared/FlexContainer';
+import { LayoutSync } from '@/components/LayoutSync';
+import { MessageHandler } from '@/components/MessageHandler';
+import { PersonBox } from '@/components/PersonBox';
+import { CANVASES } from '@/constants/canvases';
+import { INFO_BLOCK_HEIGHTS } from '@/constants/infoBlockHeights';
+import { useDispatch, useSelector } from '@/store';
+import { useGetUserChatColorsQuery } from '@/store/apis/twitch/getUserChatColors';
+import { setInfo } from '@/store/slices/info';
+import { useOrientation } from '@/lib/useOrientation';
 
 /**
  * The landscape person section's width for its height: three eighths of the bar (its weight among the sections' 3,
  * 2, and 3), one block tall. The portrait person box keeps it, so names fit and cut off exactly as they do there.
  */
 const personAspectRatio = (() => {
-  const { canvasWidth, canvasPadding, regionBorder } = layoutCanvases.landscape;
+  const { canvasWidth, canvasPadding, regionBorder } = CANVASES.landscape;
 
-  return ((canvasWidth - (canvasPadding + regionBorder) * 2) * 3) / 8 / infoBlockHeights.landscape;
+  return ((canvasWidth - (canvasPadding + regionBorder) * 2) * 3) / 8 / INFO_BLOCK_HEIGHTS.landscape;
 })();
 
 export const InfoBar = ({ cssBar: cssBarProvided }: InfoBarProps) => {

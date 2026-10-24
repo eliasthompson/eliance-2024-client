@@ -2,9 +2,9 @@ import useWebSocket from 'react-use-websocket';
 import { useCallback, useEffect, useRef } from 'react';
 import * as uuid from 'uuid';
 
-import type { FirebotEventSubMessage, FirebotEventSubMessagePayload } from '@store/apis/firebot';
-import type { TwitchEventSubMessage, TwitchPubSubMessage } from '@components/types';
-import type { TwitchPubSubPinnedChatUpdatesMessageMessage } from '@components/MessageHandler/types';
+import type { FirebotEventSubMessage, FirebotEventSubMessagePayload } from '@/store/apis/firebot';
+import type { TwitchEventSubMessage, TwitchPubSubMessage } from '@/components/types';
+import type { TwitchPubSubPinnedChatUpdatesMessageMessage } from '@/components/MessageHandler/types';
 
 import {
   addChat,
@@ -14,35 +14,35 @@ import {
   setChatDeletedTimestamp,
   setChatPinId,
   setUserChatsDeletedTimestamp,
-} from '@store/slices/info';
-import { addFirebotEventSubMessageId } from '@store/slices/firebotEventSub';
-import { addTwitchEventSubMessageId, setTwitchEventSub } from '@store/slices/twitchEventSub';
-import { addTwitchPubSubMessageId } from '@store/slices/twitchPubSub';
-import { clearTwitchAuth } from '@store/slices/twitchAuth';
-import { firebotGuestRoleId, namespace } from '@config';
-import { updateChatSettingsData } from '@store/apis/twitch/getChatSettings';
-import { useDispatch, useSelector } from '@store';
-import { useEventSubSocket } from '@lib/useEventSubSocket';
-import { useLazyCreateEventSubSubscriptionChannelChannelPointsCustomRewardRedemptionAddQuery } from '@store/apis/twitch/createEventSubSubscription/channelChannelPointsCustomRewardRedemptionAdd';
-import { useLazyCreateEventSubSubscriptionChannelChatClearQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatClear';
-import { useLazyCreateEventSubSubscriptionChannelChatClearUserMessagesQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatClearUserMessages';
-import { useLazyCreateEventSubSubscriptionChannelChatMessageDeleteQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatMessageDelete';
-import { useLazyCreateEventSubSubscriptionChannelChatMessageQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatMessage';
-import { useLazyCreateEventSubSubscriptionChannelChatNotificationQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatNotification';
-import { useLazyCreateEventSubSubscriptionChannelChatSettingsUpdateQuery } from '@store/apis/twitch/createEventSubSubscription/channelChatSettingsUpdate';
-import { useLazyCreateEventSubSubscriptionChannelCheerQuery } from '@store/apis/twitch/createEventSubSubscription/channelCheer';
-import { useLazyCreateEventSubSubscriptionChannelFollowQuery } from '@store/apis/twitch/createEventSubSubscription/channelFollow';
-import { useLazyCreateEventSubSubscriptionChannelGuestStarGuestUpdateQuery } from '@store/apis/twitch/createEventSubSubscription/channelGuestStarGuestUpdate';
-import { useLazyCreateEventSubSubscriptionChannelGuestStarSessionBeginQuery } from '@store/apis/twitch/createEventSubSubscription/channelGuestStarSessionBegin';
-import { useLazyCreateEventSubSubscriptionChannelGuestStarSessionEndQuery } from '@store/apis/twitch/createEventSubSubscription/channelGuestStarSessionEnd';
-import { useLazyCreateEventSubSubscriptionChannelSharedChatBeginQuery } from '@store/apis/twitch/createEventSubSubscription/channelSharedChatBegin';
-import { useLazyCreateEventSubSubscriptionChannelSharedChatEndQuery } from '@store/apis/twitch/createEventSubSubscription/channelSharedChatEnd';
-import { useLazyCreateEventSubSubscriptionChannelSharedChatUpdateQuery } from '@store/apis/twitch/createEventSubSubscription/channelSharedChatUpdate';
-import { useLazyGetCustomRoleQuery } from '@store/apis/firebot/getCustomRole';
-import { useLazyGetGuestStarSessionQuery } from '@store/apis/twitch/getGuestStarSession';
-import { useLazyGetSharedChatSessionQuery } from '@store/apis/twitch/getSharedChatSession';
-import { useLazyGetStreamsQuery } from '@store/apis/twitch/getStreams';
-import { useLazyGetViewersQuery } from '@store/apis/firebot/getViewers';
+} from '@/store/slices/info';
+import { addFirebotEventSubMessageId } from '@/store/slices/firebotEventSub';
+import { addTwitchEventSubMessageId, setTwitchEventSub } from '@/store/slices/twitchEventSub';
+import { addTwitchPubSubMessageId } from '@/store/slices/twitchPubSub';
+import { clearTwitchAuth } from '@/store/slices/twitchAuth';
+import { firebotGuestRoleId, namespace } from '@/config';
+import { updateChatSettingsData } from '@/store/apis/twitch/getChatSettings';
+import { useDispatch, useSelector } from '@/store';
+import { useEventSubSocket } from '@/lib/useEventSubSocket';
+import { useLazyCreateEventSubSubscriptionChannelChannelPointsCustomRewardRedemptionAddQuery } from '@/store/apis/twitch/createEventSubSubscription/channelChannelPointsCustomRewardRedemptionAdd';
+import { useLazyCreateEventSubSubscriptionChannelChatClearQuery } from '@/store/apis/twitch/createEventSubSubscription/channelChatClear';
+import { useLazyCreateEventSubSubscriptionChannelChatClearUserMessagesQuery } from '@/store/apis/twitch/createEventSubSubscription/channelChatClearUserMessages';
+import { useLazyCreateEventSubSubscriptionChannelChatMessageDeleteQuery } from '@/store/apis/twitch/createEventSubSubscription/channelChatMessageDelete';
+import { useLazyCreateEventSubSubscriptionChannelChatMessageQuery } from '@/store/apis/twitch/createEventSubSubscription/channelChatMessage';
+import { useLazyCreateEventSubSubscriptionChannelChatNotificationQuery } from '@/store/apis/twitch/createEventSubSubscription/channelChatNotification';
+import { useLazyCreateEventSubSubscriptionChannelChatSettingsUpdateQuery } from '@/store/apis/twitch/createEventSubSubscription/channelChatSettingsUpdate';
+import { useLazyCreateEventSubSubscriptionChannelCheerQuery } from '@/store/apis/twitch/createEventSubSubscription/channelCheer';
+import { useLazyCreateEventSubSubscriptionChannelFollowQuery } from '@/store/apis/twitch/createEventSubSubscription/channelFollow';
+import { useLazyCreateEventSubSubscriptionChannelGuestStarGuestUpdateQuery } from '@/store/apis/twitch/createEventSubSubscription/channelGuestStarGuestUpdate';
+import { useLazyCreateEventSubSubscriptionChannelGuestStarSessionBeginQuery } from '@/store/apis/twitch/createEventSubSubscription/channelGuestStarSessionBegin';
+import { useLazyCreateEventSubSubscriptionChannelGuestStarSessionEndQuery } from '@/store/apis/twitch/createEventSubSubscription/channelGuestStarSessionEnd';
+import { useLazyCreateEventSubSubscriptionChannelSharedChatBeginQuery } from '@/store/apis/twitch/createEventSubSubscription/channelSharedChatBegin';
+import { useLazyCreateEventSubSubscriptionChannelSharedChatEndQuery } from '@/store/apis/twitch/createEventSubSubscription/channelSharedChatEnd';
+import { useLazyCreateEventSubSubscriptionChannelSharedChatUpdateQuery } from '@/store/apis/twitch/createEventSubSubscription/channelSharedChatUpdate';
+import { useLazyGetCustomRoleQuery } from '@/store/apis/firebot/getCustomRole';
+import { useLazyGetGuestStarSessionQuery } from '@/store/apis/twitch/getGuestStarSession';
+import { useLazyGetSharedChatSessionQuery } from '@/store/apis/twitch/getSharedChatSession';
+import { useLazyGetStreamsQuery } from '@/store/apis/twitch/getStreams';
+import { useLazyGetViewersQuery } from '@/store/apis/firebot/getViewers';
 
 export const announcementColors = {
   BLUE: 'linear-gradient(#00d6d6, #9146ff)',

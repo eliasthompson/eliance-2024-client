@@ -2,11 +2,11 @@ import { Fragment, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { skipToken } from '@reduxjs/toolkit/query';
 
-import { AuthenticationBar } from '@components/AuthenticationBar';
-// import { ErrorMessage } from '@components/shared/ErrorMessage';
-import { addError, setInfo } from '@store/slices/info';
-import { useDispatch, useSelector } from '@store';
-import { useValidateTokenQuery } from '@src/store/apis/twitch/validateToken';
+import { AuthenticationBar } from '@/components/AuthenticationBar';
+// import { ErrorMessage } from '@/components/shared/ErrorMessage';
+import { addError, setInfo } from '@/store/slices/info';
+import { useDispatch, useSelector } from '@/store';
+import { useValidateTokenQuery } from '@/src/store/apis/twitch/validateToken';
 
 export const Container = () => {
   const dispatch = useDispatch();

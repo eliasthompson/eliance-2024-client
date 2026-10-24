@@ -2,18 +2,18 @@ import { useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
 import { skipToken } from '@reduxjs/toolkit/query';
 
-import { FlexContainer } from '@components/shared/FlexContainer';
-import { PersonInfo } from '@components/PersonInfo';
-import { firebotGuestRoleId } from '@config';
-import { rotatePersonisActive, setInfo } from '@store/slices/info';
-import { useAddViewerToCustomRoleMutation } from '@store/apis/firebot/addViewerToCustomRole';
-import { useDispatch, useSelector } from '@store';
-import { useGetCustomRoleQuery } from '@store/apis/firebot/getCustomRole';
-import { useGetGuestStarSessionQuery } from '@store/apis/twitch/getGuestStarSession';
-import { useLazyGetStreamsQuery } from '@store/apis/twitch/getStreams';
-import { useLazyGetUserChatColorsQuery } from '@store/apis/twitch/getUserChatColors';
-import { useLazyGetUsersQuery } from '@store/apis/twitch/getUsers';
-import { useLazyGetViewersQuery } from '@store/apis/firebot/getViewers';
+import { FlexContainer } from '@/components/shared/FlexContainer';
+import { PersonInfo } from '@/components/PersonInfo';
+import { firebotGuestRoleId } from '@/config';
+import { rotatePersonisActive, setInfo } from '@/store/slices/info';
+import { useAddViewerToCustomRoleMutation } from '@/store/apis/firebot/addViewerToCustomRole';
+import { useDispatch, useSelector } from '@/store';
+import { useGetCustomRoleQuery } from '@/store/apis/firebot/getCustomRole';
+import { useGetGuestStarSessionQuery } from '@/store/apis/twitch/getGuestStarSession';
+import { useLazyGetStreamsQuery } from '@/store/apis/twitch/getStreams';
+import { useLazyGetUserChatColorsQuery } from '@/store/apis/twitch/getUserChatColors';
+import { useLazyGetUsersQuery } from '@/store/apis/twitch/getUsers';
+import { useLazyGetViewersQuery } from '@/store/apis/firebot/getViewers';
 
 export const PersonBox = () => {
   const dispatch = useDispatch();

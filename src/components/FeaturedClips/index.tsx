@@ -1,7 +1,7 @@
 import { skipToken } from '@reduxjs/toolkit/query';
 
-import { useGetClipsQuery } from '@store/apis/twitch/getClips';
-import { useSelector } from '@store';
+import { useGetClipsQuery } from '@/store/apis/twitch/getClips';
+import { useSelector } from '@/store';
 
 export const FeaturedClips = () => {
   const { broadcasterId } = useSelector(({ info }) => info);

@@ -1,11 +1,11 @@
 import { createHashRouter } from 'react-router-dom';
 import { css } from '@emotion/react';
 
-import { Container } from '@components/Container';
-import { FeaturedClips } from '@components/FeaturedClips';
-import { InfoBar } from '@components/InfoBar';
-import { Layout } from '@components/Layout';
-import { Schedule } from '@components/Schedule';
+import { Container } from '@/components/Container';
+import { FeaturedClips } from '@/components/FeaturedClips';
+import { InfoBar } from '@/components/InfoBar';
+import { Layout } from '@/components/Layout';
+import { Schedule } from '@/components/Schedule';
 
 const backgroundColorBarInfo = window.obsstudio ? 'transparent' : 'rgba(0, 0, 0, 33%)';
 const borderStyleBarInfo = window.obsstudio ? 'none' : 'solid';

@@ -1,11 +1,11 @@
-import type { scopes } from '@config';
+import type { TWITCH_SCOPES } from '@/constants/twitchScopes';
 
-import { twitchApi } from '@store/apis/twitch';
+import { twitchApi } from '@/store/apis/twitch';
 
 export interface TwitchApiValidateTokenResponse {
   client_id: string;
   login: string;
-  scopes: typeof scopes;
+  scopes: typeof TWITCH_SCOPES;
   user_id: string;
   expires_in: number;
 }
