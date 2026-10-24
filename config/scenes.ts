@@ -9,7 +9,7 @@ import { CANVAS_SPACING } from '@/constants/canvasSpacing';
 const isVerticalEnabled = true as const satisfies boolean;
 const nameFontSizeMax = 48 as const satisfies number;
 const nameFontSizeMin = 24 as const satisfies number;
-const participantTotal = 1 as const satisfies number;
+const participantTotal = 2 as const satisfies number;
 const standbyTextGap = 48 as const satisfies number;
 const transitionDuration = 500 as const satisfies number;
 const transparentSourceInset = 12 as const satisfies number;
@@ -41,7 +41,7 @@ const getParticipants = (suffix = '') =>
             source: `[Group] Main Content ${participantNum}`,
             border: `[Border] Main Content ${participantNum}${suffix}`,
           },
-          info: { source: `[List] Info ${participantNum}`, border: `[Border] Info ${participantNum}${suffix}` },
+          info: { source: `[List] Info ${participantNum} Sources`, border: `[Border] Info ${participantNum}${suffix}` },
           name: { source: `[Text] Name ${participantNum}${suffix}` },
         },
       },
@@ -76,7 +76,7 @@ export const SCENES = Object.freeze({
       container: '[Scene] Canvas',
       options: CANVASES.landscape,
       participants: getParticipants(),
-      standby: { textScene: '[Widget] Standby Text', lineLength: landscapeLineLength, textGap: standbyTextGap },
+      standby: { textScene: '[List] Standby Text Sources', lineLength: landscapeLineLength, textGap: standbyTextGap },
     },
     ...(isVerticalEnabled
       ? {
@@ -86,7 +86,7 @@ export const SCENES = Object.freeze({
             options: CANVASES.portrait,
             participants: getParticipants(verticalSuffix),
             standby: {
-              textScene: `[Widget] Standby Text${verticalSuffix}`,
+              textScene: `[List] Standby Text Sources${verticalSuffix}`,
               lineLength: portraitLineLength,
               textGap: standbyTextGap,
             },
@@ -98,13 +98,21 @@ export const SCENES = Object.freeze({
   borderColor: { filter: 'Stroke', duration: transitionDuration },
   duration: transitionDuration,
   regions: {
-    info: { inset: transparentSourceInset, boundsAlignment: 'top center' },
-    name: { inset: transparentSourceInset, fontSizeMin: nameFontSizeMin, fontSizeMax: nameFontSizeMax },
+    camera: { boundsType: 'scale to outer bounds', cropToBounds: true },
+    info: { inset: transparentSourceInset, boundsAlignment: 'top center', boundsType: 'scale to width of bounds' },
+    name: {
+      inset: transparentSourceInset,
+      boundsType: 'maximum size only',
+      cropToBounds: true,
+      fontSizeMin: nameFontSizeMin,
+      fontSizeMax: nameFontSizeMax,
+    },
   },
   scenes: {
     ...Object.fromEntries([
       ...STANDBY_KEYS.map((standbyKey) => getStandbyScene(standbyKey)),
       ...LAYOUT_KEYS.map((layoutKey) => getLayout(layoutKey)),
+      ...LAYOUT_KEYS.map((layoutKey) => getLayout(layoutKey, layoutKey)),
       // Add custom layouts here,
     ]),
   },
