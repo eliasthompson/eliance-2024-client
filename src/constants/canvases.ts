@@ -5,19 +5,21 @@ import type { CanvasKey } from '@/constants/canvasKeys';
 
 export const CANVASES = Object.freeze({
   landscape: {
+    orientation: 'landscape',
     canvasWidth: 1920,
     canvasHeight: 1080,
     canvasMarginTop: INFO_BLOCK_HEIGHTS.landscape + CANVAS_SPACING.regionBorder,
     canvasMarginBottom: INFO_BLOCK_HEIGHTS.landscape + CANVAS_SPACING.regionBorder,
-    orientation: 'landscape',
+    cameraAspectRatioDefault: '5:6',
     ...CANVAS_SPACING,
   },
   portrait: {
+    orientation: 'portrait',
     canvasWidth: 1080,
     canvasHeight: 1920,
     canvasMarginTop: 148,
     canvasMarginBottom: 343,
-    orientation: 'portrait',
+    cameraAspectRatioDefault: '5:6',
     ...CANVAS_SPACING,
   },
 } as const satisfies Record<CanvasKey, LayoutOptions>);

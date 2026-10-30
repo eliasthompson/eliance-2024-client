@@ -11,7 +11,7 @@ import { hasKey } from '@/lib/hasKey';
  * - A region key (`main`, `aux`, `info`, `camera`, or the `LayoutConfig` name) with a ratio shows that region at the
  *   ratio, with `null`/`none`/`off` hides it, and with no value shows it with its defaults. `info` also takes `auto`,
  *   and `camera` takes a boolean or its main column ratio, including `auto`.
- * - A region field as `region.field`: `ratio`, `mainAttached`, `aboveAttached`, and `greenScreen`, or the `LayoutConfig`
+ * - A region field as `region.field`: `ratio`, `mainAttached`, `previousAttached`, and `greenScreen`, or the `LayoutConfig`
  *   field names. Fields a region does not have are ignored.
  * - `name`: the name tag, as a boolean.
  * - `participant`: one participant per occurrence, merged region by region over the base config, as comma separated
@@ -30,14 +30,14 @@ export interface ParsedLayoutSearchParams {
 
 export type LayoutRegionConfigKey = Exclude<keyof LayoutConfig, 'hasName'>;
 
-export type LayoutRegionConfigField = 'aspectRatio' | 'isMainAttached' | 'isAboveAttached' | 'isGreenScreen';
+export type LayoutRegionConfigField = 'aspectRatio' | 'isMainAttached' | 'isPreviousAttached' | 'isGreenScreen';
 
 /** Every field any region config can take; a region only receives the fields listed for it in `layoutRegionFields` */
 export interface LayoutRegionConfigFields {
   mainAspectRatio?: 'auto' | AspectRatio;
   aspectRatio?: 'auto' | AspectRatio;
   isMainAttached?: boolean;
-  isAboveAttached?: boolean;
+  isPreviousAttached?: boolean;
   isGreenScreen?: boolean;
 }
 
@@ -59,10 +59,10 @@ export const layoutRegionKeyAliases = {
 
 export const layoutRegionFieldAliases = {
   aspectRatio: 'aspectRatio',
-  aboveAttached: 'isAboveAttached',
+  previousAttached: 'isPreviousAttached',
   mainAttached: 'isMainAttached',
   greenScreen: 'isGreenScreen',
-  isAboveAttached: 'isAboveAttached',
+  isPreviousAttached: 'isPreviousAttached',
   isGreenScreen: 'isGreenScreen',
   isMainAttached: 'isMainAttached',
   mainAspectRatio: 'aspectRatio',
@@ -70,10 +70,10 @@ export const layoutRegionFieldAliases = {
 } as const satisfies Record<string, LayoutRegionConfigField>;
 
 export const layoutRegionFields = {
-  camera: ['aspectRatio', 'isMainAttached', 'isAboveAttached', 'isGreenScreen'],
+  camera: ['aspectRatio', 'isMainAttached', 'isPreviousAttached', 'isGreenScreen'],
   contentMain: ['aspectRatio'],
-  contentAux: ['aspectRatio', 'isMainAttached'],
-  info: ['aspectRatio', 'isMainAttached', 'isAboveAttached'],
+  contentAux: ['aspectRatio', 'isMainAttached', 'isPreviousAttached'],
+  info: ['aspectRatio', 'isMainAttached', 'isPreviousAttached'],
 } as const satisfies Record<LayoutRegionConfigKey, readonly LayoutRegionConfigField[]>;
 
 export const layoutOptionKeyAliases = {

@@ -110,6 +110,7 @@ export const SCENES = Object.freeze({
     info: { inset: transparentSourceInset, boundsAlignment: 'top center', boundsType: 'scale to width of bounds' },
     name: {
       inset: transparentSourceInset,
+      boundsAlignment: 'bottom center',
       boundsType: 'maximum size only',
       cropToBounds: true,
       fontSizeMin: nameFontSizeMin,
@@ -117,12 +118,11 @@ export const SCENES = Object.freeze({
     },
   },
   scenes: {
-    ...Object.fromEntries([
-      ...STANDBY_KEYS.map((standbyKey) => getStandbyScene(standbyKey)),
-      ...LAYOUT_KEYS.map((layoutKey) => getLayout(layoutKey)),
-      ...LAYOUT_KEYS.map((layoutKey) => getLayout(layoutKey, layoutKey)),
-    ]),
-    // Add custom layouts here,
+    // Standby scenes
+    ...Object.fromEntries(STANDBY_KEYS.map((standbyKey) => getStandbyScene(standbyKey))),
+
+    // 1P Scenes
+    ...Object.fromEntries(LAYOUT_KEYS.map((layoutKey) => getLayout(layoutKey))),
     '[1P] 4:3 w/o Camera': {
       participants: [
         {
@@ -132,11 +132,14 @@ export const SCENES = Object.freeze({
       ],
       items: { '[Audio] Alerts': false, '[Audio] Voice': false },
     },
+
+    // 2P Scenes
+    ...Object.fromEntries(LAYOUT_KEYS.map((layoutKey) => getLayout(layoutKey, layoutKey))),
   },
   modifiers: {
     'Keyed Cameras': { config: { camera: { isGreenScreen: true } } },
     'Names': { config: { hasName: true } },
-    'Timer': { config: { info: { aspectRatio: '250:49', isAboveAttached: true, isMainAttached: true } } },
+    'Timer': { config: { info: { aspectRatio: '250:49', isPreviousAttached: true, isMainAttached: true } } },
   },
 } as const satisfies ScenesConfig);
 
