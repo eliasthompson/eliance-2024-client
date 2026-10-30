@@ -2,5 +2,3 @@ build
 node_modules
 config/secrets.js
 .env
-obs/*/service.json
-obs/*/basic.ini

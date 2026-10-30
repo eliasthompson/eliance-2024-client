@@ -92,18 +92,22 @@ takes each canvas's `options` from `CANVASES`, so the OBS layouts match `#/layou
 the `@/` aliases, which the CLI resolves through `tsconfig.json`. The tools run from here:
 
 ```sh
-npm run deploy           # obs:deploy, then firebot:deploy, without prompting
+npm run deploy           # obs:deploy, obs:export, then firebot:deploy, without prompting
 npm run obs:deploy       # creates the filters in OBS, then restarts OBS if the item transitions need setting (asks first)
 npm run firebot:deploy   # checks the config against OBS, stores it in Firebot, installs the script and presets
 npm run obs:restart      # restarts OBS, never forcibly
 npm run obs:verify -- "<scene key>"   # applies a scene from here and compares every item with the plan
 npm run obs:capture -- "<scene key>"  # screenshots during a transition
+npm run obs:export       # copies the OBS scene collection and profile into obs/, with the stream key and tokens blanked
 npm run obs:prune        # deletes old scene collection backups for good, keeping the newest 3 (asks first)
 npm run firebot:restart  # installs the presets into the profile and restarts Firebot
 npm run firebot:prune    # deletes old Firebot profile file backups for good, keeping the newest 3 (asks first)
 ```
 
-The deploy and restart commands take `--dry-run` to report what they would do. The Firebot presets, one per scene key,
+The deploy, restart, and export commands take `--dry-run` to report what they would do. `obs/` holds the exported OBS
+setup, laid out like OBS's `basic` folder (`scenes/` and `profiles/`), so a commit after a meaningful change to the
+scenes records it; restore by copying the files back into OBS's data folder with OBS closed, then paste the stream key
+back in, or reconnect the Twitch account, under Settings → Stream. The Firebot presets, one per scene key,
 derive from the config, ids included, so they stay the same across deploys and machines with nothing else to version.
 Where Firebot or OBS live on a machine comes from `.env` (see `.env.example`); unset, the tools use Firebot's own OBS
 integration settings and the default profile.
