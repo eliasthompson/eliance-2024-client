@@ -3,7 +3,6 @@ import { useDispatch as useDispatchUntyped, useSelector as useSelectorUntyped } 
 
 import { chatPronounsApi } from '@/store/apis/chatPronouns';
 import { firebotApi } from '@/store/apis/firebot';
-import { firebotEventSubSlice } from '@/store/slices/firebotEventSub';
 import { infoSlice } from '@/store/slices/info';
 import { twitchApi } from '@/store/apis/twitch';
 import { twitchAuthSlice } from '@/store/slices/twitchAuth';
@@ -19,7 +18,6 @@ export const store = configureStore({
   reducer: {
     [chatPronounsApi.reducerPath]: chatPronounsApi.reducer,
     [firebotApi.reducerPath]: firebotApi.reducer,
-    [firebotEventSubSlice.reducerPath]: firebotEventSubSlice.reducer,
     [infoSlice.reducerPath]: infoSlice.reducer,
     [twitchApi.reducerPath]: twitchApi.reducer,
     [twitchAuthSlice.reducerPath]: twitchAuthSlice.reducer,

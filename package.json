@@ -28,6 +28,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@eliasthompson/obs-layout-firebot": "^5.2.0",
     "@eliasthompson/obs-layout-generator": "^4.0.0",
     "@emotion/babel-plugin": "^11.13.5",
     "@emotion/react": "^11.14.0",
@@ -48,7 +49,6 @@
     "@babel/preset-env": "^7.29.0",
     "@babel/preset-react": "^7.29.0",
     "@babel/preset-typescript": "^7.29.0",
-    "@eliasthompson/obs-layout-firebot": "^5.2.0",
     "@eslint/compat": "^2.1.1",
     "@eslint/js": "^10.0.1",
     "@types/obs-studio": "^2.17.2",

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
 import { skipToken } from '@reduxjs/toolkit/query';
 
+import { DEFAULT_PERSON_COLOR } from '@/constants/defaultPersonColor';
 import { FlexContainer } from '@/components/shared/FlexContainer';
 import { PersonInfo } from '@/components/PersonInfo';
 import { firebotGuestRoleId } from '@/config';
@@ -111,9 +112,9 @@ export const PersonBox = () => {
               profileImageUrl: user.profile_image_url,
               name: metadata?.name || user.display_name,
               color:
-                userChatColorsData.data.find(({ user_id: userId }) => userId === personId)?.color ||
                 metadata?.color ||
-                '#808080',
+                userChatColorsData.data.find(({ user_id: userId }) => userId === personId)?.color ||
+                DEFAULT_PERSON_COLOR,
               isActive: i === 0,
               isLive: !!streamsData.data.find(({ user_id: userId }) => userId === personId),
               pronouns: metadata?.pronouns,

@@ -112,9 +112,10 @@ derive from the config, ids included, so they stay the same across deploys and m
 Where Firebot or OBS live on a machine comes from `.env` (see `.env.example`); unset, the tools use Firebot's own OBS
 integration settings and the default profile.
 
-obs-layout-firebot is a dev dependency: the overlays only import its types, and the scripts above run its CLI. To try
-unreleased changes from a sibling checkout, link it with `npx link ../obs-layout-firebot` and keep the version range in
-`package.json`; the next `npm install` puts the published package back.
+obs-layout-firebot is a runtime dependency: the overlays bundle its browser-safe `settings` subpath to color the layout
+borders, and the scripts above run its CLI. To try unreleased changes from a sibling checkout, link it with
+`npx link ../obs-layout-firebot` and keep the version range in `package.json`; the next `npm install` puts the published
+package back.
 
 ### OBS scene collection
 

@@ -20,6 +20,7 @@ export default {
     filename: 'scripts/[name].[contenthash:8].js',
     path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../build'),
   },
+  performance: { hints: false },
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',

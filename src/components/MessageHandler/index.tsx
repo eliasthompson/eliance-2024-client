@@ -15,7 +15,6 @@ import {
   setChatPinId,
   setUserChatsDeletedTimestamp,
 } from '@/store/slices/info';
-import { addFirebotEventSubMessageId } from '@/store/slices/firebotEventSub';
 import { addTwitchEventSubMessageId, setTwitchEventSub } from '@/store/slices/twitchEventSub';
 import { addTwitchPubSubMessageId } from '@/store/slices/twitchPubSub';
 import { clearTwitchAuth } from '@/store/slices/twitchAuth';
@@ -55,7 +54,6 @@ export const MessageHandler = () => {
   const dispatch = useDispatch();
   const { accessToken } = useSelector(({ twitchAuth }) => twitchAuth);
   const { broadcasterColor, broadcasterId, personIds } = useSelector(({ info }) => info);
-  const { messageIds: firebotMessageIds } = useSelector(({ firebotEventSub }) => firebotEventSub);
   const { messageIds: twitchMessageIds, sessionId } = useSelector(({ twitchEventSub }) => twitchEventSub);
   const { messageIds: twitchPSMessageIds } = useSelector(({ twitchPubSub }) => twitchPubSub);
   const {
@@ -137,6 +135,7 @@ export const MessageHandler = () => {
   const [getSharedChatSession /* , { error: sharedChatSessionError } */] = useLazyGetSharedChatSessionQuery();
   const [getStreams /* , { error: sharedChatSessionError } */] = useLazyGetStreamsQuery();
   const [getViewers /* , { error: viewersError } */] = useLazyGetViewersQuery();
+  const handledFirebotMessageRef = useRef<FirebotEventSubMessage>(undefined);
   const pingIntervalIdRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const unpinTimeoutIdRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -169,34 +168,27 @@ export const MessageHandler = () => {
     }
   }, [dispatch, firebotReadyState, getCustomRole, getViewers]);
 
-  // Handle firebot event sub messages
+  // Handle firebot event sub messages, each received message once; firebot events carry no id, and a change back to an
+  // earlier value repeats an earlier message exactly, so messages are told apart by arrival rather than content
   useEffect(() => {
-    if (firebotMessage) {
-      const messageId = uuid.v5(JSON.stringify(firebotMessage), namespace);
+    if (firebotMessage && firebotMessage !== handledFirebotMessageRef.current) {
+      const { type, name } = firebotMessage;
 
-      if (!firebotMessageIds.includes(messageId)) {
-        const { type, name } = firebotMessage;
+      handledFirebotMessageRef.current = firebotMessage;
 
-        if (type === 'response') {
-          if (name === 'success') {
-            dispatch(addFirebotEventSubMessageId(messageId));
-          }
-        } else if (type === 'event') {
-          if (name === 'custom-role:updated') {
-            if (firebotGuestRoleId) getCustomRole({ customRoleId: firebotGuestRoleId });
-            dispatch(addFirebotEventSubMessageId(messageId));
-          } else if (
-            name === 'viewer-metadata:created' ||
-            name === 'viewer-metadata:updated' ||
-            name === 'viewer-metadata:deleted'
-          ) {
-            getViewers();
-            dispatch(addFirebotEventSubMessageId(messageId));
-          }
+      if (type === 'event') {
+        if (name === 'custom-role:updated') {
+          if (firebotGuestRoleId) getCustomRole({ customRoleId: firebotGuestRoleId });
+        } else if (
+          name === 'viewer-metadata:created' ||
+          name === 'viewer-metadata:updated' ||
+          name === 'viewer-metadata:deleted'
+        ) {
+          getViewers();
         }
       }
     }
-  }, [dispatch, firebotMessage, firebotMessageIds]);
+  }, [firebotMessage, getCustomRole, getViewers]);
 
   // Subscribe to twitch event sub events on first connection
   useEffect(() => {

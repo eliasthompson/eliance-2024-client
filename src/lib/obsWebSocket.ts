@@ -4,7 +4,11 @@ const OP_IDENTIFY = 1;
 const OP_IDENTIFIED = 2;
 const OP_REQUEST = 6;
 const OP_REQUEST_RESPONSE = 7;
+const OP_REQUEST_BATCH = 8;
+const OP_REQUEST_BATCH_RESPONSE = 9;
 const RPC_VERSION = 1;
+/** Batch execution type that runs the requests in order in step with the render thread, so `Sleep` takes frames. */
+export const REQUEST_BATCH_EXECUTION_SERIAL_FRAME = 1;
 /** How long to wait before trying OBS again after a failed or dropped connection. */
 const RECONNECT_MS = 15 * 1000;
 
@@ -12,6 +16,23 @@ export interface ObsRequestStatus {
   result: boolean;
   code: number;
   comment?: string;
+}
+
+export interface ObsRequest {
+  requestType: string;
+  requestData?: Record<string, unknown>;
+}
+
+export interface ObsBatchResult {
+  requestType: string;
+  requestStatus: ObsRequestStatus;
+  responseData?: Record<string, unknown>;
+}
+
+export interface ObsBatchOptions {
+  executionType?: number;
+  /** Stop at the first failed request; the results then end with it. */
+  haltOnFailure?: boolean;
 }
 
 export interface ObsClientOptions {
@@ -26,13 +47,15 @@ export interface ObsClientOptions {
 export interface ObsClient {
   /** Send one request and resolve with its response data, or reject with the request status or when not connected. */
   call: (requestType: string, requestData?: Record<string, unknown>) => Promise<Record<string, unknown>>;
+  /** Send requests as one batch and resolve with each one's result, or reject when not connected. */
+  callBatch: (requests: ObsRequest[], options?: ObsBatchOptions) => Promise<ObsBatchResult[]>;
   isConnected: () => boolean;
   /** Close and stop reconnecting. */
   close: () => void;
 }
 
-interface Pending {
-  resolve: (value: Record<string, unknown>) => void;
+interface Pending<T> {
+  resolve: (value: T) => void;
   reject: (error: Error) => void;
 }
 
@@ -52,7 +75,8 @@ export const obsAuthentication = async (password: string, salt: string, challeng
  * debug line. Requests made while disconnected reject at once.
  */
 export const createObsClient = ({ url, password, onConnect, onDisconnect }: ObsClientOptions): ObsClient => {
-  const pending = new Map<string, Pending>();
+  const pending = new Map<string, Pending<Record<string, unknown>>>();
+  const pendingBatches = new Map<string, Pending<ObsBatchResult[]>>();
   let socket: WebSocket | undefined;
   let reconnectTimeoutId: ReturnType<typeof setTimeout> | undefined;
   let isIdentified = false;
@@ -64,6 +88,8 @@ export const createObsClient = ({ url, password, onConnect, onDisconnect }: ObsC
   const failPending = (error: Error) => {
     pending.forEach(({ reject }) => reject(error));
     pending.clear();
+    pendingBatches.forEach(({ reject }) => reject(error));
+    pendingBatches.clear();
   };
 
   const scheduleReconnect = () => {
@@ -109,6 +135,12 @@ export const createObsClient = ({ url, password, onConnect, onDisconnect }: ObsC
         if (!request) return;
         if (requestStatus.result) request.resolve(responseData ?? {});
         else request.reject(new Error(`${String(requestStatus.code)} ${requestStatus.comment ?? ''}`.trim()));
+      } else if (op === OP_REQUEST_BATCH_RESPONSE) {
+        const { requestId, results } = d as { requestId: string; results: ObsBatchResult[] };
+        const batch = pendingBatches.get(requestId);
+
+        pendingBatches.delete(requestId);
+        batch?.resolve(results);
       }
     });
 
@@ -146,6 +178,18 @@ export const createObsClient = ({ url, password, onConnect, onDisconnect }: ObsC
 
         pending.set(requestId, { resolve, reject });
         send(OP_REQUEST, { requestType, requestData, requestId });
+      }),
+    callBatch: (requests, { executionType, haltOnFailure } = {}) =>
+      new Promise((resolve, reject) => {
+        if (!socket || !isIdentified) {
+          reject(new Error('OBS is not connected'));
+          return;
+        }
+
+        const requestId = String(nextRequestId++);
+
+        pendingBatches.set(requestId, { resolve, reject });
+        send(OP_REQUEST_BATCH, { requestId, executionType, haltOnFailure, requests });
       }),
     isConnected: () => isIdentified,
     close: () => {

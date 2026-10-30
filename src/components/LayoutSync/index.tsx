@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { ObsClient } from '@/lib/obsWebSocket';
 
 import { createObsClient } from '@/lib/obsWebSocket';
+import { DEFAULT_PERSON_COLOR } from '@/constants/defaultPersonColor';
 import { obsWebSocketPassword, obsWebSocketUrl } from '@/config';
 import { SCENES } from '@/config/scenes';
 import { writeBorderColor } from '@/lib/writeBorderColor';
@@ -34,8 +35,9 @@ export const participantNames = byParticipant((entry) => (entry.sources.name ? [
 
 /**
  * Keeps the OBS layouts in step with the persons in the info bar: the first layout's borders take the first person's
- * color and its name text their name, and so on, on every canvas. Writes only what changed, or everything when OBS
- * reconnects, never on the rotation, and does nothing when OBS is not reachable.
+ * color and its name text their name, and so on, on every canvas, and the layouts no person fills take the default
+ * color. Writes only what changed, or everything when OBS reconnects, never on the rotation, and does nothing when OBS
+ * is not reachable or before the persons load.
  */
 export const LayoutSync = () => {
   const { persons } = useSelector(({ info }) => info);
@@ -44,12 +46,13 @@ export const LayoutSync = () => {
   const writtenColorsRef = useRef(new Map<string, string>());
   const writtenNamesRef = useRef(new Map<string, string>());
   const borderColor = resolveBorderColor(SCENES);
+  const hasBorders = !!borderColor && participantBorders.some((borders) => borders.length);
   const hasNames = participantNames.some((names) => names.length);
   const personKeys = persons.map(({ id, color, name }) => `${id}:${color}:${name}`).join('|');
 
   // Connect to OBS once; the client reconnects on its own, and every connection starts the writes over
   useEffect(() => {
-    if (!borderColor && !hasNames) return undefined;
+    if (!hasBorders && !hasNames) return undefined;
 
     const client = createObsClient({
       url: obsWebSocketUrl,
@@ -71,20 +74,24 @@ export const LayoutSync = () => {
   useEffect(() => {
     const client = clientRef.current;
 
-    if (!client || !isConnected) return;
+    if (!client || !isConnected || !persons.length) return;
 
-    persons.forEach(({ color, name }, i) => {
-      if (borderColor) {
-        (participantBorders[i] ?? []).forEach((border) => {
+    if (borderColor) {
+      participantBorders.forEach((borders, i) => {
+        const color = persons.at(i)?.color ?? DEFAULT_PERSON_COLOR;
+
+        borders.forEach((border) => {
           if (writtenColorsRef.current.get(border) === color) return;
 
           writeBorderColor(client, border, color, borderColor).then((isWritten) => {
             if (isWritten) writtenColorsRef.current.set(border, color);
           });
         });
-      }
+      });
+    }
 
-      (participantNames[i] ?? []).forEach((source) => {
+    persons.forEach(({ name }, i) => {
+      (participantNames.at(i) ?? []).forEach((source) => {
         if (writtenNamesRef.current.get(source) === name) return;
 
         writeNameText(client, source, name).then((isWritten) => {
