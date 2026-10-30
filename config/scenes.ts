@@ -75,7 +75,7 @@ const getStandbyScene = (standbyKey: StandbyKey): [string, SceneBinding] => [
 ];
 
 export const SCENES = Object.freeze({
-  obs: { sceneCollection: 'Eliance 2026' },
+  obs: { sceneCollection: 'Eliance 2026', profile: 'Eliance 2026' },
   firebot: { profile: 'Eliance 2026' },
   canvases: {
     landscape: {
