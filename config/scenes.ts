@@ -137,9 +137,10 @@ export const SCENES = Object.freeze({
     ...Object.fromEntries(LAYOUT_KEYS.map((layoutKey) => getLayout(layoutKey, layoutKey))),
   },
   modifiers: {
+    'Controls': { config: { info: { aspectRatio: '466:118', isMainAttached: true, isPreviousAttached: true } } },
     'Keyed Cameras': { config: { camera: { isGreenScreen: true } } },
     'Names': { config: { hasName: true } },
-    'Timer': { config: { info: { aspectRatio: '250:49', isPreviousAttached: true, isMainAttached: true } } },
+    'Timer': { config: { info: { aspectRatio: '250:49', isMainAttached: true, isPreviousAttached: true } } },
   },
 } as const satisfies ScenesConfig);
 
