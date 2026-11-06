@@ -30,11 +30,13 @@ export const ChatBox = () => {
 
   const cssContainer = css`
     flex: 3;
+    min-width: 0;
   `;
   const cssContainerMessages = css`
     flex: 1;
     gap: calc(var(--padding) / 4);
     justify-content: flex-end;
+    min-width: 0;
     line-height: calc((var(--bar-height) - (var(--padding) * 1.5)) / 3);
     padding: 0 0 ${paddingBottomContainerMessages} var(--padding);
   `;

@@ -220,6 +220,7 @@ export const ChatMessage = ({ event }: ChatMessageProps) => {
     padding: calc(var(--padding) / 4) 0 calc(var(--padding) / 4)
       calc((var(--line-height) - (var(--padding) / 2)) + (var(--padding) * 1.5));
     max-width: ${maxWidthPMessage};
+    overflow-wrap: anywhere;
     line-height: ${lineHeightPMessage};
     font-size: ${fontSizePMessage};
 
