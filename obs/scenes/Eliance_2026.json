@@ -1022,7 +1022,114 @@
             "deinterlace_field_order": 0,
             "monitoring_type": 0,
             "monitoring_enabled": false,
-            "private_settings": {}
+            "private_settings": {},
+            "filters": [
+                {
+                    "prev_ver": 553648129,
+                    "name": "Noise Suppression",
+                    "uuid": "5623ec13-e9ba-4b93-b127-3f5032421d32",
+                    "id": "noise_suppress_filter",
+                    "versioned_id": "noise_suppress_filter_v2",
+                    "settings": {},
+                    "mixers": 255,
+                    "sync": 0,
+                    "flags": 0,
+                    "volume": 1,
+                    "balance": 0.5,
+                    "enabled": true,
+                    "muted": false,
+                    "push-to-mute": false,
+                    "push-to-mute-delay": 0,
+                    "push-to-talk": false,
+                    "push-to-talk-delay": 0,
+                    "hotkeys": {},
+                    "deinterlace_mode": 0,
+                    "deinterlace_field_order": 0,
+                    "monitoring_type": 0,
+                    "monitoring_enabled": false,
+                    "private_settings": {}
+                },
+                {
+                    "prev_ver": 553648129,
+                    "name": "Expander",
+                    "uuid": "8c901082-e66c-4a16-ab53-55c8aa085855",
+                    "id": "expander_filter",
+                    "versioned_id": "expander_filter",
+                    "settings": {},
+                    "mixers": 255,
+                    "sync": 0,
+                    "flags": 0,
+                    "volume": 1,
+                    "balance": 0.5,
+                    "enabled": true,
+                    "muted": false,
+                    "push-to-mute": false,
+                    "push-to-mute-delay": 0,
+                    "push-to-talk": false,
+                    "push-to-talk-delay": 0,
+                    "hotkeys": {},
+                    "deinterlace_mode": 0,
+                    "deinterlace_field_order": 0,
+                    "monitoring_type": 0,
+                    "monitoring_enabled": false,
+                    "private_settings": {}
+                },
+                {
+                    "prev_ver": 553648129,
+                    "name": "Compressor",
+                    "uuid": "52891b56-38ca-41ce-a242-f8162b80ebb2",
+                    "id": "compressor_filter",
+                    "versioned_id": "compressor_filter",
+                    "settings": {
+                        "ratio": 3,
+                        "output_gain": 6
+                    },
+                    "mixers": 255,
+                    "sync": 0,
+                    "flags": 0,
+                    "volume": 1,
+                    "balance": 0.5,
+                    "enabled": true,
+                    "muted": false,
+                    "push-to-mute": false,
+                    "push-to-mute-delay": 0,
+                    "push-to-talk": false,
+                    "push-to-talk-delay": 0,
+                    "hotkeys": {},
+                    "deinterlace_mode": 0,
+                    "deinterlace_field_order": 0,
+                    "monitoring_type": 0,
+                    "monitoring_enabled": false,
+                    "private_settings": {}
+                },
+                {
+                    "prev_ver": 553648129,
+                    "name": "Limiter",
+                    "uuid": "278480a0-f2aa-439c-a5eb-d2c17b2f9f31",
+                    "id": "limiter_filter",
+                    "versioned_id": "limiter_filter",
+                    "settings": {
+                        "threshold": -6
+                    },
+                    "mixers": 255,
+                    "sync": 0,
+                    "flags": 0,
+                    "volume": 1,
+                    "balance": 0.5,
+                    "enabled": false,
+                    "muted": false,
+                    "push-to-mute": false,
+                    "push-to-mute-delay": 0,
+                    "push-to-talk": false,
+                    "push-to-talk-delay": 0,
+                    "hotkeys": {},
+                    "deinterlace_mode": 0,
+                    "deinterlace_field_order": 0,
+                    "monitoring_type": 0,
+                    "monitoring_enabled": false,
+                    "private_settings": {}
+                }
+            ]
         },
         {
             "prev_ver": 553648129,
@@ -6880,6 +6987,33 @@
         },
         {
             "prev_ver": 553648129,
+            "name": "Display Capture",
+            "uuid": "53b1fa9d-16ac-47d0-b375-d1b6a88b0180",
+            "id": "monitor_capture",
+            "versioned_id": "monitor_capture",
+            "settings": {
+                "monitor_id": "\\\\?\\DISPLAY#AOC2401#5&2f7a17e2&0&UID57605#{e6f07b5f-ee97-4a90-b076-33f57bf4eaa7}"
+            },
+            "mixers": 0,
+            "sync": 0,
+            "flags": 0,
+            "volume": 1,
+            "balance": 0.5,
+            "enabled": true,
+            "muted": false,
+            "push-to-mute": false,
+            "push-to-mute-delay": 0,
+            "push-to-talk": false,
+            "push-to-talk-delay": 0,
+            "hotkeys": {},
+            "deinterlace_mode": 0,
+            "deinterlace_field_order": 0,
+            "monitoring_type": 0,
+            "monitoring_enabled": false,
+            "private_settings": {}
+        },
+        {
+            "prev_ver": 553648129,
             "name": "[Widget] Global Info",
             "uuid": "312b0d2c-19f1-449d-a5dd-7fdff52da0ec",
             "id": "scene",
@@ -7832,13 +7966,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -7887,13 +8021,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -8006,13 +8140,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -8061,13 +8195,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -8116,13 +8250,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -8171,13 +8305,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -8226,13 +8360,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -8281,13 +8415,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -8336,13 +8470,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -8851,7 +8985,7 @@
             "id": "scene",
             "versioned_id": "scene",
             "settings": {
-                "id_counter": 5,
+                "id_counter": 6,
                 "custom_size": false,
                 "items": [
                     {
@@ -8912,132 +9046,6 @@
                             "id": "fade_transition",
                             "versioned_id": "fade_transition",
                             "name": "[Capture] iPhone Hide Transition",
-                            "transition": {},
-                            "duration": 500
-                        },
-                        "private_settings": {}
-                    },
-                    {
-                        "name": "[Capture] Capture 0",
-                        "source_uuid": "0d178cce-23ab-47ef-9d19-4824c2d40233",
-                        "visible": false,
-                        "locked": true,
-                        "rot": 0,
-                        "scale_ref": {
-                            "x": 1920,
-                            "y": 1080
-                        },
-                        "align": 5,
-                        "bounds_type": 0,
-                        "bounds_align": 0,
-                        "bounds_crop": false,
-                        "crop_left": 0,
-                        "crop_top": 0,
-                        "crop_right": 0,
-                        "crop_bottom": 0,
-                        "id": 1,
-                        "group_item_backup": false,
-                        "pos": {
-                            "x": 0,
-                            "y": 0
-                        },
-                        "pos_rel": {
-                            "x": -1.7777777910232544,
-                            "y": -1
-                        },
-                        "scale": {
-                            "x": 1,
-                            "y": 1
-                        },
-                        "scale_rel": {
-                            "x": 1,
-                            "y": 1
-                        },
-                        "bounds": {
-                            "x": 0,
-                            "y": 0
-                        },
-                        "bounds_rel": {
-                            "x": 0,
-                            "y": 0
-                        },
-                        "scale_filter": "disable",
-                        "blend_method": "default",
-                        "blend_type": "normal",
-                        "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Capture] Capture 0 Show Transition",
-                            "transition": {},
-                            "duration": 500
-                        },
-                        "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Capture] Capture 0 Hide Transition",
-                            "transition": {},
-                            "duration": 500
-                        },
-                        "private_settings": {}
-                    },
-                    {
-                        "name": "[Capture] Capture 0 (Super NT)",
-                        "source_uuid": "7969e215-e85c-49d3-9084-9992f881ff13",
-                        "visible": true,
-                        "locked": true,
-                        "rot": 0,
-                        "scale_ref": {
-                            "x": 1920,
-                            "y": 1080
-                        },
-                        "align": 5,
-                        "bounds_type": 0,
-                        "bounds_align": 0,
-                        "bounds_crop": false,
-                        "crop_left": 0,
-                        "crop_top": 0,
-                        "crop_right": 0,
-                        "crop_bottom": 0,
-                        "id": 5,
-                        "group_item_backup": false,
-                        "pos": {
-                            "x": 0,
-                            "y": 0
-                        },
-                        "pos_rel": {
-                            "x": -1.7777777910232544,
-                            "y": -1
-                        },
-                        "scale": {
-                            "x": 1.875,
-                            "y": 1.2053571939468384
-                        },
-                        "scale_rel": {
-                            "x": 1.875,
-                            "y": 1.2053571939468384
-                        },
-                        "bounds": {
-                            "x": 0,
-                            "y": 0
-                        },
-                        "bounds_rel": {
-                            "x": 0,
-                            "y": 0
-                        },
-                        "scale_filter": "disable",
-                        "blend_method": "default",
-                        "blend_type": "normal",
-                        "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Capture] Capture 0 (Super NT) Show Transition",
-                            "transition": {},
-                            "duration": 500
-                        },
-                        "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Capture] Capture 0 (Super NT) Hide Transition",
                             "transition": {},
                             "duration": 500
                         },
@@ -9105,6 +9113,195 @@
                             "duration": 500
                         },
                         "private_settings": {}
+                    },
+                    {
+                        "name": "[Capture] Capture 0 (Super NT)",
+                        "source_uuid": "7969e215-e85c-49d3-9084-9992f881ff13",
+                        "visible": false,
+                        "locked": true,
+                        "rot": 0,
+                        "scale_ref": {
+                            "x": 1920,
+                            "y": 1080
+                        },
+                        "align": 5,
+                        "bounds_type": 0,
+                        "bounds_align": 0,
+                        "bounds_crop": false,
+                        "crop_left": 0,
+                        "crop_top": 0,
+                        "crop_right": 0,
+                        "crop_bottom": 0,
+                        "id": 5,
+                        "group_item_backup": false,
+                        "pos": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "pos_rel": {
+                            "x": -1.7777777910232544,
+                            "y": -1
+                        },
+                        "scale": {
+                            "x": 1.875,
+                            "y": 1.2053571939468384
+                        },
+                        "scale_rel": {
+                            "x": 1.875,
+                            "y": 1.2053571939468384
+                        },
+                        "bounds": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "bounds_rel": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "scale_filter": "disable",
+                        "blend_method": "default",
+                        "blend_type": "normal",
+                        "show_transition": {
+                            "id": "fade_transition",
+                            "versioned_id": "fade_transition",
+                            "name": "[Capture] Capture 0 (Super NT) Show Transition",
+                            "transition": {},
+                            "duration": 500
+                        },
+                        "hide_transition": {
+                            "id": "fade_transition",
+                            "versioned_id": "fade_transition",
+                            "name": "[Capture] Capture 0 (Super NT) Hide Transition",
+                            "transition": {},
+                            "duration": 500
+                        },
+                        "private_settings": {}
+                    },
+                    {
+                        "name": "[Capture] Capture 0",
+                        "source_uuid": "0d178cce-23ab-47ef-9d19-4824c2d40233",
+                        "visible": true,
+                        "locked": true,
+                        "rot": 0,
+                        "scale_ref": {
+                            "x": 1920,
+                            "y": 1080
+                        },
+                        "align": 5,
+                        "bounds_type": 0,
+                        "bounds_align": 0,
+                        "bounds_crop": false,
+                        "crop_left": 0,
+                        "crop_top": 0,
+                        "crop_right": 0,
+                        "crop_bottom": 0,
+                        "id": 1,
+                        "group_item_backup": false,
+                        "pos": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "pos_rel": {
+                            "x": -1.7777777910232544,
+                            "y": -1
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "scale_rel": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "bounds": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "bounds_rel": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "scale_filter": "disable",
+                        "blend_method": "default",
+                        "blend_type": "normal",
+                        "show_transition": {
+                            "id": "fade_transition",
+                            "versioned_id": "fade_transition",
+                            "name": "[Capture] Capture 0 Show Transition",
+                            "transition": {},
+                            "duration": 500
+                        },
+                        "hide_transition": {
+                            "id": "fade_transition",
+                            "versioned_id": "fade_transition",
+                            "name": "[Capture] Capture 0 Hide Transition",
+                            "transition": {},
+                            "duration": 500
+                        },
+                        "private_settings": {}
+                    },
+                    {
+                        "name": "Display Capture",
+                        "source_uuid": "53b1fa9d-16ac-47d0-b375-d1b6a88b0180",
+                        "visible": false,
+                        "locked": true,
+                        "rot": 0,
+                        "scale_ref": {
+                            "x": 1920,
+                            "y": 1080
+                        },
+                        "align": 5,
+                        "bounds_type": 0,
+                        "bounds_align": 0,
+                        "bounds_crop": false,
+                        "crop_left": 0,
+                        "crop_top": 0,
+                        "crop_right": 0,
+                        "crop_bottom": 0,
+                        "id": 6,
+                        "group_item_backup": false,
+                        "pos": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "pos_rel": {
+                            "x": -1.7777777910232544,
+                            "y": -1
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "scale_rel": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "bounds": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "bounds_rel": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "scale_filter": "disable",
+                        "blend_method": "default",
+                        "blend_type": "normal",
+                        "show_transition": {
+                            "id": "fade_transition",
+                            "versioned_id": "fade_transition",
+                            "name": "Display Capture Show Transition",
+                            "transition": {},
+                            "duration": 500
+                        },
+                        "hide_transition": {
+                            "id": "fade_transition",
+                            "versioned_id": "fade_transition",
+                            "name": "Display Capture Hide Transition",
+                            "transition": {},
+                            "duration": 500
+                        },
+                        "private_settings": {}
                     }
                 ]
             },
@@ -9123,12 +9320,14 @@
                 "OBSBasic.SelectScene": [],
                 "libobs.show_scene_item.3": [],
                 "libobs.hide_scene_item.3": [],
-                "libobs.show_scene_item.1": [],
-                "libobs.hide_scene_item.1": [],
+                "libobs.show_scene_item.2": [],
+                "libobs.hide_scene_item.2": [],
                 "libobs.show_scene_item.5": [],
                 "libobs.hide_scene_item.5": [],
-                "libobs.show_scene_item.2": [],
-                "libobs.hide_scene_item.2": []
+                "libobs.show_scene_item.1": [],
+                "libobs.hide_scene_item.1": [],
+                "libobs.show_scene_item.6": [],
+                "libobs.hide_scene_item.6": []
             },
             "deinterlace_mode": 0,
             "deinterlace_field_order": 0,
@@ -9400,7 +9599,7 @@
             "id": "scene",
             "versioned_id": "scene",
             "settings": {
-                "id_counter": 21,
+                "id_counter": 26,
                 "custom_size": false,
                 "items": [
                     {
@@ -9451,17 +9650,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Comms Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Comms Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -9514,17 +9705,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Microphone Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Microphone Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -9640,17 +9823,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Zelda Lofi Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Zelda Lofi Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -9703,17 +9878,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Pokemon Lofi Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Pokemon Lofi Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -9766,17 +9933,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Phazon Album Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Phazon Album Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -9829,17 +9988,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Metroid Lofi Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Metroid Lofi Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -9898,7 +10049,7 @@
                             "duration": 0
                         },
                         "private_settings": {
-                            "collapsed": true
+                            "collapsed": false
                         }
                     },
                     {
@@ -9949,17 +10100,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Games Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Games Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -10012,17 +10155,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Default Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Default Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -10075,17 +10210,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Capture 0 Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Capture 0 Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -10195,17 +10322,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Widget] Twitch Alerts Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Widget] Twitch Alerts Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -10605,13 +10724,13 @@
                         "source": "[Layout] Person 1",
                         "change_visibility": 1,
                         "start_delay": 0,
+                        "transform_text": "pos: x 0.0 y 0.0 rot: 0.0 scale: x 0.000 y 0.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": false,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 0.0 y 0.0 rot: 0.0 scale: x 0.000 y 0.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -10641,13 +10760,13 @@
                         "source": "[Layout] Person 2",
                         "change_visibility": 1,
                         "start_delay": 0,
+                        "transform_text": "pos: x 0.0 y 0.0 rot: 0.0 scale: x 0.000 y 0.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": false,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 0.0 y 0.0 rot: 0.0 scale: x 0.000 y 0.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -11328,13 +11447,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -11383,13 +11502,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -11438,13 +11557,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -11493,13 +11612,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -11548,13 +11667,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -11603,13 +11722,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -11658,13 +11777,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -11713,13 +11832,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 945.0 y 231.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -11768,13 +11887,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 960.0 y 246.0 rot: 0.0 bounds: x 0.000 y 588.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -13386,13 +13505,13 @@
                             "y": 1
                         },
                         "start_delay": 500,
+                        "transform_text": "pos: x 1008.0 y 339.0 rot: 0.0 bounds: x 580.000 y 402.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 1008.0 y 339.0 rot: 0.0 bounds: x 580.000 y 402.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -13441,13 +13560,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 348.0 y 339.0 rot: 0.0 bounds: x 612.000 y 402.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 348.0 y 339.0 rot: 0.0 bounds: x 612.000 y 402.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -13496,13 +13615,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 178.0 y 339.0 rot: 0.0 bounds: x 782.000 y 402.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 178.0 y 339.0 rot: 0.0 bounds: x 782.000 y 402.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -13858,13 +13977,13 @@
                         "source": "[Layout] Person 1 (V)",
                         "change_visibility": 1,
                         "start_delay": 0,
+                        "transform_text": "pos: x 0.0 y 0.0 rot: 0.0 scale: x 0.000 y 0.000 bounds: x 0.000 y 0.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": false,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 0.0 y 0.0 rot: 0.0 scale: x 0.000 y 0.000 bounds: x 0.000 y 0.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -13894,13 +14013,13 @@
                         "source": "[Layout] Person 2 (V)",
                         "change_visibility": 1,
                         "start_delay": 0,
+                        "transform_text": "pos: x 0.0 y 0.0 rot: 0.0 scale: x 0.000 y 0.000 bounds: x 0.000 y 0.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": false,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 0.0 y 0.0 rot: 0.0 scale: x 0.000 y 0.000 bounds: x 0.000 y 0.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -14583,13 +14702,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -14638,13 +14757,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -14693,13 +14812,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -14748,13 +14867,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -14803,13 +14922,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -14858,13 +14977,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -14913,13 +15032,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -14968,13 +15087,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -15023,13 +15142,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -15498,13 +15617,13 @@
                             "y": 1
                         },
                         "start_delay": 500,
+                        "transform_text": "pos: x 250.0 y 413.0 rot: 0.0 bounds: x 580.000 y 402.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 250.0 y 413.0 rot: 0.0 bounds: x 580.000 y 402.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -15553,13 +15672,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 234.0 y 863.0 rot: 0.0 bounds: x 612.000 y 402.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 234.0 y 863.0 rot: 0.0 bounds: x 612.000 y 402.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -15608,13 +15727,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 149.0 y 863.0 rot: 0.0 bounds: x 782.000 y 402.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 149.0 y 863.0 rot: 0.0 bounds: x 782.000 y 402.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -16297,13 +16416,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -16352,13 +16471,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -16407,13 +16526,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -16462,13 +16581,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -16517,13 +16636,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -16572,13 +16691,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -16627,13 +16746,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -16682,13 +16801,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 126.0 y 848.0 rot: 0.0 scale: x 1.000 y 1.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -16737,13 +16856,13 @@
                             "y": 1
                         },
                         "start_delay": 0,
+                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0",
                         "enabled_match_moving": true,
                         "duration": 500,
                         "custom_duration": true,
                         "transform": true,
                         "easing_match": 3,
-                        "easing_function_match": 2,
-                        "transform_text": "pos: x 141.0 y 863.0 rot: 0.0 bounds: x 798.000 y 0.000 crop: l 0 t 0 r 0 b 0"
+                        "easing_function_match": 2
                     },
                     "mixers": 0,
                     "sync": 0,
@@ -16827,17 +16946,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Comms Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Comms Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -16890,17 +17001,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Microphone Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Microphone Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -16991,17 +17094,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Games Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Games Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -17054,17 +17149,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Default Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Default Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -17117,17 +17204,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Capture 0 Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Audio] Capture 0 Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -17220,17 +17299,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Zelda Lofi Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Zelda Lofi Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -17283,17 +17354,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Pokemon Lofi Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Pokemon Lofi Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -17346,17 +17409,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Phazon Album Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Phazon Album Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -17409,17 +17464,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Metroid Lofi Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Music] Metroid Lofi Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}
@@ -17514,17 +17561,9 @@
                         "blend_method": "default",
                         "blend_type": "normal",
                         "show_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Widget] Twitch Alerts Show Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "hide_transition": {
-                            "id": "fade_transition",
-                            "versioned_id": "fade_transition",
-                            "name": "[Widget] Twitch Alerts Hide Transition",
-                            "transition": {},
                             "duration": 500
                         },
                         "private_settings": {}

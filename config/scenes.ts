@@ -6,7 +6,6 @@ import { LAYOUT_KEYS, type LayoutKey } from '@/constants/layoutKeys';
 import { STANDBY_KEYS, type StandbyKey } from '@/constants/standbyKeys';
 import { CANVAS_SPACING } from '@/constants/canvasSpacing';
 import { REGIONS } from '@/constants/regions';
-import { AUDIO_SOURCES } from '@/constants/audioSources';
 
 const isVerticalEnabled = true as const satisfies boolean;
 const nameFontSizeMax = 48 as const satisfies number;
@@ -84,7 +83,7 @@ export const SCENES = Object.freeze({
       participants: getParticipants(),
       standby: { textScene: '[List] Standby Text Sources', lineLength: landscapeLineLength, textGap: standbyTextGap },
       items: { '[Audio] Alerts': { visible: true }, '[Audio] Voice': { visible: true } },
-      fadeScenes: [...AUDIO_SOURCES, ...sourceLists],
+      fadeScenes: sourceLists,
     },
     ...(isVerticalEnabled
       ? {
