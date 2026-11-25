@@ -186,14 +186,13 @@ export const PersonInfo = ({ person }: PersonInfoProps) => {
 
   // Set next stream data
   useEffect(() => {
-    if (channelStreamScheduleData && channelStreamScheduleData.data.segments) {
-      let { title, start_time: startTime } = channelStreamScheduleData.data.segments[0];
+    const [firstSegment, secondSegment] = channelStreamScheduleData?.data.segments ?? [];
+
+    if (firstSegment) {
+      let { title, start_time: startTime } = firstSegment;
 
       if (new Date(startTime).getTime() - new Date().getTime() < 0)
-        ({ title, start_time: startTime } = channelStreamScheduleData.data.segments[1] ?? {
-          title: '',
-          start_time: '',
-        });
+        ({ title, start_time: startTime } = secondSegment ?? { title: '', start_time: '' });
 
       if (startTime) setNextStream({ title, startTime });
     }
